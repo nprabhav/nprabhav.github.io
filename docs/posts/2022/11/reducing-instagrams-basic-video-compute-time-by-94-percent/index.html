@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="map[name:Prabhav Nalhe]">
+<meta name="description" content="Zuck (IG Post, FB Post) and some news outlets (ex1, ex2, ex3, ex4) highlighted some of the work our team did in video compute efficiency.
+We reduced the cost to produce our basic video encodings by 94%. As a byproduct we were able to use that compute to improve advanced encoding watchtime coverage by 33%. These advanced encodings improve the user experience through higher visual quality and less stalls. If this sounds interesting to you, I wrote an engineering blog post with all the engineering details here" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="#252627" />
+<link rel="canonical" href="https://www.prabhavnalhe.com/posts/2022/11/reducing-instagrams-basic-video-compute-time-by-94-percent/" />
+
+
+    <title>
+
+            Reducing Instagram’s basic video compute time by 94 percent :: Prabhav Nalhe
+
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="https://www.prabhavnalhe.com/main.4e5c639214707eff609bb55fe49e183dee42258a73bc90e4cc7b0a84f900798a.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://www.prabhavnalhe.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://www.prabhavnalhe.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.prabhavnalhe.com/favicon-16x16.png">
+    <link rel="manifest" href="https://www.prabhavnalhe.com/site.webmanifest">
+    <link rel="mask-icon" href="https://www.prabhavnalhe.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://www.prabhavnalhe.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="Reducing Instagram’s basic video compute time by 94 percent">
+<meta itemprop="description" content="Zuck (IG Post, FB Post) and some news outlets (ex1, ex2, ex3, ex4) highlighted some of the work our team did in video compute efficiency.
+We reduced the cost to produce our basic video encodings by 94%. As a byproduct we were able to use that compute to improve advanced encoding watchtime coverage by 33%. These advanced encodings improve the user experience through higher visual quality and less stalls. If this sounds interesting to you, I wrote an engineering blog post with all the engineering details here"><meta itemprop="datePublished" content="2022-11-04T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2022-11-04T00:00:00+00:00" />
+<meta itemprop="wordCount" content="87"><meta itemprop="image" content="https://www.prabhavnalhe.com"/>
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://www.prabhavnalhe.com"/>
+
+<meta name="twitter:title" content="Reducing Instagram’s basic video compute time by 94 percent"/>
+<meta name="twitter:description" content="Zuck (IG Post, FB Post) and some news outlets (ex1, ex2, ex3, ex4) highlighted some of the work our team did in video compute efficiency.
+We reduced the cost to produce our basic video encodings by 94%. As a byproduct we were able to use that compute to improve advanced encoding watchtime coverage by 33%. These advanced encodings improve the user experience through higher visual quality and less stalls. If this sounds interesting to you, I wrote an engineering blog post with all the engineering details here"/>
+
+
+
+    <meta property="og:title" content="Reducing Instagram’s basic video compute time by 94 percent" />
+<meta property="og:description" content="Zuck (IG Post, FB Post) and some news outlets (ex1, ex2, ex3, ex4) highlighted some of the work our team did in video compute efficiency.
+We reduced the cost to produce our basic video encodings by 94%. As a byproduct we were able to use that compute to improve advanced encoding watchtime coverage by 33%. These advanced encodings improve the user experience through higher visual quality and less stalls. If this sounds interesting to you, I wrote an engineering blog post with all the engineering details here" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.prabhavnalhe.com/posts/2022/11/reducing-instagrams-basic-video-compute-time-by-94-percent/" /><meta property="og:image" content="https://www.prabhavnalhe.com"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-04T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-11-04T00:00:00+00:00" />
+<meta property="og:see_also" content="https://www.prabhavnalhe.com/posts/2022/12/optimizing-for-opportunity/" /><meta property="og:see_also" content="https://www.prabhavnalhe.com/posts/2021/11/making-instagram-video-ads-performant/" /><meta property="og:see_also" content="https://www.prabhavnalhe.com/posts/2021/03/cutting-threads-send-latency-in-half/" /><meta property="og:see_also" content="https://www.prabhavnalhe.com/posts/2020/01/video-processing-latency-improvements/" />
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2022-11-04 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-146855333-1', 'auto');
+
+	ga('send', 'pageview');
+}
+</script>
+
+    </head>
+
+
+        <body>
+
+
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://www.prabhavnalhe.com/" style="text-decoration: none;">
+    <div class="logo">
+
+            <span class="logo__mark">></span>
+            <span class="logo__text">$ cd /home/</span>
+            <span class="logo__cursor" style=
+                  "
+
+                   ">
+            </span>
+
+    </div>
+</a>
+
+
+        <span class="header__right">
+
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        One minute
+
+
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://www.prabhavnalhe.com/posts/2022/11/reducing-instagrams-basic-video-compute-time-by-94-percent/">Reducing Instagram’s basic video compute time by 94 percent</a>
+      </h1>
+
+
+
+
+
+
+
+      <div class="post-content">
+        <p>Zuck (<a href="https://www.instagram.com/p/CkihQRtO5yO/">IG Post</a>, <a href="https://www.facebook.com/4/videos/884058129426425/">FB Post</a>) and some news outlets (<a href="https://thenewstack.io/how-instagram-prepared-for-a-tsunami-of-high-definition-video/">ex1</a>, <a href="https://siliconangle.com/2022/11/04/meta-develops-new-hardware-efficient-video-processing-method/">ex2</a>, <a href="https://enterprisetalk.com/quick-bytes/meta-creates-a-brand-new-hardware-effective-video-processing-technique/">ex3</a>, <a href="https://interestingengineering.com/culture/instagram-decreases-video-compute-time-by-94-without-updating-hardware">ex4</a>) highlighted some of the work our team did in video compute efficiency.</p>
+<p>We reduced the cost to produce our basic video encodings by 94%. As a byproduct we were able to use that compute to improve advanced encoding watchtime coverage by 33%. These advanced encodings improve the user experience through higher visual quality and less stalls. If this sounds interesting to you, I wrote an <a href="https://engineering.fb.com/2022/11/04/video-engineering/instagram-video-processing-encoding-reduction/">engineering blog post with all the engineering details here</a></p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        87 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+
+          2022-11-03 17:00
+
+
+
+
+
+      </p>
+    </div>
+
+
+
+
+
+
+
+  </main>
+
+            </div>
+
+
+                <footer class="footer">
+
+
+</footer>
+
+
+        </div>
+
+
+
+
+
+<script type="text/javascript" src="https://www.prabhavnalhe.com/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js" integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
+
+
+
+    </body>
+</html>
