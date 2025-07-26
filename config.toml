@@ -133,8 +133,8 @@ disableHugoGeneratorInject = false
     url  = "http://linkedin.com/in/nprabhav"
 
   [[params.social]]
-    name = "substack"
-    url  = "https://www.developing.dev/"
+    name = "email"
+    url  = "mailto:nprabhav111@gmail.com"
 
 [languages]
   [languages.en]
