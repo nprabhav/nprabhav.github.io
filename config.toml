@@ -128,20 +128,20 @@ disableHugoGeneratorInject = false
 
   # Social icons
   [[params.social]]
-    name = "twitter"
-    url  = "https://twitter.com/nprabhav111"
-
-  [[params.social]]
-    name = "linkedin"
-    url  = "http://linkedin.com/in/nprabhav"
-
-  [[params.social]]
     name = "email"
     url  = "mailto:nprabhav111@gmail.com"
 
   [[params.social]]
     name = "github"
     url  = "https://github.com/nprabhav"
+
+  [[params.social]]
+    name = "twitter"
+    url  = "https://twitter.com/nprabhav111"
+
+  [[params.social]]
+    name = "linkedin"
+    url  = "http://linkedin.com/in/nprabhav"
 
 [languages]
   [languages.en]
