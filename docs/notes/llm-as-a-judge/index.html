@@ -68,7 +68,22 @@
       <p class="dek">A separate model can score outputs you cannot label by hand - but only if you treat it like a measuring instrument: a few binary dimensions, a calibrated reading, an answer key it never gets to see.</p>
       <div class="meta">Prabhav Nalhe &middot; 2026 &middot; ~6 min read</div>
       
-      <figure class="diagram"><svg viewBox="0 0 720 250" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Patrick Hand','Comic Sans MS','Segoe Print',cursive"><defs><filter id="rough" x="-5%%" y="-5%%" width="110%%" height="110%%"><feTurbulence type="fractalNoise" baseFrequency="0.017" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.3"/></filter><marker id="ah" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#1e1e1e" stroke-width="1.5"/></marker><marker id="ahb" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#1971c2" stroke-width="1.5"/></marker><marker id="ahr" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#c92a2a" stroke-width="1.5"/></marker><marker id="ahg" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#2f9e44" stroke-width="1.5"/></marker></defs><g filter="url(#rough)"><rect x="40" y="92" width="165" height="64" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.6 122.5 124)"/><rect x="262" y="92" width="165" height="64" rx="4" fill="#e8f1fb" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(0.6 344.5 124)"/><rect x="500" y="34" width="180" height="58" rx="4" fill="#eaf6ec" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.5 590 63)"/><rect x="500" y="156" width="180" height="58" rx="4" fill="#fde7e7" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(0.7 590 185)"/><path d="M205,124 L262,124" fill="none" stroke="#1e1e1e" stroke-width="1.7" marker-end="url(#ah)"/><path d="M427,110 L500,70" fill="none" stroke="#2f9e44" stroke-width="1.7" marker-end="url(#ahg)"/><path d="M427,140 L500,182" fill="none" stroke="#c92a2a" stroke-width="1.7" marker-end="url(#ahr)"/></g><g paint-order="stroke"><text x="122.5" y="119" text-anchor="middle" font-size="18" fill="#1e1e1e">generator</text><text x="122.5" y="139" text-anchor="middle" font-size="13.5" fill="#6b6b66">makes output</text><text x="344.5" y="119" text-anchor="middle" font-size="18" fill="#1e1e1e">judge</text><text x="344.5" y="139" text-anchor="middle" font-size="13.5" fill="#6b6b66">separate model</text><text x="590" y="69" text-anchor="middle" font-size="18" fill="#1e1e1e">ship</text><text x="590" y="191" text-anchor="middle" font-size="18" fill="#1e1e1e">block / retry</text><text x="462" y="80" text-anchor="end" font-size="13" fill="#2f9e44" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">pass</text><text x="462" y="182" text-anchor="end" font-size="13" fill="#c92a2a" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">fail</text><text x="344" y="182" text-anchor="middle" font-size="13" fill="#57544d" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">answer key hidden</text></g></svg><figcaption>A separate judge (never the generator) scores a few binary dimensions and gates delivery. It is calibrated against human labels and never sees the answer key, so it measures judgment, not lookup.</figcaption></figure>
+      <figure class="diagram">
+<pre class="mermaid">
+flowchart LR
+  G["generator<br/>makes output"] --> J["judge<br/>separate model"]
+  J -->|"pass"| SH["ship"]
+  J -->|"fail"| BL["block / retry"]
+  classDef key fill:#e8f1fb,stroke:#1e1e1e,color:#1e1e1e
+  classDef good fill:#eaf6ec,stroke:#1e1e1e,color:#1e1e1e
+  classDef hot fill:#fde7e7,stroke:#1e1e1e,color:#1e1e1e
+  class J key
+  class SH good
+  class BL hot
+  linkStyle 1 stroke:#2f9e44,color:#2f9e44
+  linkStyle 2 stroke:#c92a2a,color:#c92a2a
+</pre>
+<figcaption>A separate judge (never the generator) scores a few binary dimensions and gates delivery. It is calibrated against human labels and never sees the answer key, so it measures judgment, not lookup.</figcaption></figure>
 
       <h2>Why grade with a model at all</h2>
       <p>Some outputs have a cheap, exact check - a schema that parses, a number that matches, a test that passes - and for those you should never reach for a model. You reach for a judge when correctness is real but not mechanically checkable: did this summary stay faithful to its source, did this answer actually address the question, did this explanation avoid asserting a fact the inputs do not support. Human review can score these, but it does not scale to every output on every prompt change, so most teams fall back to reading a handful of samples and shipping on a good feeling. That is the failure mode worth naming. &quot;Looks fine&quot; is not a measurement, it does not run in CI, and it cannot tell you whether yesterday's prompt edit quietly made things worse. A second model, prompted only to score, turns that vibe into a number you can gate on and track over time. The judge is not there to be smart. It is there to be a consistent, cheap, repeatable instrument - one that gives you the same reading on the same input far more often than a human re-reading samples will.</p>
@@ -97,5 +112,9 @@
     </article>
   </div>
   <footer class="wrap">&copy; 2026 Prabhav Nalhe &middot; San Jose, CA</footer>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });
+  </script>
 </body>
 </html>

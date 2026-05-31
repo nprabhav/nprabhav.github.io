@@ -63,7 +63,21 @@
       <h1 class="article-title">The Service Graph Is a Lower Bound: Finding the Dependencies No RPC Edge Shows</h1>
       <p class="dek">The dependency graph you draw from RPC traffic is real but incomplete. The dependencies that take you down are usually the ones no edge in that graph represents - shared config, shared stores, shared infrastructure - and you have to go looking for them on purpose.</p>
       <div class="meta">Prabhav Nalhe &middot; 2026 &middot; ~5 min read</div>
-      <figure class="diagram"><svg viewBox="0 0 720 300" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Patrick Hand','Comic Sans MS','Segoe Print',cursive"><defs><filter id="rough" x="-5%%" y="-5%%" width="110%%" height="110%%"><feTurbulence type="fractalNoise" baseFrequency="0.017" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.3"/></filter><marker id="ah" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#1e1e1e" stroke-width="1.5"/></marker><marker id="ahb" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#1971c2" stroke-width="1.5"/></marker><marker id="ahr" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#c92a2a" stroke-width="1.5"/></marker><marker id="ahg" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#2f9e44" stroke-width="1.5"/></marker></defs><g filter="url(#rough)"><rect x="55" y="50" width="160" height="62" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.6 135 81)"/><rect x="280" y="50" width="160" height="62" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(0.5 360 81)"/><rect x="505" y="50" width="160" height="62" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.5 585 81)"/><rect x="280" y="205" width="160" height="64" rx="4" fill="#fde7e7" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(0.7 360 237)"/><path d="M215,81 L280,81" fill="none" stroke="#1e1e1e" stroke-width="1.7" marker-end="url(#ah)"/><path d="M440,81 L505,81" fill="none" stroke="#1e1e1e" stroke-width="1.7" marker-end="url(#ah)"/><path d="M150,112 L320,205" fill="none" stroke="#c92a2a" stroke-width="1.7" stroke-dasharray="6 5" marker-end="url(#ahr)"/><path d="M360,112 L360,205" fill="none" stroke="#c92a2a" stroke-width="1.7" stroke-dasharray="6 5" marker-end="url(#ahr)"/><path d="M570,112 L400,205" fill="none" stroke="#c92a2a" stroke-width="1.7" stroke-dasharray="6 5" marker-end="url(#ahr)"/></g><g paint-order="stroke"><text x="135" y="87" text-anchor="middle" font-size="18" fill="#1e1e1e">service A</text><text x="360" y="87" text-anchor="middle" font-size="18" fill="#1e1e1e">service B</text><text x="585" y="87" text-anchor="middle" font-size="18" fill="#1e1e1e">service C</text><text x="360" y="232" text-anchor="middle" font-size="18" fill="#1e1e1e">shared store</text><text x="360" y="252" text-anchor="middle" font-size="13.5" fill="#6b6b66">/ config</text><text x="360" y="40" text-anchor="middle" font-size="13" fill="#57544d" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">the call graph shows these (solid)</text><text x="455" y="250" text-anchor="start" font-size="13" fill="#c92a2a" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">the edge it hides (dashed)</text></g></svg><figcaption>The RPC call graph (solid) is a lower bound on coupling. The incidents that surprise you come from fate-sharing on a shared store or config (dashed) that no call edge ever shows.</figcaption></figure>
+      <figure class="diagram">
+<pre class="mermaid">
+flowchart TD
+  A["service A"] -->|"RPC"| B["service B"]
+  B -->|"RPC"| C2["service C"]
+  A -.->|"shared"| S["shared store / config"]
+  B -.-> S
+  C2 -.-> S
+  classDef hot fill:#fde7e7,stroke:#1e1e1e,color:#1e1e1e
+  class S hot
+  linkStyle 2 stroke:#c92a2a,color:#c92a2a
+  linkStyle 3 stroke:#c92a2a,color:#c92a2a
+  linkStyle 4 stroke:#c92a2a,color:#c92a2a
+</pre>
+<figcaption>The RPC call graph (solid) is a lower bound on coupling. The incidents that surprise you come from fate-sharing on a shared store or config (dashed, red) that no call edge ever shows.</figcaption></figure>
 
       <h2>The graph you have is the graph of calls, not the graph of coupling</h2>
       <p>Most service-dependency graphs are built from one source: who calls whom. You scrape RPC traces or mesh telemetry, draw an edge from caller to callee, and you get a clean directed graph that everyone treats as the dependency map. It is genuinely useful. It is also a partial picture, and the part it leaves out is the part that hurts.</p>
@@ -98,5 +112,9 @@
     </article>
   </div>
   <footer class="wrap">&copy; 2026 Prabhav Nalhe &middot; San Jose, CA</footer>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });
+  </script>
 </body>
 </html>

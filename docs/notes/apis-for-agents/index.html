@@ -63,7 +63,19 @@
       <h1 class="article-title">Designing APIs for Agents, Not Humans</h1>
       <p class="dek">When an LLM is the caller, the interface is the prompt. Typed responses, idempotent writes, granular composable tools, and machine-readable errors are not nice-to-haves - they are the difference between an agent that chains calls reliably and one that scrapes a human UI and guesses.</p>
       <div class="meta">Prabhav Nalhe &middot; 2026 &middot; ~6 min read</div>
-      <figure class="diagram"><svg viewBox="0 0 720 260" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Patrick Hand','Comic Sans MS','Segoe Print',cursive"><defs><filter id="rough" x="-5%%" y="-5%%" width="110%%" height="110%%"><feTurbulence type="fractalNoise" baseFrequency="0.017" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.3"/></filter><marker id="ah" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#1e1e1e" stroke-width="1.5"/></marker><marker id="ahb" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#1971c2" stroke-width="1.5"/></marker><marker id="ahr" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#c92a2a" stroke-width="1.5"/></marker><marker id="ahg" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#2f9e44" stroke-width="1.5"/></marker></defs><g filter="url(#rough)"><rect x="280" y="28" width="160" height="56" rx="4" fill="#e8f1fb" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.5 360 56)"/><rect x="55" y="160" width="250" height="68" rx="4" fill="#eaf6ec" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(0.6 180 194)"/><rect x="415" y="160" width="250" height="68" rx="4" fill="#fde7e7" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.6 540 194)"/><path d="M320,84 L180,160" fill="none" stroke="#2f9e44" stroke-width="1.7" marker-end="url(#ahg)"/><path d="M400,84 L540,160" fill="none" stroke="#c92a2a" stroke-width="1.7" stroke-dasharray="6 5" marker-end="url(#ahr)"/></g><g paint-order="stroke"><text x="360" y="62" text-anchor="middle" font-size="18" fill="#1e1e1e">agent</text><text x="180" y="189" text-anchor="middle" font-size="18" fill="#1e1e1e">typed tool</text><text x="180" y="209" text-anchor="middle" font-size="13.5" fill="#6b6b66">structured JSON</text><text x="540" y="189" text-anchor="middle" font-size="18" fill="#1e1e1e">human CLI / UI</text><text x="540" y="209" text-anchor="middle" font-size="13.5" fill="#6b6b66">parse stdout</text><text x="210" y="130" text-anchor="end" font-size="13" fill="#2f9e44" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">reliable</text><text x="510" y="130" text-anchor="start" font-size="13" fill="#c92a2a" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">brittle</text></g></svg><figcaption>Design granular, typed tools that return structured results an agent can chain reliably, rather than making it scrape a human CLI or UI and parse free text.</figcaption></figure>
+      <figure class="diagram">
+<pre class="mermaid">
+flowchart TD
+  AG["agent"] -->|"reliable"| TT["typed tool<br/>structured JSON"]
+  AG -.->|"brittle"| HU["human CLI / UI<br/>parse stdout"]
+  classDef good fill:#eaf6ec,stroke:#1e1e1e,color:#1e1e1e
+  classDef hot fill:#fde7e7,stroke:#1e1e1e,color:#1e1e1e
+  class TT good
+  class HU hot
+  linkStyle 0 stroke:#2f9e44,color:#2f9e44
+  linkStyle 1 stroke:#c92a2a,color:#c92a2a
+</pre>
+<figcaption>Design granular, typed tools that return structured results an agent can chain reliably, rather than making it scrape a human CLI or UI and parse free text.</figcaption></figure>
 
       <h2>The shift: the caller cannot read between the lines</h2>
       <p>For decades we designed APIs and CLIs for a human on the other end - someone who could read a paragraph of help text, eyeball a table, infer that &quot;3 days ago&quot; means a timestamp, and retry by hand when something looked off. An LLM agent has none of that slack. It does not see your interface; it sees a prompt, a tool schema, and a string of returned bytes, and it has to decide what to do next from that alone.</p>
@@ -101,5 +113,9 @@
     </article>
   </div>
   <footer class="wrap">&copy; 2026 Prabhav Nalhe &middot; San Jose, CA</footer>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });
+  </script>
 </body>
 </html>

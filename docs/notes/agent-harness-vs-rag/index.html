@@ -63,7 +63,24 @@
       <h1 class="article-title">Agent Harness vs RAG: When Structured Tool-Calls Beat Vector Search</h1>
       <p class="dek">Two ways to feed a model context: retrieve fuzzy passages by similarity, or call purpose-built tools that return exact records. Here is how I decide which one a problem actually needs - and why, when an answer has to trace back to evidence, the tool-calling agent wins.</p>
       <div class="meta">Prabhav Nalhe &middot; 2026 &middot; ~6 min read</div>
-      <figure class="diagram"><svg viewBox="0 0 720 320" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Patrick Hand','Comic Sans MS','Segoe Print',cursive"><defs><filter id="rough" x="-5%%" y="-5%%" width="110%%" height="110%%"><feTurbulence type="fractalNoise" baseFrequency="0.017" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.3"/></filter><marker id="ah" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#1e1e1e" stroke-width="1.5"/></marker><marker id="ahb" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#1971c2" stroke-width="1.5"/></marker><marker id="ahr" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#c92a2a" stroke-width="1.5"/></marker><marker id="ahg" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#2f9e44" stroke-width="1.5"/></marker></defs><g filter="url(#rough)"><rect x="50" y="75" width="230" height="52" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.5 165 101)"/><rect x="50" y="160" width="230" height="52" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(0.5 165 186)"/><rect x="50" y="245" width="230" height="52" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.4 165 271)"/><rect x="445" y="110" width="225" height="58" rx="4" fill="#e8f1fb" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(0.5 557.5 139)"/><rect x="445" y="230" width="225" height="58" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.6 557.5 259)"/><path d="M165,127 L165,158" fill="none" stroke="#1e1e1e" stroke-width="1.7" marker-end="url(#ah)"/><path d="M165,212 L165,243" fill="none" stroke="#1e1e1e" stroke-width="1.7" marker-end="url(#ah)"/><path d="M520,168 L520,228" fill="none" stroke="#1971c2" stroke-width="1.7" marker-end="url(#ahb)"/><path d="M595,228 L595,168" fill="none" stroke="#1971c2" stroke-width="1.9" marker-end="url(#ahb)"/></g><g paint-order="stroke"><text x="165" y="107" text-anchor="middle" font-size="18" fill="#1e1e1e">query → embed</text><text x="165" y="192" text-anchor="middle" font-size="18" fill="#1e1e1e">vector search → top-k</text><text x="165" y="277" text-anchor="middle" font-size="18" fill="#1e1e1e">LLM reads chunks</text><text x="557.5" y="145" text-anchor="middle" font-size="18" fill="#1e1e1e">LLM agent</text><text x="557.5" y="265" text-anchor="middle" font-size="18" fill="#1e1e1e">typed tools</text><text x="165" y="58" text-anchor="middle" font-size="13" fill="#57544d" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">RAG: retrieve, then read</text><text x="557" y="92" text-anchor="middle" font-size="13" fill="#57544d" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">Agent: call tools, reason, repeat</text><text x="500" y="205" text-anchor="end" font-size="13" fill="#1971c2" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">call</text><text x="612" y="205" text-anchor="start" font-size="13" fill="#1971c2" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">result</text></g></svg><figcaption>RAG retrieves chunks by similarity and reads them. An agent harness calls explicit, typed tools in a loop and reasons over structured results, so every answer traces back to its evidence.</figcaption></figure>
+      <figure class="diagram">
+<pre class="mermaid">
+flowchart TB
+  subgraph S1["RAG: retrieve, then read"]
+    direction TB
+    Q["embed the query"] --> VS["vector search, top-k"] --> RD["LLM reads chunks"]
+  end
+  subgraph S2["agent: call tools, reason, repeat"]
+    direction TB
+    AG["LLM agent"] -->|"call"| TL["typed tools"]
+    TL -->|"result"| AG
+  end
+  classDef key fill:#e8f1fb,stroke:#1e1e1e,color:#1e1e1e
+  class AG key
+  linkStyle 2 stroke:#2383E2,color:#2383E2
+  linkStyle 3 stroke:#2383E2,color:#2383E2
+</pre>
+<figcaption>RAG retrieves chunks by similarity and reads them. An agent harness calls explicit, typed tools in a loop and reasons over structured results, so every answer traces back to its evidence.</figcaption></figure>
 
       <h2>Two ways to give a model context</h2>
       <p>There are two broad ways to put the right information in front of a language model. The first, retrieval-augmented generation, chunks a corpus, embeds the chunks into vectors, and at query time pulls back the passages whose embeddings sit closest to the query in that space. The model reads those passages and answers. The second is a tool-using agent harness: instead of similarity search, you give the model a fixed set of purpose-built tools - query this graph, fetch this file, look up this record, run this attribution - and it decides which tool to call, reads what comes back, and reasons forward, calling again if it needs more.</p>
@@ -98,5 +115,9 @@
     </article>
   </div>
   <footer class="wrap">&copy; 2026 Prabhav Nalhe &middot; San Jose, CA</footer>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });
+  </script>
 </body>
 </html>

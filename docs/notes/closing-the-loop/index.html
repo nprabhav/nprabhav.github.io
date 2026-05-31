@@ -87,7 +87,16 @@
       <p class="dek">A pattern worth reusing: when an LLM makes a judgment at scale, do not let it grade itself. Pair a cheap predictor with an expensive verifier that observes ground truth by breaking things on purpose - and treat their disagreements as the most valuable signal you have.</p>
       <div class="meta">Prabhav Nalhe &middot; 2026 &middot; ~6 min read</div>
 
-      <figure class="diagram"><svg viewBox="0 0 720 240" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Patrick Hand','Comic Sans MS','Segoe Print',cursive"><defs><filter id="rough" x="-5%%" y="-5%%" width="110%%" height="110%%"><feTurbulence type="fractalNoise" baseFrequency="0.017" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.3"/></filter><marker id="ah" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#1e1e1e" stroke-width="1.5"/></marker><marker id="ahb" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#1971c2" stroke-width="1.5"/></marker><marker id="ahr" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#c92a2a" stroke-width="1.5"/></marker><marker id="ahg" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#2f9e44" stroke-width="1.5"/></marker></defs><g filter="url(#rough)"><rect x="55" y="80" width="250" height="86" rx="4" fill="#e8f1fb" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.7 180 123)"/><rect x="415" y="80" width="250" height="86" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(0.6 540 123)"/><path d="M305,108 L415,108" fill="none" stroke="#1e1e1e" stroke-width="1.7" marker-end="url(#ah)"/><path d="M415,140 L305,140" fill="none" stroke="#1971c2" stroke-width="1.9" marker-end="url(#ahb)"/></g><g paint-order="stroke"><text x="180" y="118" text-anchor="middle" font-size="18" fill="#1e1e1e">LLM classifier</text><text x="180" y="138" text-anchor="middle" font-size="13.5" fill="#6b6b66">cheap · predicts everywhere</text><text x="540" y="118" text-anchor="middle" font-size="18" fill="#1e1e1e">fault injection</text><text x="540" y="138" text-anchor="middle" font-size="13.5" fill="#6b6b66">expensive · verifies a sample</text><text x="360" y="98" text-anchor="middle" font-size="13" fill="#57544d" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">predictions to check</text><text x="360" y="158" text-anchor="middle" font-size="13" fill="#1971c2" stroke="#fff" stroke-width="3.2" stroke-linejoin="round">verified labels (disagreements)</text></g></svg><figcaption>A cheap predictor labels the whole fleet; an expensive verifier checks a sample by breaking things on purpose. Their disagreements become the verified labels that correct the predictor.</figcaption></figure>
+      <figure class="diagram">
+<pre class="mermaid">
+flowchart LR
+  C["LLM classifier<br/>cheap, predicts fleet-wide"] -->|"predictions to check"| V["fault injection<br/>expensive, verifies a sample"]
+  V -->|"verified labels (disagreements)"| C
+  classDef key fill:#e8f1fb,stroke:#1e1e1e,color:#1e1e1e
+  class C key
+  linkStyle 1 stroke:#2383E2,stroke-width:2px,color:#2383E2
+</pre>
+<figcaption>A cheap predictor labels the whole fleet; an expensive verifier checks a sample by breaking things on purpose. Their disagreements become the verified labels that correct the predictor.</figcaption></figure>
 
       <h2>The problem: a classifier that is confident but unverifiable</h2>
       <p>Picture an LLM classifying, across a large fleet of services, whether each dependency is hard or soft. A hard dependency takes its caller down when it fails; a soft one degrades gracefully - a cache miss, a fallback path, a feature that quietly turns off. You fortify the hard ones and leave the soft ones alone, so the cost of a wrong label is real: either you burn engineering on phantom risk, or you leave a true single-point-of-failure exposed.</p>
@@ -129,5 +138,9 @@
 
   </div>
   <footer class="wrap">&copy; 2026 Prabhav Nalhe &middot; San Jose, CA</footer>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });
+  </script>
 </body>
 </html>
