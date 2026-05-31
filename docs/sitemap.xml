@@ -4,9 +4,33 @@
     <loc>https://prabhavnalhe.com/</loc>
   </url>
   <url>
-    <loc>https://prabhavnalhe.com/writing/</loc>
+    <loc>https://prabhavnalhe.com/notes/</loc>
   </url>
   <url>
-    <loc>https://prabhavnalhe.com/writing/closing-the-loop/</loc>
+    <loc>https://prabhavnalhe.com/notes/closing-the-loop/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/service-graph-lying/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/slo-driven-risk/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/streaming-ingest-rust/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/agent-harness-vs-rag/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/evals-before-features/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/cost-aware-llm-pipelines/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/apis-for-agents/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/text-to-sql-then-and-now/</loc>
   </url>
 </urlset>

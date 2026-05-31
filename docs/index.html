@@ -178,7 +178,7 @@
         <span class="logo__mark">&gt;</span><span class="logo__text">nprabhav:~$&nbsp;</span><span class="logo__type" id="logoType"></span><span class="logo__cursor" id="logoCursor"></span>
       </a>
       <span class="bar-right">
-        <a href="/writing/" class="resume-link">Writing</a>
+        <a href="/notes/" class="resume-link">Notes</a>
         <a href="/resume.pdf" class="resume-link">Résumé</a>
       </span>
     </div>
@@ -195,7 +195,7 @@
         <a href="https://linkedin.com/in/nprabhav" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://github.com/nprabhav" target="_blank" rel="noopener">GitHub</a>
         <a href="/resume.pdf">Résumé</a>
-        <a href="/writing/">Writing</a>
+        <a href="/notes/">Notes</a>
       </div>
     </header>
 
@@ -337,7 +337,7 @@
         '  resume       open my resume (pdf)' + L +
         '  neofetch     the quick stats' + L +
         '  story        the connected 5-system arc' + L +
-        '  writing      a technical deep-dive' + L +
+        '  notes        essays on systems + AI systems' + L +
         '  clear        clear the screen' + L + L +
         "up/down for history  -  tab completes  -  try 'sudo hire-me'",
       about:
@@ -385,9 +385,9 @@
         '<span class="k">4. rank it</span>    a hard/soft classifier separates dependencies that take the caller down from those that degrade gracefully, so effort lands on the real single-points-of-failure.' + L +
         '<span class="k">5. prove it</span>   instead of trusting the model, break things on purpose: a fault-injection harness I built disables one dependency at a time and records which SLO degrades. Those observed outcomes become ground-truth labels that feed back and keep the classifier honest.' + L +
         'That last loop is the whole point - the platform corrects itself against reality instead of plateauing, which is how it chipped into ~15% of company-wide top-severity incidents.',
-      writing:
-        '<a href="/writing/closing-the-loop/" target="_blank" rel="noopener">Closing the Loop: fault injection as a ground-truth engine for a dependency classifier</a>' + L +
-        'a deep-dive on the feedback loop that keeps the dependency classifier honest.',
+      notes:
+        'essays on systems, reliability, and AI systems.' + L +
+        'browse them all at <a href="/notes/" target="_blank" rel="noopener">prabhavnalhe.com/notes</a>',
       joke:
         'There are only two hard problems in distributed systems:' + L +
         '  2. exactly-once delivery' + L +
@@ -395,7 +395,7 @@
         '  2. exactly-once delivery',
       coffee: 'c[_]  always.'
     };
-    T.whoami = T.about; T.projects = T.work; T.email = T.contact; T.socials = T.contact; T.paper = T.publication; T.arc = T.story; T.notes = T.writing; T.blog = T.writing;
+    T.whoami = T.about; T.projects = T.work; T.email = T.contact; T.socials = T.contact; T.paper = T.publication; T.arc = T.story; T.writing = T.notes; T.blog = T.notes;
     T.resume = function(){ window.open('/resume.pdf', '_blank'); return 'opening resume.pdf ...'; };
     T.cv = T.resume;
     T['sudo hire-me'] = function(){

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Service Graph Is a Lower Bound: Finding the Dependencies No RPC Edge Shows - Prabhav Nalhe</title>
+  <meta name="description" content="The dependency graph you draw from RPC traffic is real but incomplete. The dependencies that take you down are usually the ones no edge in that graph represents - shared config, shared stores, shared infrastructure - and you have to go looking for them on purpose." />
+  <meta name="author" content="Prabhav Nalhe" />
+  <link rel="canonical" href="https://prabhavnalhe.com/notes/service-graph-lying/" />
+  <meta property="og:title" content="The Service Graph Is a Lower Bound: Finding the Dependencies No RPC Edge Shows" />
+  <meta property="og:description" content="The dependency graph you draw from RPC traffic is real but incomplete. The dependencies that take you down are usually the ones no edge in that graph represents - shared config, shared stores, shared infrastructure - and you have to go looking for them on purpose." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://prabhavnalhe.com/notes/service-graph-lying/" />
+  <meta property="og:image" content="https://prabhavnalhe.com/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://prabhavnalhe.com/og.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <style>
+    :root { --bg:#FFFFFF; --ink:#37352F; --muted:#787774; --faint:rgba(55,53,47,0.4);
+      --accent:#2383E2; --link:#337EA9; --block:#F7F6F3; --rule:rgba(55,53,47,0.09);
+      --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+      --mono: "SF Mono", "JetBrains Mono", "Menlo", "Consolas", monospace; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; text-underline-offset:2px; }
+    .wrap { max-width:700px; margin:0 auto; padding:0 26px; }
+    .bar { display:flex; justify-content:space-between; align-items:center; padding:20px 0; font-size:14.5px; }
+    .logo { font-family:var(--mono); font-weight:700; font-size:15px; color:var(--ink); letter-spacing:0.3px; display:inline-flex; align-items:center; }
+    .logo:hover { text-decoration:none; }
+    .logo .cur { display:inline-block; width:8px; height:1.05em; background:var(--ink); margin-left:5px; transform:translateY(1px); animation:blink 1.1s steps(1) infinite; }
+    @keyframes blink { 0%,50%{opacity:1;} 50.01%,100%{opacity:0;} }
+    @media (prefers-reduced-motion: reduce){ .logo .cur{ animation:none; } }
+    .bar .home { color:var(--muted); }
+    .bar .home:hover { color:var(--ink); text-decoration:underline; }
+    article { padding:18px 0 0; }
+    .article-title { font-size:34px; font-weight:700; line-height:1.2; letter-spacing:-0.6px; margin:6px 0 14px; }
+    .dek { font-size:19px; color:var(--muted); line-height:1.5; margin:0 0 18px; }
+    .meta { font-family:var(--mono); font-size:13px; color:var(--faint); margin:0 0 30px; padding-bottom:22px; border-bottom:1px solid var(--rule); }
+    article h2 { font-size:22px; font-weight:600; line-height:1.3; margin:36px 0 12px; }
+    article p { margin:0 0 18px; }
+    .takeaways { background:var(--block); border-radius:8px; padding:20px 22px; margin:36px 0 0; }
+    .takeaways h3 { font-size:13px; font-family:var(--mono); font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.6px; margin:0 0 12px; }
+    .takeaways ul { margin:0; padding-left:20px; }
+    .takeaways li { margin-bottom:10px; font-size:16px; line-height:1.6; }
+    .post-foot { margin:40px 0 0; padding:22px 0 0; border-top:1px solid var(--rule); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:15px; }
+    footer { color:var(--faint); font-size:13px; padding:36px 0 48px; margin-top:30px; border-top:1px solid var(--rule); }
+    footer a { color:var(--muted); } footer a:hover { color:var(--ink); }
+    @media print { .bar .home, .post-foot { display:none; } a { color:#000; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:9pt; color:#444; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <a href="/" class="logo">&gt;&nbsp;nprabhav:~$<span class="cur"></span></a>
+      <a href="/notes/" class="home">&larr; notes</a>
+    </div>
+    <article>
+      <h1 class="article-title">The Service Graph Is a Lower Bound: Finding the Dependencies No RPC Edge Shows</h1>
+      <p class="dek">The dependency graph you draw from RPC traffic is real but incomplete. The dependencies that take you down are usually the ones no edge in that graph represents - shared config, shared stores, shared infrastructure - and you have to go looking for them on purpose.</p>
+      <div class="meta">Prabhav Nalhe &middot; 2026 &middot; ~5 min read</div>
+      <h2>The graph you have is the graph of calls, not the graph of coupling</h2>
+      <p>Most service-dependency graphs are built from one source: who calls whom. You scrape RPC traces or mesh telemetry, draw an edge from caller to callee, and you get a clean directed graph that everyone treats as the dependency map. It is genuinely useful. It is also a partial picture, and the part it leaves out is the part that hurts.</p>
+      <p>A call edge captures one kind of coupling - synchronous request-response. But two services with no edge between them can still fail together. They read the same config store. They share a database, or a cache, or a feature-flag system. One writes to a queue the other drains. They sit on the same host pool, the same availability zone, the same network path, the same secret-rotation job. None of that shows up as an arrow, because no request crosses between them. The graph says they are unrelated. The next incident says otherwise.</p>
+      <p>I have come to treat the call graph as a lower bound on coupling, never the whole of it. When someone says two systems are independent because nothing connects them in the service map, the honest answer is that nothing connects them in one view of the map.</p>
+      <h2>The incidents nobody predicted live in the implicit edges</h2>
+      <p>Walk back through the incidents that surprised people - not the ones where a known critical dependency fell over, but the ones where the post-mortem opened with some version of we did not think those two things were related. Almost all of them are implicit edges.</p>
+      <p>A config push goes out and a dozen unrelated services degrade at once, because they all read the same key and the push was bad. A cache everyone treated as a soft optimization goes cold - a restart, a mass expiry, or a node loss - the read traffic stampedes the origin, and a system with no edge to the cache owner falls over from the secondary effect. A shared queue backs up, and a consumer you forgot was downstream starts missing its deadlines. A single data store hosts tables for several teams, and one team's runaway query starves everyone else's reads.</p>
+      <p>The common shape is fate-sharing on a resource that the call graph never names. The blast radius does not follow request paths - it follows the shared thing. And because the shared thing is shared, the failure arrives at several services simultaneously, which is exactly the pattern that makes an incident hard to diagnose: lots of unrelated-looking alerts, no obvious caller-callee chain to walk up. The graph offered no warning because the coupling was never an edge in it.</p>
+      <h2>Surfacing the hidden edges starts with reconciling identity across signals</h2>
+      <p>You cannot model an edge you cannot see, and the reason these edges are invisible is usually mundane: the signals that would reveal them live in different systems that name things differently. The config system knows a config key and the principals that read it. The storage layer knows a database instance and the clients connected to it. The deploy system knows a service name. The trace pipeline knows yet another identifier. Same underlying service, four different names, no join key.</p>
+      <p>So the first real work is identity reconciliation - building a mapping that says this service, this deploy unit, this database client, and this config consumer are the same thing. It is unglamorous and it is most of the battle. Once you can resolve identity across signals, the implicit edges start to fall out almost mechanically: enumerate everything that reads a given config key and you have the set of services that share its fate; enumerate every client of a data store and you have a shared-fate cluster; enumerate every consumer of a queue and you have the async dependencies the call graph dropped.</p>
+      <p>The discipline that pays off is to enumerate from the shared resource outward, not from the service inward. Asking what does this service depend on tends to surface only the calls it makes. Asking who else touches this store, this key, this host pool surfaces the siblings that will fail alongside it.</p>
+      <h2>Model indirect edges as first-class, and label them by how they propagate failure</h2>
+      <p>Once you have the identities reconciled, resist the urge to flatten everything into the same kind of arrow. A direct call and a shared-database relationship propagate failure differently, and a graph that draws them identically will mislead you in a new way.</p>
+      <p>I find it useful to type the edges. A direct synchronous edge fails fast and propagates upstream along the request path. A shared-store or shared-config edge propagates sideways - to every sibling at once, with no caller-callee ordering. An async-queue edge propagates with delay and can absorb a burst before it breaks, which changes both the symptom and the time-to-impact. A pure fate-sharing edge, same host pool or same zone, has no application-level call relationship at all; the coupling is at the resource or failure-domain level - shared CPU, memory, network, power, or blast radius - so it should be modeled as fate-sharing rather than pretended into a call.</p>
+      <p>The practical payoff of typed indirect edges is that the graph starts answering the question that actually matters during an incident: if this thing degrades, what set of services moves together, and in what order. That is a different and more honest question than what calls what. It is also worth being clear about confidence - an edge inferred from shared config is a strong signal; an edge inferred from co-location is weaker and more circumstantial. Carry that uncertainty in the model instead of laundering an inference into a fact, because an over-confident hidden edge can send responders down the wrong path just as easily as a missing one.</p>
+      <div class="takeaways">
+        <h3>Takeaways</h3>
+        <ul>
+          <li>Treat the RPC call graph as a lower bound on coupling, not the full dependency map. Two services with no edge between them can still fail together through shared config, shared stores, caches, queues, or shared infrastructure.</li>
+          <li>The incidents that surprise people are usually implicit edges - fate-sharing on a resource the call graph never names. The blast radius follows the shared thing, not the request path, which is why several unrelated-looking systems break at once.</li>
+          <li>Surfacing hidden edges is mostly an identity-reconciliation problem: the same service is named differently across the config, storage, deploy, and trace systems. Build the join first; the edges fall out once you can resolve identity across signals.</li>
+          <li>Enumerate from the shared resource outward - who else touches this store, key, or host pool - not from the service inward, which only re-discovers the calls you already had.</li>
+          <li>Model indirect edges as first-class and type them by how they propagate failure (synchronous-upstream, shared-sideways, async-delayed, pure co-location). Carry the confidence of each inferred edge so a weak signal is not laundered into a fact.</li>
+        </ul>
+      </div>
+      <div class="post-foot">
+        <a href="/notes/">&larr; more notes</a>
+        <a href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a>
+      </div>
+    </article>
+  </div>
+  <footer class="wrap">&copy; 2026 Prabhav Nalhe &middot; San Jose, CA</footer>
+</body>
+</html>

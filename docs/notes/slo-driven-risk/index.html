@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SLO-Driven Risk: Turning &quot;Is This Scary?&quot; Into a Number - Prabhav Nalhe</title>
+  <meta name="description" content="Reliability effort gets spent on whatever feels scary in the room. Here is how to replace that gut feel with a defensible number built from SLOs, error budgets, and a clean hard-versus-soft dependency distinction - so you can prove where the risk is and justify what you do about it." />
+  <meta name="author" content="Prabhav Nalhe" />
+  <link rel="canonical" href="https://prabhavnalhe.com/notes/slo-driven-risk/" />
+  <meta property="og:title" content="SLO-Driven Risk: Turning &quot;Is This Scary?&quot; Into a Number" />
+  <meta property="og:description" content="Reliability effort gets spent on whatever feels scary in the room. Here is how to replace that gut feel with a defensible number built from SLOs, error budgets, and a clean hard-versus-soft dependency distinction - so you can prove where the risk is and justify what you do about it." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://prabhavnalhe.com/notes/slo-driven-risk/" />
+  <meta property="og:image" content="https://prabhavnalhe.com/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://prabhavnalhe.com/og.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <style>
+    :root { --bg:#FFFFFF; --ink:#37352F; --muted:#787774; --faint:rgba(55,53,47,0.4);
+      --accent:#2383E2; --link:#337EA9; --block:#F7F6F3; --rule:rgba(55,53,47,0.09);
+      --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+      --mono: "SF Mono", "JetBrains Mono", "Menlo", "Consolas", monospace; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; text-underline-offset:2px; }
+    .wrap { max-width:700px; margin:0 auto; padding:0 26px; }
+    .bar { display:flex; justify-content:space-between; align-items:center; padding:20px 0; font-size:14.5px; }
+    .logo { font-family:var(--mono); font-weight:700; font-size:15px; color:var(--ink); letter-spacing:0.3px; display:inline-flex; align-items:center; }
+    .logo:hover { text-decoration:none; }
+    .logo .cur { display:inline-block; width:8px; height:1.05em; background:var(--ink); margin-left:5px; transform:translateY(1px); animation:blink 1.1s steps(1) infinite; }
+    @keyframes blink { 0%,50%{opacity:1;} 50.01%,100%{opacity:0;} }
+    @media (prefers-reduced-motion: reduce){ .logo .cur{ animation:none; } }
+    .bar .home { color:var(--muted); }
+    .bar .home:hover { color:var(--ink); text-decoration:underline; }
+    article { padding:18px 0 0; }
+    .article-title { font-size:34px; font-weight:700; line-height:1.2; letter-spacing:-0.6px; margin:6px 0 14px; }
+    .dek { font-size:19px; color:var(--muted); line-height:1.5; margin:0 0 18px; }
+    .meta { font-family:var(--mono); font-size:13px; color:var(--faint); margin:0 0 30px; padding-bottom:22px; border-bottom:1px solid var(--rule); }
+    article h2 { font-size:22px; font-weight:600; line-height:1.3; margin:36px 0 12px; }
+    article p { margin:0 0 18px; }
+    .takeaways { background:var(--block); border-radius:8px; padding:20px 22px; margin:36px 0 0; }
+    .takeaways h3 { font-size:13px; font-family:var(--mono); font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.6px; margin:0 0 12px; }
+    .takeaways ul { margin:0; padding-left:20px; }
+    .takeaways li { margin-bottom:10px; font-size:16px; line-height:1.6; }
+    .post-foot { margin:40px 0 0; padding:22px 0 0; border-top:1px solid var(--rule); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:15px; }
+    footer { color:var(--faint); font-size:13px; padding:36px 0 48px; margin-top:30px; border-top:1px solid var(--rule); }
+    footer a { color:var(--muted); } footer a:hover { color:var(--ink); }
+    @media print { .bar .home, .post-foot { display:none; } a { color:#000; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:9pt; color:#444; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <a href="/" class="logo">&gt;&nbsp;nprabhav:~$<span class="cur"></span></a>
+      <a href="/notes/" class="home">&larr; notes</a>
+    </div>
+    <article>
+      <h1 class="article-title">SLO-Driven Risk: Turning &quot;Is This Scary?&quot; Into a Number</h1>
+      <p class="dek">Reliability effort gets spent on whatever feels scary in the room. Here is how to replace that gut feel with a defensible number built from SLOs, error budgets, and a clean hard-versus-soft dependency distinction - so you can prove where the risk is and justify what you do about it.</p>
+      <div class="meta">Prabhav Nalhe &middot; 2026 &middot; ~5 min read</div>
+      <h2>The problem: criticality is usually a vibe</h2>
+      <p>Ask a team which of their dependencies are critical and you will get a confident answer that nobody can defend. It is shaped by the last incident, by which service has a scary name, by who shouted loudest in the last review. The trouble is that this gut-feel ranking drives real spending - retries, replication, failover drills, on-call load - and it is wrong in both directions at once. Teams pour effort into a dependency that would degrade gracefully if it vanished, and leave a quiet single-point-of-failure untouched because it never broke loudly enough to earn attention.</p>
+      <p>The fix is not better intuition. It is to make criticality a measured property instead of an opinion. That means picking a definition of harm you can observe, expressing it as a number, and ranking dependencies by how much they move that number. When criticality is a measurement, two engineers who disagree can resolve it by looking at the same evidence, and a reliability investment can be justified to someone holding a budget.</p>
+      <h2>The unit of measurement: SLOs, SLIs, and the error budget</h2>
+      <p>You cannot turn risk into a number without first agreeing on what &quot;working&quot; means. That is what a service-level objective gives you. An SLI is the thing you actually measure - success rate, latency below a threshold, freshness of a result. The SLO is the target you hold that indicator to over a window. The gap between the target and a perfect score is the error budget: the amount of failure you have explicitly decided is acceptable.</p>
+      <p>The error budget is the key idea, because it converts reliability from a moral question (&quot;should this ever fail?&quot;) into an accounting one (&quot;how much failure can this absorb before users notice?&quot;). A dependency that, when it misbehaves, consumes a tiny slice of the budget is cheap to tolerate. One that blows through the whole budget the moment it stutters is expensive. Now risk has a denominator. &quot;Is this scary?&quot; becomes &quot;how much of the caller's error budget does this dependency put at stake, and how often?&quot; - and that is a question with an answer you can compute and revisit as the system changes.</p>
+      <h2>The distinction that makes the number useful: hard versus soft</h2>
+      <p>The single most clarifying cut is whether a dependency is hard or soft. A hard dependency takes its caller down when it fails - there is no fallback, no cache to serve stale from, no feature to quietly switch off. A soft dependency degrades gracefully: the caller absorbs the loss inside its error budget through a fallback path, a cached value, a default, or a feature that turns off without taking the request with it.</p>
+      <p>This distinction matters because it is where the budget is won or lost. A hard dependency passes its failures straight through to your SLI: when it breaks, your indicator moves by the full amount. A soft dependency is a shock absorber, and the size of that absorber is exactly the headroom in the error budget. The same external service can be hard for one caller and soft for another depending entirely on what the caller does when it does not get an answer. So the classification is not a property of the dependency in isolation - it is a property of the edge between two services, and that is the right granularity to reason about. Get the hard set right and you know where a single failure becomes an outage. Everything else is a candidate for being left alone.</p>
+      <h2>Spending the effort where the number says to</h2>
+      <p>Once every dependency edge carries an estimate of how much error budget it puts at risk and how often, prioritization stops being a debate. Rank the edges by expected budget burned - the share of error budget an edge puts at risk times how often it fails - and spend from the top. The hard edges with high traffic and no fallback are where retries, circuit breakers, replication, and failover drills actually buy down risk. The soft edges near the bottom are where the same effort buys almost nothing, and the honest move is to leave them alone and write down why.</p>
+      <p>The discipline cuts the other way too. If you are about to add a retry policy or a standby replica, you should be able to say which SLO it protects and how much budget it preserves. If you cannot, you are spending on a feeling. This is also how you defend the work upward: &quot;this edge is hard, it carries a large share of our traffic, and an outage here spends the whole quarter's budget in minutes&quot; is an argument a non-engineer can evaluate. &quot;It seems risky&quot; is not. The number does not replace judgment - it forces the judgment to be explicit and reviewable, which is what makes it possible to say no to plausible-sounding work that protects nothing.</p>
+      <h2>Keeping the number honest over time</h2>
+      <p>A risk number is only as good as the day it was computed. Services change, fallbacks get added and then rot, traffic shifts, a soft dependency silently becomes hard when the fallback it relied on - a cache, a default - is removed by someone who did not know it was load-bearing. A criticality ranking that is computed once and trusted forever decays into the same gut feel it replaced - just with a spreadsheet for cover.</p>
+      <p>The defense is to tie the ranking to things you can re-observe rather than to a one-time judgment. Anchor each classification to evidence - the actual call site, the present fallback behavior, the measured budget impact - so a label can be re-derived when the code moves under it. Where you can, verify a classification by injecting a fault that disables exactly that edge in a controlled, non-production setting and watching whether the caller's SLI moves: if disabling it breaches the budget, it is hard, and you have an observed outcome rather than an inference. You do not need to re-verify everything; you need to re-verify enough of the boundary cases to keep the hard-soft line calibrated. That is the difference between a risk model that was right on the day it shipped and one that stays right as the system moves underneath it.</p>
+      <div class="takeaways">
+        <h3>Takeaways</h3>
+        <ul>
+          <li>Replace gut-feel criticality with a measured quantity: pick an SLI, set an SLO, and rank dependencies by how much of the error budget they put at risk and how often. &quot;Is this scary?&quot; becomes a number you can compute and defend.</li>
+          <li>The error budget is the denominator that makes risk an accounting question instead of a moral one. A dependency that burns a sliver of budget is cheap to tolerate; one that can spend it all in minutes is where your effort belongs.</li>
+          <li>Hard versus soft is the highest-value distinction, and it lives on the edge between two services, not on a service in isolation. A hard dependency passes its failures straight to your SLI; a soft one absorbs them inside the budget through a fallback. The same dependency can be hard for one caller and soft for another.</li>
+          <li>Prioritize reliability spending top-down by expected budget burned - the share of error budget an edge puts at risk times how often it fails. Every retry, replica, or failover should name the SLO it protects and the budget it preserves; if it cannot, you are spending on a feeling.</li>
+          <li>A risk ranking decays as fallbacks rot and traffic shifts. Anchor each classification to re-observable evidence, and verify the boundary cases by injecting a fault that disables exactly that edge in a controlled setting - re-verify enough to keep the hard-soft line calibrated, not everything.</li>
+        </ul>
+      </div>
+      <div class="post-foot">
+        <a href="/notes/">&larr; more notes</a>
+        <a href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a>
+      </div>
+    </article>
+  </div>
+  <footer class="wrap">&copy; 2026 Prabhav Nalhe &middot; San Jose, CA</footer>
+</body>
+</html>
