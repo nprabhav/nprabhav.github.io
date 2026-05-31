@@ -3,15 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Prabhav Nalhe</title>
+  <title>Prabhav Nalhe - Software Engineer, Distributed Systems &amp; Reliability</title>
   <meta name="description" content="Prabhav Nalhe - software engineer building distributed systems and reliability infrastructure." />
   <meta name="author" content="Prabhav Nalhe" />
+  <link rel="canonical" href="https://prabhavnalhe.com/" />
 
-  <meta property="og:title" content="Prabhav Nalhe" />
+  <meta property="og:title" content="Prabhav Nalhe - Software Engineer, Distributed Systems &amp; Reliability" />
   <meta property="og:description" content="Software engineer building distributed systems and reliability infrastructure." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://prabhavnalhe.com" />
-  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://prabhavnalhe.com/" />
+  <meta property="og:image" content="https://prabhavnalhe.com/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://prabhavnalhe.com/og.png" />
 
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -186,6 +191,7 @@
         <a href="https://linkedin.com/in/nprabhav" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://github.com/nprabhav" target="_blank" rel="noopener">GitHub</a>
         <a href="/resume.pdf">Résumé</a>
+        <a href="/writing/closing-the-loop/">Writing</a>
       </div>
     </header>
 
@@ -326,6 +332,8 @@
         '  contact      reach me' + L +
         '  resume       open my resume (pdf)' + L +
         '  neofetch     the quick stats' + L +
+        '  story        the connected 5-system arc' + L +
+        '  writing      a technical deep-dive' + L +
         '  clear        clear the screen' + L + L +
         "up/down for history  -  tab completes  -  try 'sudo hire-me'",
       about:
@@ -365,6 +373,17 @@
         'focus   reliability, fault injection, dependency intelligence' + L +
         'status  open to new roles' + L +
         'uptime  caffeinated',
+      story:
+        'A question nobody at Meta could answer: what depends on what? Dependency-related failures were ~15% of all top-severity incidents, with no single source of truth. Five systems fixed that, each making the next possible:' + L +
+        '<span class="k">1. see it</span>     the dependency graph in Rust - a streaming pipeline fusing 6 telemetry sources at ~20 GB/s into one canonical map, surfacing 475K dependencies nobody knew existed.' + L +
+        '<span class="k">2. route it</span>   a full-stack notification + protection program adopted across 1,200+ services, so the owning team hears about a risky dependency early.' + L +
+        '<span class="k">3. explain it</span> an LLM agent harness over 16 purpose-built tools explains any dependency pair - 2.2M of them, ~100% coverage at ~$0.15 each (structured tool calls, not embeddings).' + L +
+        '<span class="k">4. rank it</span>    a hard/soft classifier separates dependencies that take the caller down from those that degrade gracefully, so effort lands on the real single-points-of-failure.' + L +
+        '<span class="k">5. prove it</span>   instead of trusting the model, break things on purpose: a fault-injection harness I built disables one dependency at a time and records which SLO degrades. Those observed outcomes become ground-truth labels that feed back and keep the classifier honest.' + L +
+        'That last loop is the whole point - the platform corrects itself against reality instead of plateauing, which is how it chipped into ~15% of company-wide top-severity incidents.',
+      writing:
+        '<a href="/writing/closing-the-loop/" target="_blank" rel="noopener">Closing the Loop: fault injection as a ground-truth engine for a dependency classifier</a>' + L +
+        'a deep-dive on the feedback loop that keeps the dependency classifier honest.',
       joke:
         'There are only two hard problems in distributed systems:' + L +
         '  2. exactly-once delivery' + L +
@@ -372,7 +391,7 @@
         '  2. exactly-once delivery',
       coffee: 'c[_]  always.'
     };
-    T.whoami = T.about; T.projects = T.work; T.email = T.contact; T.socials = T.contact; T.paper = T.publication;
+    T.whoami = T.about; T.projects = T.work; T.email = T.contact; T.socials = T.contact; T.paper = T.publication; T.arc = T.story; T.notes = T.writing; T.blog = T.writing;
     T.resume = function(){ window.open('/resume.pdf', '_blank'); return 'opening resume.pdf ...'; };
     T.cv = T.resume;
     T['sudo hire-me'] = function(){
