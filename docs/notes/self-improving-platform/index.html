@@ -17,6 +17,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
   <style>
     :root { --bg:#FFFFFF; --ink:#37352F; --muted:#787774; --faint:rgba(55,53,47,0.4);
       --accent:#2383E2; --link:#337EA9; --block:#F7F6F3; --rule:rgba(55,53,47,0.09);
@@ -66,49 +67,7 @@
       <h1 class="article-title">Build the Substrate First: Why Platform Quality Is Capped by the Model Underneath It</h1>
       <p class="dek">Most platforms that reason about a system are really stacks of queries against a model of that system. The recurring lesson is that the model is the constraint: build it as an authoritative product first, keep every layer above it a traceable query, and the quality of everything above is capped by the coverage and freshness of what is beneath.</p>
       <div class="meta">Prabhav Nalhe &middot; 2026 &middot; ~6 min read</div>
-      <figure class="diagram"><svg viewBox="0 0 720 430" role="img" aria-label="Architecture of a self-improving reliability platform" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, -apple-system, Segoe UI, Helvetica, Arial, sans-serif">
-  <defs>
-    <marker id="am" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#9a988f"/></marker>
-    <marker id="ab" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#2383E2"/></marker>
-  </defs>
-  <!-- boxes -->
-  <g>
-    <rect x="210" y="16" width="300" height="44" rx="7" fill="#F7F6F3" stroke="#E5E2DA"/>
-    <text x="360" y="35" text-anchor="middle" font-size="14" font-weight="600" fill="#37352F">telemetry sources</text>
-    <text x="360" y="50" text-anchor="middle" font-size="11" fill="#787774">traces &#183; logs &#183; config &#183; data stores</text>
-
-    <rect x="150" y="92" width="420" height="50" rx="7" fill="#ECF3FB" stroke="#CFE0F3"/>
-    <text x="360" y="113" text-anchor="middle" font-size="14" font-weight="600" fill="#37352F">dependency graph</text>
-    <text x="360" y="129" text-anchor="middle" font-size="11" fill="#787774">canonical source of truth &#183; streaming ingest</text>
-
-    <rect x="18" y="206" width="212" height="64" rx="7" fill="#F7F6F3" stroke="#E5E2DA"/>
-    <text x="124" y="234" text-anchor="middle" font-size="13.5" font-weight="600" fill="#37352F">notifications + protection</text>
-    <text x="124" y="252" text-anchor="middle" font-size="11" fill="#787774">route risk to owners &#183; audit</text>
-
-    <rect x="254" y="206" width="212" height="64" rx="7" fill="#F7F6F3" stroke="#E5E2DA"/>
-    <text x="360" y="234" text-anchor="middle" font-size="13.5" font-weight="600" fill="#37352F">explanations</text>
-    <text x="360" y="252" text-anchor="middle" font-size="11" fill="#787774">deterministic tools + LLM agent</text>
-
-    <rect x="490" y="206" width="212" height="64" rx="7" fill="#F7F6F3" stroke="#E5E2DA"/>
-    <text x="596" y="234" text-anchor="middle" font-size="13.5" font-weight="600" fill="#37352F">hard / soft classifier</text>
-    <text x="596" y="252" text-anchor="middle" font-size="11" fill="#787774">is the failure load-bearing?</text>
-
-    <rect x="490" y="344" width="212" height="56" rx="7" fill="#F7F6F3" stroke="#E5E2DA"/>
-    <text x="596" y="370" text-anchor="middle" font-size="13.5" font-weight="600" fill="#37352F">fault injection</text>
-    <text x="596" y="388" text-anchor="middle" font-size="11" fill="#787774">disable one dependency &#183; watch SLOs</text>
-  </g>
-  <!-- arrows -->
-  <g stroke="#9a988f" stroke-width="1.5" fill="none">
-    <path d="M360,60 L360,90" marker-end="url(#am)"/>
-    <path d="M280,142 L132,204" marker-end="url(#am)"/>
-    <path d="M360,142 L360,204" marker-end="url(#am)"/>
-    <path d="M450,142 L590,204" marker-end="url(#am)"/>
-    <path d="M576,272 L576,342" marker-end="url(#am)"/>
-  </g>
-  <path d="M620,342 L620,272" stroke="#2383E2" stroke-width="1.6" fill="none" marker-end="url(#ab)"/>
-  <text x="566" y="312" text-anchor="end" font-size="10" fill="#9a988f">one at a time</text>
-  <text x="628" y="312" text-anchor="start" font-size="10" fill="#2383E2">verified labels</text>
-</svg><figcaption>A generic dependency-intelligence platform. Each layer is built on the one below it, and the fault-injection loop (blue) feeds verified labels back to the classifier, so accuracy compounds instead of decaying.</figcaption></figure>
+      <figure class="diagram"><svg viewBox="0 0 720 430" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Patrick Hand','Comic Sans MS','Segoe Print',cursive"><defs><filter id="rough" x="-5%%" y="-5%%" width="110%%" height="110%%"><feTurbulence type="fractalNoise" baseFrequency="0.017" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.3"/></filter><marker id="ah" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#1e1e1e" stroke-width="1.5"/></marker><marker id="ahb" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#1971c2" stroke-width="1.5"/></marker><marker id="ahr" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#c92a2a" stroke-width="1.5"/></marker><marker id="ahg" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,1 L10,5 L0,9" fill="none" stroke="#2f9e44" stroke-width="1.5"/></marker></defs><g filter="url(#rough)"><rect x="210" y="16" width="300" height="46" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.6 360 39)"/><rect x="150" y="92" width="420" height="52" rx="4" fill="#e8f1fb" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(0.5 360 118)"/><rect x="18" y="206" width="212" height="66" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.9 124 239)"/><rect x="254" y="206" width="212" height="66" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(0.7 360 239)"/><rect x="490" y="206" width="212" height="66" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(-0.5 596 239)"/><rect x="490" y="346" width="212" height="56" rx="4" fill="#f7f6f3" stroke="#1e1e1e" stroke-width="1.7" transform="rotate(0.8 596 374)"/><path d="M360,62 L360,90" fill="none" stroke="#1e1e1e" stroke-width="1.7" marker-end="url(#ah)"/><path d="M300,144 L140,204" fill="none" stroke="#1e1e1e" stroke-width="1.7" marker-end="url(#ah)"/><path d="M360,144 L360,204" fill="none" stroke="#1e1e1e" stroke-width="1.7" marker-end="url(#ah)"/><path d="M430,144 L580,204" fill="none" stroke="#1e1e1e" stroke-width="1.7" marker-end="url(#ah)"/><path d="M560,272 L560,344" fill="none" stroke="#1e1e1e" stroke-width="1.7" marker-end="url(#ah)"/><path d="M632,344 L632,272" fill="none" stroke="#1971c2" stroke-width="1.9" marker-end="url(#ahb)"/></g><g><text x="360" y="34" text-anchor="middle" font-size="18" fill="#1e1e1e">telemetry sources</text><text x="360" y="54" text-anchor="middle" font-size="13.5" fill="#6b6b66">traces · logs · config · data stores</text><text x="360" y="113" text-anchor="middle" font-size="18" fill="#1e1e1e">dependency graph</text><text x="360" y="133" text-anchor="middle" font-size="13.5" fill="#6b6b66">canonical source of truth</text><text x="124" y="234" text-anchor="middle" font-size="18" fill="#1e1e1e">notifications</text><text x="124" y="254" text-anchor="middle" font-size="13.5" fill="#6b6b66">+ protection program</text><text x="360" y="234" text-anchor="middle" font-size="18" fill="#1e1e1e">explanations</text><text x="360" y="254" text-anchor="middle" font-size="13.5" fill="#6b6b66">deterministic + LLM agent</text><text x="596" y="234" text-anchor="middle" font-size="18" fill="#1e1e1e">hard / soft classifier</text><text x="596" y="254" text-anchor="middle" font-size="13.5" fill="#6b6b66">is the failure load-bearing?</text><text x="596" y="369" text-anchor="middle" font-size="18" fill="#1e1e1e">fault injection</text><text x="596" y="389" text-anchor="middle" font-size="13.5" fill="#6b6b66">disable one dep, watch SLOs</text><text x="548" y="312" text-anchor="end" font-size="13" fill="#8a8a85">one at a time</text><text x="640" y="312" text-anchor="start" font-size="13" fill="#1971c2">labels</text></g></svg><figcaption>A generic dependency-intelligence platform. Each layer is built on the one below it, and the fault-injection loop (blue) feeds verified labels back to the classifier, so accuracy compounds instead of decaying.</figcaption></figure>
       <h2>A platform is a stack of queries against a model of the system</h2>
       <p>Any tool that reasons about a running system - an alerting layer, a dependency analyzer, an impact estimator, an explanation engine - is ultimately answering questions about a model of that system. What depends on what, who owns this, what breaks if that fails. The features users see are the queries; the model is what the queries run against. This is easy to miss because the model is rarely the thing anyone is excited to build. The exciting work is the feature on top, so the model gets assembled opportunistically from whatever signals were handy when each feature was added.</p>
       <p>That is the mistake worth naming. When you treat the underlying model as a side effect of the features rather than as a product in its own right, the quality of every feature is silently capped by a model nobody is accountable for. A useful discipline is to invert the order: decide what authoritative model the features will query, build that model first with an owner and a stated quality bar, and only then build features as queries against it. The rest of this note is about why that order matters and what goes wrong when you skip it.</p>
