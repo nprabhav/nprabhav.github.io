@@ -54,9 +54,44 @@
     </div>
     <h1>Notes</h1>
     <p class="intro">Notes on systems, reliability, and AI systems.</p>
+    <a class="post" href="/notes/self-improving-platform/">
+      <div class="ptitle">Build the Substrate First: Why Platform Quality Is Capped by the Model Underneath It</div>
+      <div class="pdek">Most platforms that reason about a system are really stacks of queries against a model of that system. The recurring lesson is that the model is the constraint: build it as an authoritative product first, keep every layer above it a traceable query, and the quality of everything above is capped by the coverage and freshness of what is beneath.</div>
+      <div class="pdate">2026</div>
+    </a>
     <a class="post" href="/notes/closing-the-loop/">
       <div class="ptitle">Closing the Loop: Fault Injection as a Ground-Truth Engine for an LLM Classifier</div>
       <div class="pdek">A pattern worth reusing: when an LLM makes a judgment at scale, do not let it grade itself. Pair a cheap predictor with an expensive verifier that observes ground truth by breaking things on purpose - and treat their disagreements as the most valuable signal you have.</div>
+      <div class="pdate">2026</div>
+    </a>
+    <a class="post" href="/notes/llm-as-a-judge/">
+      <div class="ptitle">LLM as a Judge: Quality Gates That Are Not Vibes</div>
+      <div class="pdek">A separate model can score outputs you cannot label by hand - but only if you treat it like a measuring instrument: a few binary dimensions, a calibrated reading, an answer key it never gets to see.</div>
+      <div class="pdate">2026</div>
+    </a>
+    <a class="post" href="/notes/evals-before-features/">
+      <div class="ptitle">Evals Before Features: Benchmarking LLMs for a Production Task</div>
+      <div class="pdek">Before you wire an LLM into a real workflow, decide how you will know it is good enough - because the eval is the gate, and the model is just the thing that has to pass it.</div>
+      <div class="pdate">2026</div>
+    </a>
+    <a class="post" href="/notes/agent-harness-vs-rag/">
+      <div class="ptitle">Agent Harness vs RAG: When Structured Tool-Calls Beat Vector Search</div>
+      <div class="pdek">Two ways to feed a model context: retrieve fuzzy passages by similarity, or call purpose-built tools that return exact records. Here is how I decide which one a problem actually needs - and why, when an answer has to trace back to evidence, the tool-calling agent wins.</div>
+      <div class="pdate">2026</div>
+    </a>
+    <a class="post" href="/notes/cost-aware-llm-pipelines/">
+      <div class="ptitle">Cost-Aware LLM Pipelines: Match Compute to Criticality</div>
+      <div class="pdek">Most items in a large workload are easy, and a few are genuinely hard. The cheapest reliable pipeline is the one that spends accordingly: a deterministic fast path for the easy majority, the full agent loop reserved for the long tail, and routing that decides which is which before you pay for the expensive option.</div>
+      <div class="pdate">2026</div>
+    </a>
+    <a class="post" href="/notes/apis-for-agents/">
+      <div class="ptitle">Designing APIs for Agents, Not Humans</div>
+      <div class="pdek">When an LLM is the caller, the interface is the prompt. Typed responses, idempotent writes, granular composable tools, and machine-readable errors are not nice-to-haves - they are the difference between an agent that chains calls reliably and one that scrapes a human UI and guesses.</div>
+      <div class="pdate">2026</div>
+    </a>
+    <a class="post" href="/notes/delivery-is-the-product/">
+      <div class="ptitle">Your Model Is Not the Product: The Delivery Layer Is</div>
+      <div class="pdek">A correct model or a sharp analysis is necessary but not sufficient. What gets internal AI actually used is the last mile almost no one designs for - routing each insight to its owner, defaulting it into their workflow, and making it actionable enough to act on without a meeting.</div>
       <div class="pdate">2026</div>
     </a>
     <a class="post" href="/notes/service-graph-lying/">
@@ -74,24 +109,9 @@
       <div class="pdek">When you fuse many noisy event streams into one model, the hard problems are not throughput - they are identity and time. Here is how I think about normalizing heterogeneous sources, resolving who an event is about, and ordering events that arrive late, out of order, and duplicated.</div>
       <div class="pdate">2026</div>
     </a>
-    <a class="post" href="/notes/agent-harness-vs-rag/">
-      <div class="ptitle">Agent Harness vs RAG: When Structured Tool-Calls Beat Vector Search</div>
-      <div class="pdek">Two ways to feed a model context: retrieve fuzzy passages by similarity, or call purpose-built tools that return exact records. Here is how I decide which one a problem actually needs - and why, when an answer has to trace back to evidence, the tool-calling agent wins.</div>
-      <div class="pdate">2026</div>
-    </a>
-    <a class="post" href="/notes/evals-before-features/">
-      <div class="ptitle">Evals Before Features: Benchmarking LLMs for a Production Task</div>
-      <div class="pdek">Before you wire an LLM into a real workflow, decide how you will know it is good enough - because the eval is the gate, and the model is just the thing that has to pass it.</div>
-      <div class="pdate">2026</div>
-    </a>
-    <a class="post" href="/notes/cost-aware-llm-pipelines/">
-      <div class="ptitle">Cost-Aware LLM Pipelines: Match Compute to Criticality</div>
-      <div class="pdek">Most items in a large workload are easy, and a few are genuinely hard. The cheapest reliable pipeline is the one that spends accordingly: a deterministic fast path for the easy majority, the full agent loop reserved for the long tail, and routing that decides which is which before you pay for the expensive option.</div>
-      <div class="pdate">2026</div>
-    </a>
-    <a class="post" href="/notes/apis-for-agents/">
-      <div class="ptitle">Designing APIs for Agents, Not Humans</div>
-      <div class="pdek">When an LLM is the caller, the interface is the prompt. Typed responses, idempotent writes, granular composable tools, and machine-readable errors are not nice-to-haves - they are the difference between an agent that chains calls reliably and one that scrapes a human UI and guesses.</div>
+    <a class="post" href="/notes/scaling-live-to-a-billion/">
+      <div class="ptitle">Scaling a Live Stream to a Billion Viewers</div>
+      <div class="pdek">A live broadcast turns one source into millions of simultaneous viewers in seconds. The hard part is not the video - it is keeping a viral spike from melting your origin. Here are the patterns that make it work.</div>
       <div class="pdate">2026</div>
     </a>
     <a class="post" href="/notes/text-to-sql-then-and-now/">

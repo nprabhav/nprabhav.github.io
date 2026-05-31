@@ -7,7 +7,28 @@
     <loc>https://prabhavnalhe.com/notes/</loc>
   </url>
   <url>
+    <loc>https://prabhavnalhe.com/notes/self-improving-platform/</loc>
+  </url>
+  <url>
     <loc>https://prabhavnalhe.com/notes/closing-the-loop/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/llm-as-a-judge/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/evals-before-features/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/agent-harness-vs-rag/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/cost-aware-llm-pipelines/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/apis-for-agents/</loc>
+  </url>
+  <url>
+    <loc>https://prabhavnalhe.com/notes/delivery-is-the-product/</loc>
   </url>
   <url>
     <loc>https://prabhavnalhe.com/notes/service-graph-lying/</loc>
@@ -19,16 +40,7 @@
     <loc>https://prabhavnalhe.com/notes/streaming-ingest-rust/</loc>
   </url>
   <url>
-    <loc>https://prabhavnalhe.com/notes/agent-harness-vs-rag/</loc>
-  </url>
-  <url>
-    <loc>https://prabhavnalhe.com/notes/evals-before-features/</loc>
-  </url>
-  <url>
-    <loc>https://prabhavnalhe.com/notes/cost-aware-llm-pipelines/</loc>
-  </url>
-  <url>
-    <loc>https://prabhavnalhe.com/notes/apis-for-agents/</loc>
+    <loc>https://prabhavnalhe.com/notes/scaling-live-to-a-billion/</loc>
   </url>
   <url>
     <loc>https://prabhavnalhe.com/notes/text-to-sql-then-and-now/</loc>
