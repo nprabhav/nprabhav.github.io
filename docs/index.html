@@ -82,19 +82,32 @@
     .tdot.r{ background:#ff5f57; } .tdot.y{ background:#febc2e; } .tdot.g{ background:#28c840; }
     .term-title { margin-left:7px; color:rgba(255,255,255,0.4); font-family:var(--mono); font-size:12px; letter-spacing:.3px; }
     .term-body { padding:14px 15px 13px; font-family:var(--mono); font-size:13.5px; line-height:1.7;
-                 color:#d6d6dc; min-height:172px; max-height:330px; overflow-y:auto; cursor:text; }
+                 color:#d6d6dc; min-height:172px; max-height:340px; overflow-y:auto; cursor:text; }
+    .term-body::-webkit-scrollbar { width:9px; height:9px; }
+    .term-body::-webkit-scrollbar-thumb { background:#33333d; border-radius:5px; }
+    .term-body::-webkit-scrollbar-thumb:hover { background:#41414e; }
+    .term-body::-webkit-scrollbar-track { background:transparent; }
     .term-out .line { white-space:pre-wrap; word-break:break-word; margin:0; }
-    .term-welcome { color:#9aa0a6; }
+    .term-welcome { color:#8a8f99; }
     .term-prompt { color:var(--term-green); font-weight:600; margin-right:9px; user-select:none; }
     .term-cmd { color:#eaeaef; }
     .term-body a { color:#7fb4ec; }
     .term-body .k { color:#9ece6a; }
     .term-input-line { display:flex; align-items:center; }
-    .term-input { flex:1; min-width:0; background:transparent; border:none; outline:none;
-                  color:#eaeaef; font-family:var(--mono); font-size:13.5px; caret-color:var(--term-green); padding:0; }
+    .term-typed { color:#eaeaef; white-space:pre; }
+    .term-caret { display:inline-block; width:7px; height:1.02em; background:var(--term-green);
+                  transform:translateY(2px); animation:blink 1.05s steps(1) infinite; }
+    .term-input { flex:1; min-width:2px; background:transparent; border:none; outline:none;
+                  color:transparent; caret-color:transparent; font-family:var(--mono); font-size:13.5px; padding:0; }
+    .term-chips { display:flex; flex-wrap:wrap; gap:7px; padding:2px 15px 14px; background:#16161b; }
+    .chip { font-family:var(--mono); font-size:12px; color:#c3c3cd; background:#23232b;
+            border:1px solid #34343e; border-radius:5px; padding:3px 9px; cursor:pointer; user-select:none;
+            transition:background .12s ease, color .12s ease, border-color .12s ease; }
+    .chip:hover { background:#2c2c37; color:#fff; border-color:#42424f; }
     .term-hint { font-family:var(--mono); font-size:12px; color:var(--muted); margin:9px 0 0; }
     .term-hint code { background:var(--code-bg); padding:1px 5px; border-radius:4px; color:var(--ink); }
-    @media (max-width:560px){ .term-body{ font-size:12.5px; } .term-input{ font-size:12.5px; } }
+    @media (prefers-reduced-motion: reduce) { .term-caret { animation:none; } }
+    @media (max-width:560px){ .term-body{ font-size:12.5px; } .term-input,.term-typed{ font-size:12.5px; } }
 
     /* hero */
     .hero { padding: 26px 0 6px; }
@@ -208,11 +221,13 @@
         <div class="term-out" id="termOut"></div>
         <div class="term-input-line">
           <span class="term-prompt">nprabhav:~$</span>
+          <span class="term-typed" id="termTyped"></span><span class="term-caret" id="termCaret"></span>
           <input id="termInput" class="term-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="terminal input" />
         </div>
       </div>
+      <div class="term-chips" id="termChips"></div>
     </div>
-    <p class="term-hint">interactive - type <code>help</code> and hit enter</p>
+    <p class="term-hint">interactive - click a chip, type <code>help</code>, or press <code>/</code> to focus</p>
 
     <section id="experience">
       <h2>Experience</h2>
@@ -252,7 +267,7 @@
       <h2>Selected Work</h2>
       <div class="work-item"><b>Dependency Service</b> - Rust streaming graph fusing six telemetry sources at ~20 GB/s; the platform's source of truth.</div>
       <div class="work-item"><b>Dependency Explanations</b> - LLM agent harness over 16 purpose-built tools; near-100% coverage at ~$0.15 a pair.</div>
-      <div class="work-item"><b>Fault-Injection Loop</b> - Eris chaos experiments producing ground-truth labels that make the dependency classifier better over time.</div>
+      <div class="work-item"><b>Fault-Injection Loop</b> - chaos experiments (fault injection) producing ground-truth labels that make the dependency classifier better over time.</div>
     </section>
 
     <section id="skills">
@@ -312,9 +327,12 @@
     })();
 
     /* ---- interactive terminal ---- */
+    var term = document.getElementById('term');
     var out = document.getElementById('termOut');
     var input = document.getElementById('termInput');
+    var typed = document.getElementById('termTyped');
     var body = document.getElementById('termBody');
+    var chipsEl = document.getElementById('termChips');
     if (!out || !input || !body) return;
     var L = '\n';
     var hist = [], hi = -1;
@@ -323,23 +341,33 @@
     function scroll(){ body.scrollTop = body.scrollHeight; }
     function add(html, cls){ var d = document.createElement('div'); d.className = 'line' + (cls ? ' ' + cls : ''); d.innerHTML = html; out.appendChild(d); scroll(); }
     function echo(cmd){ add('<span class="term-prompt">nprabhav:~$</span><span class="term-cmd">' + esc(cmd) + '</span>'); }
+    function end(){ var n = input.value.length; try { input.setSelectionRange(n, n); } catch (e) {} }
+    function setInput(v){ input.value = v; typed.textContent = v; end(); }
+
+    var FORTUNES = [
+      'there are two hard things in CS: cache invalidation, naming things, and off-by-one errors.',
+      'a distributed system is one where a machine you have never heard of can break yours.',
+      'the model is the easy part - the ground truth is the hard part.',
+      'every dependency is a promise someone else has to keep.',
+      'you cannot fix what you cannot see, so build the map first.'
+    ];
 
     var T = {
       help:
-        'commands:' + L +
+        'commands' + L +
         '  about        who I am' + L +
-        '  experience   where I have worked' + L +
+        '  experience   roles + impact' + L +
         '  work         systems I built' + L +
+        '  story        how it all connects' + L +
         '  skills       languages and tools' + L +
-        '  education    degrees' + L +
-        '  publication  research paper' + L +
+        '  notes        deep-dive essays' + L +
+        '  resume       the one-pager (pdf)' + L +
         '  contact      reach me' + L +
-        '  resume       open my resume (pdf)' + L +
+        '  open <x>     jump to a section  (work, notes, resume)' + L +
+        '  tour         a quick guided walkthrough' + L +
         '  neofetch     the quick stats' + L +
-        '  story        the connected 5-system arc' + L +
-        '  notes        essays on systems + AI systems' + L +
         '  clear        clear the screen' + L + L +
-        "up/down for history  -  tab completes  -  try 'sudo hire-me'",
+        "tips: click a chip below, tab completes, up/down for history, press '/' to focus, try 'sudo hire-me'",
       about:
         'Prabhav Nalhe - software engineer, distributed systems and reliability.' + L +
         '6+ years across backend and infra, most recently at Meta building' + L +
@@ -351,7 +379,7 @@
       work:
         '- Dependency Service: Rust streaming graph at ~20 GB/s, the source of truth' + L +
         '- Dependency Explanations: LLM agent harness, ~100% coverage at ~$0.15/pair' + L +
-        '- Fault-Injection Loop: Eris chaos experiments feed labels that improve the classifier',
+        '- Fault-Injection Loop: chaos experiments (fault injection) feed labels that improve the classifier',
       skills:
         'languages    Python, Rust, C/C++, Java, TypeScript, SQL' + L +
         'systems      distributed systems, streaming, fault injection, API design, SLO/SLI' + L +
@@ -367,7 +395,7 @@
         'email     <a href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a>' + L +
         'linkedin  <a href="https://linkedin.com/in/nprabhav" target="_blank" rel="noopener">linkedin.com/in/nprabhav</a>' + L +
         'github    <a href="https://github.com/nprabhav" target="_blank" rel="noopener">github.com/nprabhav</a>',
-      ls: 'about  experience  work  skills  education  publication  contact  resume',
+      ls: 'about  experience  work  story  skills  notes  education  publication  contact  resume  tour',
       neofetch:
         '<span class="k">prabhav@portfolio</span>' + L +
         '-----------------' + L +
@@ -387,14 +415,22 @@
       notes:
         'essays on systems, reliability, and AI systems.' + L +
         'browse them all at <a href="/notes/" target="_blank" rel="noopener">prabhavnalhe.com/notes</a>',
+      tour:
+        'quick tour - run these in order:' + L +
+        '  <span class="k">story</span>    how the whole platform fits together' + L +
+        '  <span class="k">work</span>     the systems I built' + L +
+        '  <span class="k">notes</span>    deep-dive technical essays' + L +
+        '  <span class="k">resume</span>   the one-page summary' + L + L +
+        'start with: story',
       joke:
         'There are only two hard problems in distributed systems:' + L +
         '  2. exactly-once delivery' + L +
         '  1. message ordering' + L +
         '  2. exactly-once delivery',
-      coffee: 'c[_]  always.'
+      coffee: 'c[_]  always.',
+      fortune: function(){ return FORTUNES[Math.floor(Math.random() * FORTUNES.length)]; }
     };
-    T.whoami = T.about; T.projects = T.work; T.email = T.contact; T.socials = T.contact; T.paper = T.publication; T.arc = T.story; T.writing = T.notes; T.blog = T.notes;
+    T.whoami = T.about; T.projects = T.work; T.email = T.contact; T.socials = T.contact; T.paper = T.publication; T.arc = T.story; T.writing = T.notes; T.blog = T.notes; T.motd = T.fortune;
     T.resume = function(){ window.open('/resume.pdf', '_blank'); return 'opening resume.pdf ...'; };
     T.cv = T.resume;
     T['sudo hire-me'] = function(){
@@ -405,37 +441,75 @@
     };
     T['hire-me'] = T['sudo hire-me'];
 
+    function openCmd(arg){
+      arg = (arg || '').trim().toLowerCase().replace(/^#/, '');
+      var sec = { experience:'#experience', work:'#work', skills:'#skills', education:'#education', publication:'#publication' };
+      if (arg === 'notes') { window.location.href = '/notes/'; return 'opening notes ...'; }
+      if (arg === 'resume' || arg === 'cv') { window.open('/resume.pdf', '_blank'); return 'opening resume.pdf ...'; }
+      if (sec[arg]) { var e = document.querySelector(sec[arg]); if (e) { e.scrollIntoView({ behavior:'smooth', block:'start' }); return 'scrolling to ' + arg + ' ...'; } }
+      return 'open what? try: open work | open notes | open resume';
+    }
+    function commonPrefix(a){ if (!a.length) return ''; var p = a[0]; for (var i=1;i<a.length;i++){ while (a[i].indexOf(p) !== 0){ p = p.slice(0,-1); if (!p) return ''; } } return p; }
+    function cmdKeys(){ return Object.keys(T).filter(function(k){ return k.indexOf(' ') === -1; }).concat(['open','tour','clear']).filter(function(v,i,s){ return s.indexOf(v) === i; }); }
+
     function run(raw){
       var cmd = (raw || '').trim();
       echo(cmd);
       if (cmd === '') return;
       hist.unshift(cmd); hi = -1;
-      var key = cmd.toLowerCase();
-      if (key === 'clear') { out.innerHTML = ''; return; }
-      var v = T[key];
-      if (v !== undefined) { var o = (typeof v === 'function') ? v() : v; if (o) add(o); }
-      else { add('command not found: ' + esc(cmd.split(' ')[0]) + " - type <span class=\"k\">help</span>"); }
+      var lc = cmd.toLowerCase();
+      if (lc === 'clear') { out.innerHTML = ''; return; }
+      if (T[lc] !== undefined) { var v = T[lc], o = (typeof v === 'function') ? v() : v; if (o) add(o); return; }
+      var parts = cmd.split(/\s+/), head = parts[0].toLowerCase(), rest = parts.slice(1).join(' ');
+      if (head === 'open') { add(openCmd(rest)); return; }
+      if (head === 'cat' && rest) { var k = rest.toLowerCase(); if (T[k] !== undefined && typeof T[k] !== 'function') { add(T[k]); return; } }
+      if (head === 'sudo') { add('Permission denied. (nice try - flattery gets you an email: <a href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a>)'); return; }
+      add('command not found: ' + esc(head) + ' - type <span class="k">help</span>');
     }
 
+    input.addEventListener('input', function(){ typed.textContent = input.value; });
     input.addEventListener('keydown', function(e){
-      if (e.key === 'Enter') { run(input.value); input.value = ''; }
-      else if (e.key === 'ArrowUp') { if (hist.length) { hi = Math.min(hi + 1, hist.length - 1); input.value = hist[hi]; end(); e.preventDefault(); } }
-      else if (e.key === 'ArrowDown') { if (hi > 0) { hi--; input.value = hist[hi]; } else { hi = -1; input.value = ''; } end(); e.preventDefault(); }
-      else if (e.key === 'Tab') { e.preventDefault(); var p = input.value.toLowerCase(); var ks = Object.keys(T); var m = ks.filter(function(k){ return k.indexOf(p) === 0 && k.indexOf(' ') === -1; }); if (m.length === 1) { input.value = m[0]; end(); } }
+      if (e.key === 'Enter') { run(input.value); setInput(''); }
+      else if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) { e.preventDefault(); out.innerHTML = ''; }
+      else if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) { e.preventDefault(); add('<span class="term-prompt">nprabhav:~$</span><span class="term-cmd">' + esc(input.value) + '</span> ^C'); setInput(''); }
+      else if (e.key === 'ArrowUp') { if (hist.length) { hi = Math.min(hi + 1, hist.length - 1); setInput(hist[hi]); e.preventDefault(); } }
+      else if (e.key === 'ArrowDown') { if (hi > 0) { hi--; setInput(hist[hi]); } else { hi = -1; setInput(''); } e.preventDefault(); }
+      else if (e.key === 'Tab') {
+        e.preventDefault();
+        var p = input.value.toLowerCase();
+        var m = cmdKeys().filter(function(k){ return k.indexOf(p) === 0; });
+        if (m.length === 1) { setInput(m[0]); }
+        else if (m.length > 1) { var cp = commonPrefix(m); if (cp.length > p.length) setInput(cp); add(m.sort().join('   ')); }
+      }
     });
-    function end(){ var n = input.value.length; try { input.setSelectionRange(n, n); } catch (e) {} }
-    body.addEventListener('click', function(){ input.focus(); });
+    body.addEventListener('click', function(e){ if (e.target.tagName !== 'A') input.focus(); });
 
+    document.addEventListener('keydown', function(e){
+      var ae = document.activeElement;
+      var typing = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');
+      if (e.key === '/' && !typing) { e.preventDefault(); input.focus(); if (term) term.scrollIntoView({ block:'nearest' }); }
+      else if (e.key === 'Escape' && ae === input) { input.blur(); }
+    });
+
+    if (chipsEl) {
+      ['about','experience','work','story','notes','resume','sudo hire-me'].forEach(function(c){
+        var b = document.createElement('span'); b.className = 'chip'; b.textContent = c;
+        b.addEventListener('click', function(){ run(c); setInput(''); input.focus(); });
+        chipsEl.appendChild(b);
+      });
+    }
+
+    add('<span class="term-welcome">// hi - poke around. type help, click a chip, or press /</span>');
     function autoDemo(cmd){
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduce) { run(cmd); return; }
       var j = 0;
       (function typeCmd(){
-        if (j <= cmd.length) { input.value = cmd.slice(0, j); j++; return setTimeout(typeCmd, 70); }
-        setTimeout(function(){ input.value = ''; run(cmd); }, 350);
+        if (j <= cmd.length) { setInput(cmd.slice(0, j)); j++; return setTimeout(typeCmd, 70); }
+        setTimeout(function(){ setInput(''); run(cmd); }, 350);
       })();
     }
-    setTimeout(function(){ autoDemo('neofetch'); }, 550);
+    setTimeout(function(){ autoDemo('neofetch'); }, 600);
   })();
   </script>
 </body>
