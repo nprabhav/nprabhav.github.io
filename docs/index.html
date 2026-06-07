@@ -1,516 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Prabhav Nalhe - Software Engineer, Distributed Systems &amp; Reliability</title>
-  <meta name="description" content="Prabhav Nalhe - software engineer building distributed systems and reliability infrastructure." />
-  <meta name="author" content="Prabhav Nalhe" />
-  <link rel="canonical" href="https://prabhavnalhe.com/" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prabhav Nalhe — Software Engineer, Distributed Systems & Reliability</title>
+<meta name="description" content="Software engineer building distributed systems and reliability infrastructure at hyperscale. Currently at Meta.">
+<meta name="author" content="Prabhav Nalhe">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://prabhavnalhe.com/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="Prabhav Nalhe — Notes" href="https://prabhavnalhe.com/feed.xml">
 
-  <meta property="og:title" content="Prabhav Nalhe - Software Engineer, Distributed Systems &amp; Reliability" />
-  <meta property="og:description" content="Software engineer building distributed systems and reliability infrastructure." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://prabhavnalhe.com/" />
-  <meta property="og:image" content="https://prabhavnalhe.com/og.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://prabhavnalhe.com/og.png" />
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://prabhavnalhe.com/">
+<meta property="og:title" content="Prabhav Nalhe — Software Engineer, Distributed Systems & Reliability">
+<meta property="og:description" content="Software engineer building distributed systems and reliability infrastructure at hyperscale.">
+<meta property="og:image" content="https://prabhavnalhe.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Prabhav Nalhe — Software Engineer">
+<meta name="twitter:image" content="https://prabhavnalhe.com/og.png">
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Prabhav Nalhe",
+  "url": "https://prabhavnalhe.com",
+  "jobTitle": "Software Engineer, Reliability Infrastructure",
+  "worksFor": { "@type": "Organization", "name": "Meta" },
+  "alumniOf": [
+    { "@type": "CollegeOrUniversity", "name": "Stony Brook University" },
+    { "@type": "CollegeOrUniversity", "name": "Pune Institute of Computer Technology" }
+  ],
+  "knowsAbout": ["Distributed Systems", "Site Reliability Engineering", "Rust", "Streaming Systems", "LLM Agents"],
+  "email": "mailto:nprabhav111@gmail.com",
+  "address": { "@type": "PostalAddress", "addressLocality": "San Jose", "addressRegion": "CA" },
+  "sameAs": ["https://github.com/nprabhav", "https://linkedin.com/in/nprabhav"]
+}
+</script>
 
-  <style>
-    :root {
-      --bg:      #FFFFFF;
-      --ink:     #37352F;
-      --muted:   #787774;
-      --faint:   rgba(55,53,47,0.4);
-      --accent:  #2383E2;
-      --link:    #337EA9;
-      --block:   #F7F6F3;
-      --rule:    rgba(55,53,47,0.09);
-      --code-bg: rgba(135,131,120,0.15);
-      --term-green: #9ece6a;
-      --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
-      --mono: "SF Mono", "JetBrains Mono", "Menlo", "Consolas", monospace;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0; background: var(--bg); color: var(--ink);
-      font-family: var(--sans); font-size: 16px; line-height: 1.5;
-      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
-    }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; text-underline-offset: 2px; }
+<script>/* pre-paint theme to avoid flash */
+(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.setAttribute('data-theme','light')}catch(e){}})();
+</script>
 
-    .wrap { max-width: 680px; margin: 0 auto; padding: 0 26px; }
-
-    /* top bar */
-    .bar { display: flex; justify-content: space-between; align-items: center;
-           padding: 20px 0; font-size: 14.5px; }
-    .bar-right { display: inline-flex; gap: 18px; align-items: center; }
-    .bar .resume-link { color: var(--muted); }
-    .bar .resume-link:hover { color: var(--ink); text-decoration: underline; }
-
-    /* terminal-style logo */
-    .logo { font-family: var(--mono); font-weight: 700; font-size: 15px;
-            color: var(--ink); letter-spacing: 0.3px; display: inline-flex; align-items: center; }
-    .logo:hover { text-decoration: none; color: var(--ink); }
-    .logo__mark { margin-right: 7px; }
-    .logo__cursor { display: inline-block; width: 8px; height: 1.05em; background: var(--ink);
-                    margin-left: 5px; transform: translateY(1px);
-                    animation: blink 1.1s steps(1) infinite; }
-    .logo__type { color: var(--accent); }
-    .logo__cursor.solid { animation: none; opacity: 1; }
-    .co-logo { height: 20px; width: 20px; object-fit: contain;
-               border-radius: 3px; opacity: 0.9; }
-    .role:hover .co-logo { opacity: 1; }
-    @media (max-width: 520px) { .logo__type, .logo__cursor { display: none; } }
-    @keyframes blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
-    @media (prefers-reduced-motion: reduce) { .logo__cursor { animation: none; } }
-
-    /* interactive terminal (dark code block) */
-    .terminal { background:#16161b; border:1px solid #2a2a31; border-radius:6px; overflow:hidden;
-                box-shadow:0 1px 2px rgba(15,15,15,0.1); margin:12px 0 0; }
-    .term-bar { display:flex; align-items:center; gap:7px; padding:9px 13px;
-                background:#1e1e25; border-bottom:1px solid #2a2a31; }
-    .tdot { width:11px; height:11px; border-radius:50%; }
-    .tdot.r{ background:#ff5f57; } .tdot.y{ background:#febc2e; } .tdot.g{ background:#28c840; }
-    .term-title { margin-left:7px; color:rgba(255,255,255,0.4); font-family:var(--mono); font-size:12px; letter-spacing:.3px; }
-    .term-body { padding:14px 15px 13px; font-family:var(--mono); font-size:13.5px; line-height:1.7;
-                 color:#d6d6dc; min-height:172px; max-height:340px; overflow-y:auto; cursor:text; }
-    .term-body::-webkit-scrollbar { width:9px; height:9px; }
-    .term-body::-webkit-scrollbar-thumb { background:#33333d; border-radius:5px; }
-    .term-body::-webkit-scrollbar-thumb:hover { background:#41414e; }
-    .term-body::-webkit-scrollbar-track { background:transparent; }
-    .term-out .line { white-space:pre-wrap; word-break:break-word; margin:0; }
-    .term-welcome { color:#8a8f99; }
-    .term-prompt { color:var(--term-green); font-weight:600; margin-right:9px; user-select:none; }
-    .term-cmd { color:#eaeaef; }
-    .term-body a { color:#7fb4ec; }
-    .term-body .k { color:#9ece6a; }
-    .term-input-line { display:flex; align-items:center; }
-    .term-typed { color:#eaeaef; white-space:pre; }
-    .term-caret { display:inline-block; width:7px; height:1.02em; background:var(--term-green);
-                  transform:translateY(2px); animation:blink 1.05s steps(1) infinite; }
-    .term-input { flex:1; min-width:2px; background:transparent; border:none; outline:none;
-                  color:transparent; caret-color:transparent; font-family:var(--mono); font-size:13.5px; padding:0; }
-    .term-chips { display:flex; flex-wrap:wrap; gap:7px; padding:2px 15px 14px; background:#16161b; }
-    .chip { font-family:var(--mono); font-size:12px; color:#c3c3cd; background:#23232b;
-            border:1px solid #34343e; border-radius:5px; padding:3px 9px; cursor:pointer; user-select:none;
-            transition:background .12s ease, color .12s ease, border-color .12s ease; }
-    .chip:hover { background:#2c2c37; color:#fff; border-color:#42424f; }
-    .term-hint { font-family:var(--mono); font-size:12px; color:var(--muted); margin:9px 0 0; }
-    .term-hint code { background:var(--code-bg); padding:1px 5px; border-radius:4px; color:var(--ink); }
-    @media (prefers-reduced-motion: reduce) { .term-caret { animation:none; } }
-    @media (max-width:560px){ .term-body{ font-size:12.5px; } .term-input,.term-typed{ font-size:12.5px; } }
-
-    /* hero */
-    .hero { padding: 26px 0 6px; }
-    .hero h1 { font-family: var(--sans); font-weight: 700; font-size: 38px;
-               line-height: 1.2; letter-spacing: -0.5px; color: var(--ink); margin: 0 0 8px; }
-    .hero .role { font-size: 15px; color: var(--muted); font-weight: 500; margin: 0 0 18px; }
-    .hero p.intro { font-size: 16px; font-weight: 400; line-height: 1.5; color: var(--ink); max-width: 62ch; margin: 0 0 22px; }
-    .links { display: flex; flex-wrap: wrap; gap: 18px; font-size: 15px; }
-    .links a { color: var(--accent); }
-
-    /* sections - hairline dividers between blocks */
-    section { border-top: 1px solid var(--rule); padding-top: 28px; margin-top: 28px; }
-    #experience { border-top: none; padding-top: 0; margin-top: 22px; }
-    h2 { font-family: var(--sans); font-weight: 600; font-size: 19px; line-height: 1.3;
-         color: var(--ink); margin: 0 0 14px; }
-
-    .intro-note { font-size: 16px; color: var(--ink); margin: 0 0 12px; }
-
-    /* experience */
-    .role { margin-bottom: 22px; }
-    .role .head { display: flex; justify-content: space-between; align-items: baseline;
-                  gap: 12px; flex-wrap: wrap; }
-    .role .co { font-weight: 600; font-size: 16px; color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
-    .role .co .pos { color: var(--muted); font-weight: 400; font-size: 15px; }
-    .role .when { color: var(--faint); font-size: 14px; white-space: nowrap; font-variant-numeric: tabular-nums; }
-    .role .summary { background: var(--block); border-radius: 4px; padding: 12px 14px;
-                     margin: 6px 0 10px; color: var(--ink); font-size: 15px; }
-    ul { margin: 8px 0 0; padding-left: 18px; }
-    li { margin-bottom: 5px; font-size: 16px; line-height: 1.5; color: var(--ink); }
-    .role.compact p { margin: 4px 0 0; font-size: 16px; color: var(--ink); }
-
-    /* selected work - light code-block twins */
-    .work-item { font-size: 16px; line-height: 1.5; color: var(--ink);
-                 background: var(--block); border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; }
-    .work-item b { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--ink); }
-
-    /* skills - notion property rows */
-    .skill { display: grid; grid-template-columns: 116px 1fr; column-gap: 16px;
-             align-items: baseline; margin-bottom: 8px; }
-    .skill .cat { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--muted); }
-    .skill .val { font-size: 16px; color: var(--ink); padding-left: 16px; }
-    @media (max-width: 560px) {
-      .skill { grid-template-columns: 1fr; row-gap: 2px; }
-      .skill .val { padding-left: 0; }
-    }
-
-    .edu { display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
-           flex-wrap: wrap; margin-bottom: 9px; }
-    .edu .inst { font-weight: 600; font-size: 16px; color: var(--ink); }
-    .edu .deg { color: var(--muted); font-size: 14.5px; }
-    .edu .when { color: var(--faint); font-size: 14px; white-space: nowrap; font-variant-numeric: tabular-nums; }
-
-    .pub { font-size: 16px; color: var(--ink); }
-    .pub a { color: var(--link); }
-
-    footer { color: var(--muted); font-size: 13px; padding: 40px 0 44px; margin-top: 30px;
-             border-top: 1px solid var(--rule); }
-    footer a { color: var(--muted); }
-    footer a:hover { color: var(--ink); }
-
-    /* print: the page is the resume */
-    @media print {
-      html { scroll-behavior: auto; }
-      body { background: #fff; color: #000; }
-      .bar .resume-link, #term, .term-hint { display: none; }
-      .logo__type, .logo__cursor { display: none; }
-      .terminal { box-shadow: none; }
-      .role, .work-item, .edu { break-inside: avoid; }
-      a { color: #000; }
-      .links a[href^="http"]::after,
-      .pub a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; color: #444; }
-    }
-  </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
 </head>
+<body class="locked" data-root=".">
 
-<body>
+<div id="boot" aria-hidden="true"><pre id="boot-text"></pre></div>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <div id="scroll-progress"></div>
+  <div class="nav-inner">
+    <a class="logo" href="#">nprabhav:~$&nbsp;<span class="cursor">▊</span></a>
+    <div class="nav-links" id="nav-links">
+      <a href="#experience" data-spy="experience">Experience</a>
+      <a href="#work" data-spy="work">Work</a>
+      <a href="#writing" data-spy="writing">Writing</a>
+      <button class="kbd-hint" id="pal-open"><span>⌘</span><span>K</span></button>
+      <button id="theme-toggle" aria-label="Toggle theme">◐</button>
+      <a class="nav-resume magnetic" href="resume.pdf">Résumé</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <canvas id="graph-canvas" aria-hidden="true"></canvas>
+  <div class="hero-glow" id="hero-glow"></div>
   <div class="wrap">
-
-    <div class="bar">
-      <a href="/" class="logo" aria-label="Home">
-        <span class="logo__mark">&gt;</span><span class="logo__text">nprabhav:~$&nbsp;</span><span class="logo__type" id="logoType"></span><span class="logo__cursor" id="logoCursor"></span>
+    <div class="status reveal"><span class="dot"></span> <span id="scramble">reliability infra @ meta</span></div>
+    <h1>
+      <span class="line-mask"><span><span class="grad">Building distributed systems</span></span></span>
+      <span class="line-mask"><span>that <span class="serif-i">stay up.</span></span></span>
+    </h1>
+    <p class="hero-sub reveal">I'm <strong>Prabhav Nalhe</strong> — six years across backend and infrastructure, currently building service-dependency reliability at Meta. Interested in large-scale streaming systems and applying LLM agents to infrastructure problems.</p>
+    <div class="hero-cta reveal">
+      <a class="btn-main magnetic" href="mailto:nprabhav111@gmail.com">Get in touch
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9 3.5L13.5 8 9 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
-      <span class="bar-right">
-        <a href="/notes/" class="resume-link">Notes</a>
-        <a href="/resume.pdf" class="resume-link">Résumé</a>
-      </span>
+      <div class="hero-links">
+        <a class="u" href="https://github.com/nprabhav">GitHub</a>
+        <a class="u" href="https://linkedin.com/in/nprabhav">LinkedIn</a>
+        <a class="u" href="resume.pdf">Résumé</a>
+      </div>
     </div>
-
-    <header class="hero">
-      <h1>Prabhav Nalhe</h1>
-      <p class="role">Software Engineer · Infrastructure, Distributed Systems &amp; Reliability</p>
-      <p class="intro">
-        I build distributed systems and reliability infrastructure at hyperscale.
-        Six years across backend and infra, most recently at Meta.
-      </p>
-      <div class="links">
-        <a href="mailto:nprabhav111@gmail.com">Email</a>
-        <a href="https://linkedin.com/in/nprabhav" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://github.com/nprabhav" target="_blank" rel="noopener">GitHub</a>
-        <a href="/resume.pdf">Résumé</a>
-        <a href="/notes/">Notes</a>
-      </div>
-    </header>
-
-    <div class="terminal" id="term">
-      <div class="term-bar">
-        <span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span>
-        <span class="term-title">nprabhav: zsh</span>
-      </div>
-      <div class="term-body" id="termBody">
-        <div class="term-out" id="termOut"></div>
-        <div class="term-input-line">
-          <span class="term-prompt">nprabhav:~$</span>
-          <span class="term-typed" id="termTyped"></span><span class="term-caret" id="termCaret"></span>
-          <input id="termInput" class="term-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="terminal input" />
-        </div>
-      </div>
-      <div class="term-chips" id="termChips"></div>
-    </div>
-    <p class="term-hint">interactive - click a chip, type <code>help</code>, or press <code>/</code> to focus</p>
-
-    <section id="experience">
-      <h2>Experience</h2>
-
-      <div class="role">
-        <div class="head">
-          <span class="co"><img class="co-logo" src="/img/meta.svg" alt="Meta" /> Meta <span class="pos">· Software Engineer, Reliability Infra</span></span>
-          <span class="when">2024 - Present</span>
-        </div>
-        <p class="summary">Service-dependency reliability - a platform addressing ~15% of the company's top-severity incidents.</p>
-        <ul>
-          <li>Built the canonical dependency graph in Rust - stream-fusion over six telemetry sources at ~20 GB/s.</li>
-          <li>Designed dependency notifications and a protection program adopted across 1,200+ services.</li>
-          <li>Led a fault-injection program that eliminated risky dependencies, protecting ~$100M in revenue exposure.</li>
-          <li>Brought LLM agents into the stack to explain and classify dependency risk at fleet scale.</li>
-        </ul>
-      </div>
-
-      <div class="role compact">
-        <div class="head">
-          <span class="co"><img class="co-logo" src="/img/fidelity.png" alt="Fidelity" /> Fidelity Investments <span class="pos">· Software Engineer</span></span>
-          <span class="when">2023</span>
-        </div>
-        <p>Built a 15M-document search and indexing pipeline (AWS Lambda, SQS, Solr) and a real-time reporting system for financial research.</p>
-      </div>
-
-      <div class="role compact">
-        <div class="head">
-          <span class="co"><img class="co-logo" src="/img/quest.png" alt="Quest Global" /> Quest Global <span class="pos">· Software Engineer</span></span>
-          <span class="when">2018 - 2021</span>
-        </div>
-        <p>Voice authentication and OTA update infrastructure for automotive ECUs, serving 10K+ users.</p>
-      </div>
-    </section>
-
-    <section id="work">
-      <h2>Selected Work</h2>
-      <div class="work-item"><b>Dependency Service</b> - Rust streaming graph fusing six telemetry sources at ~20 GB/s; the platform's source of truth.</div>
-      <div class="work-item"><b>Dependency Explanations</b> - LLM agent harness over 16 purpose-built tools; near-100% coverage at ~$0.15 a pair.</div>
-      <div class="work-item"><b>Fault-Injection Loop</b> - chaos experiments (fault injection) producing ground-truth labels that make the dependency classifier better over time.</div>
-    </section>
-
-    <section id="skills">
-      <h2>Skills</h2>
-      <div class="skill"><span class="cat">Languages</span><span class="val">Python, Rust, C/C++, Java, TypeScript, SQL</span></div>
-      <div class="skill"><span class="cat">Systems</span><span class="val">Distributed systems, streaming, fault injection, microservices, API design, SLO/SLI</span></div>
-      <div class="skill"><span class="cat">Cloud &amp; Data</span><span class="val">AWS, Docker, Kubernetes, MySQL, PostgreSQL, Redis, Kafka, Solr</span></div>
-      <div class="skill"><span class="cat">AI / ML</span><span class="val">LLMs, agent harnesses, MCP, evals, prompt caching, inference routing</span></div>
-    </section>
-
-    <section id="education">
-      <h2>Education</h2>
-      <div class="edu">
-        <span><span class="inst">Stony Brook University</span> <span class="deg">· Masters in Computer Science, GPA 3.92</span></span>
-        <span class="when">2021 - 2022</span>
-      </div>
-      <div class="edu">
-        <span><span class="inst">Pune Institute of Computer Technology</span> <span class="deg">· Bachelors in Computer Science</span></span>
-        <span class="when">2014 - 2018</span>
-      </div>
-    </section>
-
-    <section id="publication">
-      <h2>Publication</h2>
-      <div class="edu">
-        <span class="pub">Co-author · <a href="https://doi.org/10.48550/arXiv.2208.04415" target="_blank" rel="noopener">Deep Learning Driven Natural Language Text to SQL Query Conversion</a></span>
-        <span class="when">IEEE TASLP · 2022</span>
-      </div>
-    </section>
-
-    <footer><a href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a> · San Jose, CA · © 2026 Prabhav Nalhe</footer>
-
   </div>
 
-  <script>
-  (function () {
-    /* ---- top-bar typewriter ---- */
-    (function () {
-      var el = document.getElementById('logoType');
-      var cur = document.getElementById('logoCursor');
-      if (!el) return;
-      var words = ['reliability', 'distributed systems', 'llm agents', 'ai infrastructure', 'dependency intelligence'];
-      var wi = 0, ci = 0, deleting = false;
-      function solid(on){ if (cur) cur.classList.toggle('solid', on); }
-      function tick(){
-        var w = words[wi];
-        if (!deleting) {
-          ci++; el.textContent = w.slice(0, ci); solid(true);
-          if (ci === w.length) { deleting = true; solid(false); return setTimeout(tick, 1400); }
-          return setTimeout(tick, 95);
-        }
-        ci--; el.textContent = w.slice(0, ci); solid(true);
-        if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; solid(false); return setTimeout(tick, 350); }
-        return setTimeout(tick, 45);
-      }
-      setTimeout(tick, 700);
-    })();
+  <div class="stats reveal">
+    <div class="stat"><b>9-figure<span class="unit">$</span></b><span>revenue exposure protected via fault-injection program</span></div>
+    <div class="stat"><b data-count="20">20<span class="unit">GB/s</span></b><span>telemetry stream-fusion in Rust across six sources</span></div>
+    <div class="stat"><b data-count="1000">1,000<span class="unit">+</span></b><span>services adopted the dependency protection program</span></div>
+    <div class="stat"><b>2-digit<span class="unit">%</span></b><span>share of top-severity incidents addressed by the platform</span></div>
+  </div>
+</header>
 
-    /* ---- interactive terminal ---- */
-    var term = document.getElementById('term');
-    var out = document.getElementById('termOut');
-    var input = document.getElementById('termInput');
-    var typed = document.getElementById('termTyped');
-    var body = document.getElementById('termBody');
-    var chipsEl = document.getElementById('termChips');
-    if (!out || !input || !body) return;
-    var L = '\n';
-    var hist = [], hi = -1;
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="marquee-track">
+    <span>rust</span><span>distributed systems</span><span>streaming</span><span>fault injection</span><span>llm agents</span><span>kafka</span><span>kubernetes</span><span>chaos engineering</span><span>slo/sli</span><span>python</span><span>graph systems</span><span>evals</span>
+  </div>
+</div>
 
-    function esc(s){ return s.replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-    function scroll(){ body.scrollTop = body.scrollHeight; }
-    function add(html, cls){ var d = document.createElement('div'); d.className = 'line' + (cls ? ' ' + cls : ''); d.innerHTML = html; out.appendChild(d); scroll(); }
-    function echo(cmd){ add('<span class="term-prompt">nprabhav:~$</span><span class="term-cmd">' + esc(cmd) + '</span>'); }
-    function end(){ var n = input.value.length; try { input.setSelectionRange(n, n); } catch (e) {} }
-    function setInput(v){ input.value = v; typed.textContent = v; end(); }
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head reveal"><h2>Experience</h2><span class="ghost">01</span></div>
 
-    var FORTUNES = [
-      'there are two hard things in CS: cache invalidation, naming things, and off-by-one errors.',
-      'a distributed system is one where a machine you have never heard of can break yours.',
-      'the model is the easy part - the ground truth is the hard part.',
-      'every dependency is a promise someone else has to keep.',
-      'you cannot fix what you cannot see, so build the map first.'
-    ];
+    <div class="xp reveal">
+      <div class="when">2024 — now</div>
+      <div>
+        <div class="xp-head">
+          <span class="co-chip" aria-hidden="true"><img src="assets/img/meta.svg" alt=""></span>
+          <div>
+            <h3>Meta</h3>
+            <p class="role">Software Engineer, Reliability Infra</p>
+          </div>
+        </div>
+        <p class="sum">Service-dependency reliability — a platform addressing <b>a double-digit share of the company's top-severity incidents</b>.</p>
+        <ul>
+          <li>Built the <b>canonical dependency graph</b> in Rust — stream-fusion over six telemetry sources at ~20 GB/s.</li>
+          <li>Designed dependency notifications and a <b>protection program adopted by 1,000+ services</b>.</li>
+          <li>Led a <b>fault-injection program</b> that eliminated risky dependencies, protecting nine-figure revenue exposure.</li>
+          <li>Brought <b>LLM agents</b> into the stack to explain and classify dependency risk at fleet scale.</li>
+        </ul>
+      </div>
+    </div>
 
-    var T = {
-      help:
-        'commands' + L +
-        '  about        who I am' + L +
-        '  experience   roles + impact' + L +
-        '  work         systems I built' + L +
-        '  story        how it all connects' + L +
-        '  skills       languages and tools' + L +
-        '  notes        deep-dive essays' + L +
-        '  resume       the one-pager (pdf)' + L +
-        '  contact      reach me' + L +
-        '  open <x>     jump to a section  (work, notes, resume)' + L +
-        '  tour         a quick guided walkthrough' + L +
-        '  neofetch     the quick stats' + L +
-        '  clear        clear the screen' + L + L +
-        "tips: click a chip below, tab completes, up/down for history, press '/' to focus, try 'sudo hire-me'",
-      about:
-        'Prabhav Nalhe - software engineer, distributed systems and reliability.' + L +
-        '6+ years across backend and infra, most recently at Meta building' + L +
-        'service-dependency reliability.',
-      experience:
-        'Meta          2024-now    reliability infra, dependency-intelligence platform' + L +
-        'Fidelity      2023        15M-doc search pipeline + real-time reporting' + L +
-        'Quest Global  2018-2021   automotive ECU updates + voice-auth infra',
-      work:
-        '- Dependency Service: Rust streaming graph at ~20 GB/s, the source of truth' + L +
-        '- Dependency Explanations: LLM agent harness, ~100% coverage at ~$0.15/pair' + L +
-        '- Fault-Injection Loop: chaos experiments (fault injection) feed labels that improve the classifier',
-      skills:
-        'languages    Python, Rust, C/C++, Java, TypeScript, SQL' + L +
-        'systems      distributed systems, streaming, fault injection, API design, SLO/SLI' + L +
-        'cloud/data   AWS, Docker, Kubernetes, MySQL, Postgres, Redis, Kafka, Solr' + L +
-        'ai/ml        LLMs, agent harnesses, MCP, evals, prompt caching, inference routing',
-      education:
-        'Stony Brook University   Masters in Computer Science, GPA 3.92  2021-2022' + L +
-        'PICT                     Bachelors in Computer Science          2014-2018',
-      publication:
-        'Co-author: "Deep Learning Driven Natural Language Text to SQL Query Conversion", IEEE TASLP.' + L +
-        '<a href="https://doi.org/10.48550/arXiv.2208.04415" target="_blank" rel="noopener">arXiv 2208.04415</a>',
-      contact:
-        'email     <a href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a>' + L +
-        'linkedin  <a href="https://linkedin.com/in/nprabhav" target="_blank" rel="noopener">linkedin.com/in/nprabhav</a>' + L +
-        'github    <a href="https://github.com/nprabhav" target="_blank" rel="noopener">github.com/nprabhav</a>',
-      ls: 'about  experience  work  story  skills  notes  education  publication  contact  resume  tour',
-      neofetch:
-        '<span class="k">prabhav@portfolio</span>' + L +
-        '-----------------' + L +
-        'role    Software Engineer (Distributed Systems and Reliability)' + L +
-        'exp     6+ years' + L +
-        'stack   Rust, Python, LLM agents' + L +
-        'focus   reliability, fault injection, dependency intelligence' + L +
-        'uptime  caffeinated',
-      story:
-        'A question nobody at Meta could answer: what depends on what? Dependency-related failures were ~15% of all top-severity incidents, with no single source of truth. Five systems fixed that, each making the next possible:' + L +
-        '<span class="k">1. see it</span>     the dependency graph in Rust - a streaming pipeline fusing 6 telemetry sources at ~20 GB/s into one canonical map, surfacing 475K dependencies nobody knew existed.' + L +
-        '<span class="k">2. route it</span>   a full-stack notification + protection program adopted across 1,200+ services, so the owning team hears about a risky dependency early.' + L +
-        '<span class="k">3. explain it</span> an LLM agent harness over 16 purpose-built tools explains any dependency pair - 2.2M of them, ~100% coverage at ~$0.15 each (structured tool calls, not embeddings).' + L +
-        '<span class="k">4. rank it</span>    a hard/soft classifier separates dependencies that take the caller down from those that degrade gracefully, so effort lands on the real single-points-of-failure.' + L +
-        '<span class="k">5. prove it</span>   instead of trusting the model, break things on purpose: a fault-injection harness I built disables one dependency at a time and records which SLO degrades. Those observed outcomes become ground-truth labels that feed back and keep the classifier honest.' + L +
-        'That last loop is the whole point - the platform corrects itself against reality instead of plateauing, which is how it chipped into ~15% of company-wide top-severity incidents.',
-      notes:
-        'essays on systems, reliability, and AI systems.' + L +
-        'browse them all at <a href="/notes/" target="_blank" rel="noopener">prabhavnalhe.com/notes</a>',
-      tour:
-        'quick tour - run these in order:' + L +
-        '  <span class="k">story</span>    how the whole platform fits together' + L +
-        '  <span class="k">work</span>     the systems I built' + L +
-        '  <span class="k">notes</span>    deep-dive technical essays' + L +
-        '  <span class="k">resume</span>   the one-page summary' + L + L +
-        'start with: story',
-      joke:
-        'There are only two hard problems in distributed systems:' + L +
-        '  2. exactly-once delivery' + L +
-        '  1. message ordering' + L +
-        '  2. exactly-once delivery',
-      coffee: 'c[_]  always.',
-      fortune: function(){ return FORTUNES[Math.floor(Math.random() * FORTUNES.length)]; }
-    };
-    T.whoami = T.about; T.projects = T.work; T.email = T.contact; T.socials = T.contact; T.paper = T.publication; T.arc = T.story; T.writing = T.notes; T.blog = T.notes; T.motd = T.fortune;
-    T.resume = function(){ window.open('/resume.pdf', '_blank'); return 'opening resume.pdf ...'; };
-    T.cv = T.resume;
-    T['sudo hire-me'] = function(){
-      return '[sudo] password for recruiter: ********' + L +
-             'Access granted.' + L +
-             'booting offer pipeline ... done.' + L +
-             'just kidding :) the real command is an email - <a href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a>';
-    };
-    T['hire-me'] = T['sudo hire-me'];
+    <div class="xp reveal">
+      <div class="when">2023</div>
+      <div>
+        <div class="xp-head">
+          <span class="co-chip" aria-hidden="true"><img src="assets/img/fidelity.png" alt=""></span>
+          <div>
+            <h3>Fidelity Investments</h3>
+            <p class="role">Software Engineer</p>
+          </div>
+        </div>
+        <p class="sum">Built a <b>15M-document</b> search and indexing pipeline (AWS Lambda, SQS, Solr) and a real-time reporting system for financial research.</p>
+      </div>
+    </div>
 
-    function openCmd(arg){
-      arg = (arg || '').trim().toLowerCase().replace(/^#/, '');
-      var sec = { experience:'#experience', work:'#work', skills:'#skills', education:'#education', publication:'#publication' };
-      if (arg === 'notes') { window.location.href = '/notes/'; return 'opening notes ...'; }
-      if (arg === 'resume' || arg === 'cv') { window.open('/resume.pdf', '_blank'); return 'opening resume.pdf ...'; }
-      if (sec[arg]) { var e = document.querySelector(sec[arg]); if (e) { e.scrollIntoView({ behavior:'smooth', block:'start' }); return 'scrolling to ' + arg + ' ...'; } }
-      return 'open what? try: open work | open notes | open resume';
-    }
-    function commonPrefix(a){ if (!a.length) return ''; var p = a[0]; for (var i=1;i<a.length;i++){ while (a[i].indexOf(p) !== 0){ p = p.slice(0,-1); if (!p) return ''; } } return p; }
-    function cmdKeys(){ return Object.keys(T).filter(function(k){ return k.indexOf(' ') === -1; }).concat(['open','tour','clear']).filter(function(v,i,s){ return s.indexOf(v) === i; }); }
+    <div class="xp reveal">
+      <div class="when">2018 — 21</div>
+      <div>
+        <div class="xp-head">
+          <span class="co-chip" aria-hidden="true"><img src="assets/img/quest.png" alt=""></span>
+          <div>
+            <h3>Quest Global</h3>
+            <p class="role">Software Engineer</p>
+          </div>
+        </div>
+        <p class="sum">Voice authentication and OTA update infrastructure for automotive ECUs, serving <b>10K+ users</b>.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-    function run(raw){
-      var cmd = (raw || '').trim();
-      echo(cmd);
-      if (cmd === '') return;
-      hist.unshift(cmd); hi = -1;
-      var lc = cmd.toLowerCase();
-      if (lc === 'clear') { out.innerHTML = ''; return; }
-      if (T[lc] !== undefined) { var v = T[lc], o = (typeof v === 'function') ? v() : v; if (o) add(o); return; }
-      var parts = cmd.split(/\s+/), head = parts[0].toLowerCase(), rest = parts.slice(1).join(' ');
-      if (head === 'open') { add(openCmd(rest)); return; }
-      if (head === 'cat' && rest) { var k = rest.toLowerCase(); if (T[k] !== undefined && typeof T[k] !== 'function') { add(T[k]); return; } }
-      if (head === 'sudo') { add('Permission denied. (nice try - flattery gets you an email: <a href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a>)'); return; }
-      add('command not found: ' + esc(head) + ' - type <span class="k">help</span>');
-    }
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head reveal"><h2>Selected Work</h2><span class="ghost">02</span></div>
 
-    input.addEventListener('input', function(){ typed.textContent = input.value; });
-    input.addEventListener('keydown', function(e){
-      if (e.key === 'Enter') { run(input.value); setInput(''); }
-      else if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) { e.preventDefault(); out.innerHTML = ''; }
-      else if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) { e.preventDefault(); add('<span class="term-prompt">nprabhav:~$</span><span class="term-cmd">' + esc(input.value) + '</span> ^C'); setInput(''); }
-      else if (e.key === 'ArrowUp') { if (hist.length) { hi = Math.min(hi + 1, hist.length - 1); setInput(hist[hi]); e.preventDefault(); } }
-      else if (e.key === 'ArrowDown') { if (hi > 0) { hi--; setInput(hist[hi]); } else { hi = -1; setInput(''); } e.preventDefault(); }
-      else if (e.key === 'Tab') {
-        e.preventDefault();
-        var p = input.value.toLowerCase();
-        var m = cmdKeys().filter(function(k){ return k.indexOf(p) === 0; });
-        if (m.length === 1) { setInput(m[0]); }
-        else if (m.length > 1) { var cp = commonPrefix(m); if (cp.length > p.length) setInput(cp); add(m.sort().join('   ')); }
-      }
-    });
-    body.addEventListener('click', function(e){ if (e.target.tagName !== 'A') input.focus(); });
+    <div class="case-stack">
+      <a class="case-card" href="work/dependency-service.html">
+        <div class="case-top">
+          <span class="num">01</span>
+          <h3>Dependency Service <span class="arrow">↗</span></h3>
+          <span class="metric">~20 GB/s</span>
+        </div>
+        <div class="tags"><span>rust</span><span>streaming</span><span>graphs</span></div>
+        <div class="case-cols">
+          <div><h4>Problem</h4><p>No single source of truth for how services depend on each other — six telemetry systems, each partial and inconsistent.</p></div>
+          <div><h4>Approach</h4><p>Rust streaming graph fusing all six sources in real time, reconciling conflicts into one canonical graph.</p></div>
+          <div><h4>Result</h4><p>The platform's source of truth — powering notifications, protection, and risk classification fleet-wide.</p></div>
+        </div>
+      </a>
 
-    document.addEventListener('keydown', function(e){
-      var ae = document.activeElement;
-      var typing = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');
-      if (e.key === '/' && !typing) { e.preventDefault(); input.focus(); if (term) term.scrollIntoView({ block:'nearest' }); }
-      else if (e.key === 'Escape' && ae === input) { input.blur(); }
-    });
+      <a class="case-card" href="work/dependency-explanations.html">
+        <div class="case-top">
+          <span class="num">02</span>
+          <h3>Dependency Explanations <span class="arrow">↗</span></h3>
+          <span class="metric">~$0.15 / pair</span>
+        </div>
+        <div class="tags"><span>llm agents</span><span>evals</span></div>
+        <div class="case-cols">
+          <div><h4>Problem</h4><p>Raw dependency edges don't tell engineers <b>why</b> a dependency exists or whether it's safe to remove.</p></div>
+          <div><h4>Approach</h4><p>LLM agent harness over <b>16 purpose-built tools</b> that investigates each edge and writes a human-readable explanation.</p></div>
+          <div><h4>Result</h4><p>Near-100% coverage — explanation and classification at fleet scale.</p></div>
+        </div>
+      </a>
 
-    if (chipsEl) {
-      ['about','experience','work','story','notes','resume','sudo hire-me'].forEach(function(c){
-        var b = document.createElement('span'); b.className = 'chip'; b.textContent = c;
-        b.addEventListener('click', function(){ run(c); setInput(''); input.focus(); });
-        chipsEl.appendChild(b);
-      });
-    }
+      <a class="case-card" href="work/fault-injection-loop.html">
+        <div class="case-top">
+          <span class="num">03</span>
+          <h3>Fault-Injection Loop <span class="arrow">↗</span></h3>
+          <span class="metric">ground truth</span>
+        </div>
+        <div class="tags"><span>chaos eng</span><span>ml labels</span></div>
+        <div class="case-cols">
+          <div><h4>Problem</h4><p>Dependency criticality labels were heuristic guesses — no ground truth about what actually breaks.</p></div>
+          <div><h4>Approach</h4><p>Chaos experiments injecting faults under controlled conditions, producing <b>ground-truth labels</b> for the classifier.</p></div>
+          <div><h4>Result</h4><p>A self-improving loop — every experiment sharpens the classifier and retires risky dependencies.</p></div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
 
-    add('<span class="term-welcome">// hi - poke around. type help, click a chip, or press /</span>');
-    function autoDemo(cmd){
-      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) { run(cmd); return; }
-      var j = 0;
-      (function typeCmd(){
-        if (j <= cmd.length) { setInput(cmd.slice(0, j)); j++; return setTimeout(typeCmd, 70); }
-        setTimeout(function(){ setInput(''); run(cmd); }, 350);
-      })();
-    }
-    setTimeout(function(){ autoDemo('neofetch'); }, 600);
-  })();
-  </script>
+<section id="writing">
+  <div class="wrap">
+    <div class="sec-head reveal"><h2>Writing</h2><span class="ghost">03</span></div>
+    <a class="note-row reveal" href="notes/service-graph-lying/">
+      <div><h3>The Service Graph Is a Lower Bound</h3><p>The dependency graph you draw from RPC traffic is real but incomplete. The dependencies that take you down are…</p></div>
+      <div class="meta"><span>5 min</span><span>2026</span></div>
+    </a>
+    <a class="note-row reveal" href="notes/streaming-ingest-rust/">
+      <div><h3>Streaming Ingest in Rust</h3><p>When you fuse many noisy event streams into one model, the hard problems are not throughput - they are identity and…</p></div>
+      <div class="meta"><span>7 min</span><span>2026</span></div>
+    </a>
+    <a class="note-row reveal" href="notes/closing-the-loop/">
+      <div><h3>Closing the Loop</h3><p>A pattern worth reusing: when an LLM makes a judgment at scale, do not let it grade itself. Pair a cheap predictor…</p></div>
+      <div class="meta"><span>6 min</span><span>2026</span></div>
+    </a>
+    <a class="note-row reveal" href="notes/agent-harness-vs-rag/">
+      <div><h3>Agent Harness vs RAG</h3><p>Two ways to feed a model context: retrieve fuzzy passages by similarity, or call purpose-built tools that return…</p></div>
+      <div class="meta"><span>6 min</span><span>2026</span></div>
+    </a>
+    <a class="more-link reveal" href="notes/index.html">All notes <span>→</span></a>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head reveal"><h2>Skills &amp; Background</h2><span class="ghost">04</span></div>
+    <div class="meta-grid reveal">
+      <div>
+        <h4>Stack</h4>
+        <dl>
+          <div class="skill-line"><dt>languages</dt><dd>Python, Rust, C/C++, Java, TypeScript, SQL</dd></div>
+          <div class="skill-line"><dt>systems</dt><dd>Distributed systems, streaming, fault injection, SLO/SLI</dd></div>
+          <div class="skill-line"><dt>cloud / data</dt><dd>AWS, Kubernetes, Docker, Kafka, Redis, PostgreSQL, Solr</dd></div>
+          <div class="skill-line"><dt>ai / ml</dt><dd>LLM agents, MCP, evals, prompt caching, inference routing</dd></div>
+        </dl>
+      </div>
+      <div>
+        <h4>Education &amp; Publication</h4>
+        <div class="edu-line"><b>Stony Brook University</b><span>M.S. Computer Science · GPA 3.92 · 2021–22</span></div>
+        <div class="edu-line"><b>Pune Institute of Computer Technology</b><span>B.E. Computer Science · 2014–18</span></div>
+        <div class="edu-line"><b>IEEE TASLP · 2022</b><span>Co-author · <a href="https://doi.org/10.48550/arXiv.2208.04415">Deep Learning Driven NL Text to SQL Query Conversion</a></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-big reveal">
+  <p class="small">Have something reliable to build?</p>
+  <a class="huge" id="cta-huge" href="mailto:nprabhav111@gmail.com">Let's talk.</a>
+  <p class="sub">Or just say hi — <a class="u" href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a></p>
+</div>
+
+<div class="name-marquee" aria-hidden="true">
+  <div class="name-track" id="name-track">
+    <span>PRABHAV NALHE <i>·</i> </span>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <span>San Jose, CA · <span id="local-time"></span></span>
+    <div class="right">
+      <a href="https://github.com/nprabhav">GitHub</a>
+      <a href="https://linkedin.com/in/nprabhav">LinkedIn</a>
+      <a href="resume.pdf">Résumé</a>
+      <span>© 2026 Prabhav Nalhe</span>
+    </div>
+  </div>
+</footer>
+
+<div id="palette-overlay" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div id="palette">
+    <div class="pal-input-row">
+      <span class="prompt-c">nprabhav:~$</span>
+      <input id="pal-input" placeholder="type a command or search…" autocomplete="off" spellcheck="false">
+    </div>
+    <div id="pal-list"></div>
+    <div class="pal-foot"><span>↑↓ navigate</span><span>↵ run</span><span>esc close</span></div>
+  </div>
+</div>
+
+<script src="assets/js/site.js" defer></script>
+<!-- Analytics (GoatCounter — free, cookieless). To enable:
+     1. create an account at goatcounter.com (pick a code, e.g. nprabhav)
+     2. uncomment and set data-goatcounter accordingly
+<script data-goatcounter="https://nprabhav.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+-->
 </body>
 </html>

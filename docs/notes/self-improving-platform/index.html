@@ -1,73 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Build the Substrate First: Why Platform Quality Is Capped by the Model Underneath It - Prabhav Nalhe</title>
-  <meta name="description" content="Most platforms that reason about a system are really stacks of queries against a model of that system. The recurring lesson is that the model is the constraint: build it as an authoritative product first, keep every layer above it a traceable query, and the quality of everything above is capped by the coverage and freshness of what is beneath." />
-  <meta name="author" content="Prabhav Nalhe" />
-  <link rel="canonical" href="https://prabhavnalhe.com/notes/self-improving-platform/" />
-  <meta property="og:title" content="Build the Substrate First: Why Platform Quality Is Capped by the Model Underneath It" />
-  <meta property="og:description" content="Most platforms that reason about a system are really stacks of queries against a model of that system. The recurring lesson is that the model is the constraint: build it as an authoritative product first, keep every layer above it a traceable query, and the quality of everything above is capped by the coverage and freshness of what is beneath." />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://prabhavnalhe.com/notes/self-improving-platform/" />
-  <meta property="og:image" content="https://prabhavnalhe.com/og.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://prabhavnalhe.com/og.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
-  <style>
-    :root { --bg:#FFFFFF; --ink:#37352F; --muted:#787774; --faint:rgba(55,53,47,0.4);
-      --accent:#2383E2; --link:#337EA9; --block:#F7F6F3; --rule:rgba(55,53,47,0.09);
-      --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
-      --mono: "SF Mono", "JetBrains Mono", "Menlo", "Consolas", monospace; }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
-    a { color:var(--accent); text-decoration:none; }
-    a:hover { text-decoration:underline; text-underline-offset:2px; }
-    .wrap { max-width:700px; margin:0 auto; padding:0 26px; }
-    .bar { display:flex; justify-content:space-between; align-items:center; padding:20px 0; font-size:14.5px; }
-    .logo { font-family:var(--mono); font-weight:700; font-size:15px; color:var(--ink); letter-spacing:0.3px; display:inline-flex; align-items:center; }
-    .logo:hover { text-decoration:none; }
-    .logo .cur { display:inline-block; width:8px; height:1.05em; background:var(--ink); margin-left:5px; transform:translateY(1px); animation:blink 1.1s steps(1) infinite; }
-    @keyframes blink { 0%,50%{opacity:1;} 50.01%,100%{opacity:0;} }
-    @media (prefers-reduced-motion: reduce){ .logo .cur{ animation:none; } }
-    .bar .home { color:var(--muted); }
-    .bar .home:hover { color:var(--ink); text-decoration:underline; }
-    article { padding:18px 0 0; }
-    .article-title { font-size:34px; font-weight:700; line-height:1.2; letter-spacing:-0.6px; margin:6px 0 14px; }
-    .dek { font-size:19px; color:var(--muted); line-height:1.5; margin:0 0 18px; }
-    .meta { font-family:var(--mono); font-size:13px; color:var(--faint); margin:0 0 26px; padding-bottom:22px; border-bottom:1px solid var(--rule); }
-    article .source { font-size:14.5px; color:var(--muted); margin:0 0 6px; }
-    article h2 { font-size:22px; font-weight:600; line-height:1.3; margin:36px 0 12px; }
-    article p { margin:0 0 18px; }
-    figure.diagram { margin:26px 0 10px; }
-    figure.diagram svg { width:100%; height:auto; display:block; border:1px solid var(--rule); border-radius:8px; background:#fff; }
-    figure.diagram figcaption { font-size:13px; color:var(--faint); margin-top:9px; line-height:1.5; }
-    .takeaways { background:var(--block); border-radius:8px; padding:20px 22px; margin:36px 0 0; }
-    .takeaways h3 { font-size:13px; font-family:var(--mono); font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.6px; margin:0 0 12px; }
-    .takeaways ul { margin:0; padding-left:20px; }
-    .takeaways li { margin-bottom:10px; font-size:16px; line-height:1.6; }
-    .post-foot { margin:40px 0 0; padding:22px 0 0; border-top:1px solid var(--rule); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:15px; }
-    footer { color:var(--faint); font-size:13px; padding:36px 0 48px; margin-top:30px; border-top:1px solid var(--rule); }
-    footer a { color:var(--muted); } footer a:hover { color:var(--ink); }
-    @media print { .bar .home, .post-foot { display:none; } a { color:#000; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:9pt; color:#444; } }
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build the Substrate First: Why Platform Quality Is Capped by the Model Underneath It — Prabhav Nalhe</title>
+<meta name="description" content="Most platforms that reason about a system are really stacks of queries against a model of that system. The recurring lesson is that the model is the constraint: build it as an authoritative product…">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://prabhavnalhe.com/notes/self-improving-platform/">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Build the Substrate First: Why Platform Quality Is Capped by the Model Underneath It">
+<meta property="og:description" content="Most platforms that reason about a system are really stacks of queries against a model of that system. The recurring lesson is that the model is the constraint: build it as an authoritative product…">
+<meta property="og:url" content="https://prabhavnalhe.com/notes/self-improving-platform/">
+<meta property="og:image" content="https://prabhavnalhe.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://prabhavnalhe.com/og.png">
+<script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.setAttribute('data-theme','light')}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body>
-  <div class="wrap">
-    <div class="bar">
-      <a href="/" class="logo">&gt;&nbsp;nprabhav:~$<span class="cur"></span></a>
-      <a href="/notes/" class="home">&larr; notes</a>
+<body data-root="../..">
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <div id="scroll-progress"></div>
+  <div class="nav-inner">
+    <a class="logo" href="../../index.html">nprabhav:~$&nbsp;<span class="cursor">▊</span></a>
+    <div class="nav-links">
+      <a href="../../index.html#experience">Experience</a>
+      <a href="../../index.html#work">Work</a>
+      <a href="../index.html">Writing</a>
+      <button class="kbd-hint" id="pal-open"><span>⌘</span><span>K</span></button>
+      <button id="theme-toggle" aria-label="Toggle theme">◐</button>
+      <a class="nav-resume" href="../../resume.pdf">Résumé</a>
     </div>
-    <article>
-      <h1 class="article-title">Build the Substrate First: Why Platform Quality Is Capped by the Model Underneath It</h1>
-      <p class="dek">Most platforms that reason about a system are really stacks of queries against a model of that system. The recurring lesson is that the model is the constraint: build it as an authoritative product first, keep every layer above it a traceable query, and the quality of everything above is capped by the coverage and freshness of what is beneath.</p>
-      <div class="meta">Prabhav Nalhe &middot; 2026 &middot; ~6 min read</div>
-      <figure class="diagram">
+  </div>
+</nav>
+
+<div class="page-grid">
+  <article class="post-body">
+    <p class="crumb"><a href="../index.html">← all notes</a></p>
+    <h1 class="post-title">Build the Substrate First: Why Platform Quality Is Capped by the Model Underneath It</h1>
+    <div class="post-meta"><span>2026</span><span>·</span><span>6 min read</span></div>
+    <div class="post-tags"><span>platform</span><span>reliability</span><span>ml</span></div>
+    <p class="post-dek">Most platforms that reason about a system are really stacks of queries against a model of that system. The recurring lesson is that the model is the constraint: build it as an authoritative product first, keep every layer above it a traceable query, and the quality of everything above is capped by the coverage and freshness of what is beneath.</p>
+
+    <div class="prose">
+<figure class="diagram">
 <pre class="mermaid">
 flowchart TD
   S["telemetry sources<br/>traces, logs, config, data stores"] -->|"fuse, resolve identity and time"| G["dependency graph<br/>source of truth, streaming, query API"]
@@ -81,19 +65,19 @@ flowchart TD
   linkStyle 5 stroke:#2383E2,stroke-width:2px,color:#2383E2
 </pre>
 <figcaption>The graph is the source of truth every layer reads. Explanations make the alerts actionable and the classifier makes them worth subscribing to; the fault-injection loop (blue) feeds SLO-verified labels back, so the classifier stays accurate as the fleet changes underneath it.</figcaption></figure>
-      <h2>A platform is a stack of queries against a model of the system</h2>
+      <h2 id="a-platform-is-a-stack-of-queries-against-a-model-of-the-system">A platform is a stack of queries against a model of the system</h2>
       <p>Any tool that reasons about a running system - an alerting layer, a dependency analyzer, an impact estimator, an explanation engine - is ultimately answering questions about a model of that system. What depends on what, who owns this, what breaks if that fails. The features users see are the queries; the model is what the queries run against. This is easy to miss because the model is rarely the thing anyone is excited to build. The exciting work is the feature on top, so the model gets assembled opportunistically from whatever signals were handy when each feature was added.</p>
       <p>That is the mistake worth naming. When you treat the underlying model as a side effect of the features rather than as a product in its own right, the quality of every feature is silently capped by a model nobody is accountable for. A useful discipline is to invert the order: decide what authoritative model the features will query, build that model first with an owner and a stated quality bar, and only then build features as queries against it. The rest of this note is about why that order matters and what goes wrong when you skip it.</p>
-      <h2>Most organizations have a dozen partial models, not one</h2>
+      <h2 id="most-organizations-have-a-dozen-partial-models-not-one">Most organizations have a dozen partial models, not one</h2>
       <p>The reason the model is hard is that the truth about a system is scattered. Different sources each hold a true but partial view. One source knows what calls what when the code runs. Another knows what was declared to depend on what at build time. A third knows ownership and topology from a registry. A fourth knows what is actually talking to what right now from live telemetry. Each is correct about its own slice and blind outside it. A call site can exist in code but never fire in production; a live edge can have no declared counterpart anywhere.</p>
       <p>Build your platform on any single one of these and you inherit its specific blind spots wholesale, usually without realizing which ones. The harder and more valuable path is fusion: reconcile the sources into one authoritative model, and when two of them disagree, resolve the conflict explicitly rather than letting whichever source you happened to query win by accident. Carry provenance so any element of the model can be traced back to the signals that produced it. This is general data-platform work - the same shape applies to a configuration management database, a service inventory, an asset graph, or any canonical representation fused from overlapping feeds. The point is not the specific feed set; it is that one reconciled model with provenance beats a dozen partial ones queried ad hoc, and that reconciliation is the work.</p>
-      <h2>Keep every layer above it a traceable query, not a fresh inference</h2>
+      <h2 id="keep-every-layer-above-it-a-traceable-query-not-a-fresh-inference">Keep every layer above it a traceable query, not a fresh inference</h2>
       <p>Once the model exists, the discipline that keeps the platform honest is that each layer above expresses itself as a query against the model rather than re-deriving the world from raw signals. An alerting layer should resolve the affected owner from the model's ownership data and name the specific element at risk, not broadcast a generic degradation to everyone. An impact estimate should walk the model's edges rather than guess. The value of this is precision: a layer that routes a precise, owner-scoped, actionable signal earns attention, while one that fires broadly trains its audience to ignore it, and an ignored signal is worse than none because it costs attention and builds nothing.</p>
       <p>The same traceability discipline carries over when a language model enters the picture as an explanation or summarization layer. The durable pattern is to keep the model on a short leash. Put deterministic tools underneath it - queries that walk the model, fetches that pull the actual source, attribution that ties a fact to the change that introduced it - and have those tools return reproducible facts. The language model sits on top as an agent harness that orchestrates explicit tool calls: it decides which tool to call, in what order, reads what comes back, and assembles a human-readable account. The retrieval here is auditable tool calls against a known model and the code, not similarity search over an embedded corpus, which is why every factual claim in the output can be traced back to a tool result rather than to the model's recollection. Lowering the model's sampling temperature makes these runs reproducible and reduces hallucinated paths; it is a reproducibility lever, not a correctness guarantee, so the deterministic tools stay the source of truth and the model stays the narrator.</p>
-      <h2>If the model cannot verify itself, grade it against observed truth</h2>
+      <h2 id="if-the-model-cannot-verify-itself-grade-it-against-observed-truth">If the model cannot verify itself, grade it against observed truth</h2>
       <p>A model of a system invites judgments that are cheap to compute and hard to confirm. Consider classifying, across a large fleet, whether each dependency is hard - its caller goes down when it fails - or soft, degrading through a cache, a fallback, or a feature that quietly turns off. A language model can read a call site and reason fluently to a label, and a prediction like that is cheap relative to running a physical experiment per element, so it can cover the entire fleet from source. But it cannot verify itself: a model can reason its way to a confident answer and still be wrong, because real behavior lives in retry policy, timeouts, and fallbacks that source does not always make legible.</p>
       <p>Where a judgment has an observable ground truth, the answer is to measure it rather than trust the inference. That is a topic in its own right - I have written separately about pairing a cheap predictor with an expensive verifier that observes outcomes by breaking one thing at a time and watching the SLOs, and treating their disagreements as the highest-value signal. The point here is only its place in the picture: the verifier grades the predictor against observed reality, and the observed labels flow back to correct the predictor's reference set and thresholds through eval and tuning, with no model weights trained. The reason this is even possible is the substrate again - you can only run a clean per-element experiment, or attribute a result back to a specific part of the system, if you have an authoritative model that says what that part is and what it touches.</p>
-      <h2>Build in dependency order, and keep the substrate fresh</h2>
+      <h2 id="build-in-dependency-order-and-keep-the-substrate-fresh">Build in dependency order, and keep the substrate fresh</h2>
       <p>The throughline is an ordering principle, not a fixed architecture. Whatever a given platform's features are, they sit on a model of the system, and that model caps their quality. So build the model first as an owned product with a stated coverage and freshness bar, then build each feature as a traceable query against it, and where a feature makes an unverifiable judgment, grade it against observed truth and feed the corrections back. This is the opposite of the common pattern where detection, dashboards, runbooks, and analyzers are bolted together from whatever signals were on hand and no layer can fully trust the data beneath it.</p>
       <p>The part that is easy to underweight is freshness. Systems change continuously - dependencies get added, fallbacks rot, ownership moves, a retry policy shifts - so a model built once and trusted forever decays silently as the system moves underneath it, and every feature querying it decays with it. Treating the model as a product with an SLA, rather than a side effect of a dashboard, is what keeps the decay in check. The same logic applies to any judgment layer graded against reality: corrected on a cadence, it stays good; graded once, it goes stale. For anyone building one of these, the transferable rule is the order itself - substrate first, features as queries, judgments verified against observed truth - because the substrate's coverage and freshness set the ceiling for everything you put above it.</p>
       <div class="takeaways">
@@ -106,16 +90,62 @@ flowchart TD
           <li>Where a judgment has an observable ground truth, grade it against measured reality and feed the corrections back through eval and tuning, with no weights trained - and remember the substrate is what makes both the experiment and the attribution possible. Build in dependency order, keep the substrate fresh, and its coverage caps the ceiling for everything above it.</li>
         </ul>
       </div>
-      <div class="post-foot">
-        <a href="/notes/">&larr; more notes</a>
-        <a href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a>
+    </div>
+
+    <div class="post-footer">
+      <div class="author-card">
+        <div class="av">PN</div>
+        <div>
+          <h4>Prabhav Nalhe</h4>
+          <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
+        </div>
       </div>
-    </article>
+      <div class="next-prev">
+        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
+        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      </div>
+    </div>
+  </article>
+
+  <aside class="toc-rail">
+    <div class="toc">
+      <h4>On this page</h4>
+      <a href="#a-platform-is-a-stack-of-queries-against-a-model-of-the-system">A platform is a stack of queries against a model of the system</a>
+      <a href="#most-organizations-have-a-dozen-partial-models-not-one">Most organizations have a dozen partial models, not one</a>
+      <a href="#keep-every-layer-above-it-a-traceable-query-not-a-fresh-inference">Keep every layer above it a traceable query, not a fresh inference</a>
+      <a href="#if-the-model-cannot-verify-itself-grade-it-against-observed-truth">If the model cannot verify itself, grade it against observed truth</a>
+      <a href="#build-in-dependency-order-and-keep-the-substrate-fresh">Build in dependency order, and keep the substrate fresh</a>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <span>San Jose, CA · <span id="local-time"></span></span>
+    <div class="right">
+      <a href="https://github.com/nprabhav">GitHub</a>
+      <a href="https://linkedin.com/in/nprabhav">LinkedIn</a>
+      <a href="../../resume.pdf">Résumé</a>
+      <span>© 2026 Prabhav Nalhe</span>
+    </div>
   </div>
-  <footer class="wrap">&copy; 2026 Prabhav Nalhe &middot; San Jose, CA</footer>
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });
-  </script>
+</footer>
+
+<div id="palette-overlay" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div id="palette">
+    <div class="pal-input-row">
+      <span class="prompt-c">nprabhav:~$</span>
+      <input id="pal-input" placeholder="type a command or search…" autocomplete="off" spellcheck="false">
+    </div>
+    <div id="pal-list"></div>
+    <div class="pal-foot"><span>↑↓ navigate</span><span>↵ run</span><span>esc close</span></div>
+  </div>
+</div>
+
+<script src="../../assets/js/site.js" defer></script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });
+</script>
 </body>
 </html>

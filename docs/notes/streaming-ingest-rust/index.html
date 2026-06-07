@@ -1,69 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Streaming Ingest in Rust: Reconciling Identity and Time Across Messy Sources - Prabhav Nalhe</title>
-  <meta name="description" content="When you fuse many noisy event streams into one model, the hard problems are not throughput - they are identity and time. Here is how I think about normalizing heterogeneous sources, resolving who an event is about, and ordering events that arrive late, out of order, and duplicated." />
-  <meta name="author" content="Prabhav Nalhe" />
-  <link rel="canonical" href="https://prabhavnalhe.com/notes/streaming-ingest-rust/" />
-  <meta property="og:title" content="Streaming Ingest in Rust: Reconciling Identity and Time Across Messy Sources" />
-  <meta property="og:description" content="When you fuse many noisy event streams into one model, the hard problems are not throughput - they are identity and time. Here is how I think about normalizing heterogeneous sources, resolving who an event is about, and ordering events that arrive late, out of order, and duplicated." />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://prabhavnalhe.com/notes/streaming-ingest-rust/" />
-  <meta property="og:image" content="https://prabhavnalhe.com/og.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://prabhavnalhe.com/og.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
-  <style>
-    :root { --bg:#FFFFFF; --ink:#37352F; --muted:#787774; --faint:rgba(55,53,47,0.4);
-      --accent:#2383E2; --link:#337EA9; --block:#F7F6F3; --rule:rgba(55,53,47,0.09);
-      --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
-      --mono: "SF Mono", "JetBrains Mono", "Menlo", "Consolas", monospace; }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
-    a { color:var(--accent); text-decoration:none; }
-    a:hover { text-decoration:underline; text-underline-offset:2px; }
-    .wrap { max-width:700px; margin:0 auto; padding:0 26px; }
-    .bar { display:flex; justify-content:space-between; align-items:center; padding:20px 0; font-size:14.5px; }
-    .logo { font-family:var(--mono); font-weight:700; font-size:15px; color:var(--ink); letter-spacing:0.3px; display:inline-flex; align-items:center; }
-    .logo:hover { text-decoration:none; }
-    .logo .cur { display:inline-block; width:8px; height:1.05em; background:var(--ink); margin-left:5px; transform:translateY(1px); animation:blink 1.1s steps(1) infinite; }
-    @keyframes blink { 0%,50%{opacity:1;} 50.01%,100%{opacity:0;} }
-    @media (prefers-reduced-motion: reduce){ .logo .cur{ animation:none; } }
-    .bar .home { color:var(--muted); }
-    .bar .home:hover { color:var(--ink); text-decoration:underline; }
-    article { padding:18px 0 0; }
-    .article-title { font-size:34px; font-weight:700; line-height:1.2; letter-spacing:-0.6px; margin:6px 0 14px; }
-    .dek { font-size:19px; color:var(--muted); line-height:1.5; margin:0 0 18px; }
-    .meta { font-family:var(--mono); font-size:13px; color:var(--faint); margin:0 0 30px; padding-bottom:22px; border-bottom:1px solid var(--rule); }
-    article h2 { font-size:22px; font-weight:600; line-height:1.3; margin:36px 0 12px; }
-    article p { margin:0 0 18px; }
-    .takeaways { background:var(--block); border-radius:8px; padding:20px 22px; margin:36px 0 0; }
-    .takeaways h3 { font-size:13px; font-family:var(--mono); font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.6px; margin:0 0 12px; }
-    .takeaways ul { margin:0; padding-left:20px; }
-    .takeaways li { margin-bottom:10px; font-size:16px; line-height:1.6; }
-    .post-foot { margin:40px 0 0; padding:22px 0 0; border-top:1px solid var(--rule); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:15px; }
-    footer { color:var(--faint); font-size:13px; padding:36px 0 48px; margin-top:30px; border-top:1px solid var(--rule); }
-    footer a { color:var(--muted); } footer a:hover { color:var(--ink); }
-    @media print { .bar .home, .post-foot { display:none; } a { color:#000; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:9pt; color:#444; } }
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Streaming Ingest in Rust: Reconciling Identity and Time Across Messy Sources — Prabhav Nalhe</title>
+<meta name="description" content="When you fuse many noisy event streams into one model, the hard problems are not throughput - they are identity and time. Here is how I think about normalizing heterogeneous sources, resolving who an…">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://prabhavnalhe.com/notes/streaming-ingest-rust/">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Streaming Ingest in Rust: Reconciling Identity and Time Across Messy Sources">
+<meta property="og:description" content="When you fuse many noisy event streams into one model, the hard problems are not throughput - they are identity and time. Here is how I think about normalizing heterogeneous sources, resolving who an…">
+<meta property="og:url" content="https://prabhavnalhe.com/notes/streaming-ingest-rust/">
+<meta property="og:image" content="https://prabhavnalhe.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://prabhavnalhe.com/og.png">
+<script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.setAttribute('data-theme','light')}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body>
-  <div class="wrap">
-    <div class="bar">
-      <a href="/" class="logo">&gt;&nbsp;nprabhav:~$<span class="cur"></span></a>
-      <a href="/notes/" class="home">&larr; notes</a>
+<body data-root="../..">
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <div id="scroll-progress"></div>
+  <div class="nav-inner">
+    <a class="logo" href="../../index.html">nprabhav:~$&nbsp;<span class="cursor">▊</span></a>
+    <div class="nav-links">
+      <a href="../../index.html#experience">Experience</a>
+      <a href="../../index.html#work">Work</a>
+      <a href="../index.html">Writing</a>
+      <button class="kbd-hint" id="pal-open"><span>⌘</span><span>K</span></button>
+      <button id="theme-toggle" aria-label="Toggle theme">◐</button>
+      <a class="nav-resume" href="../../resume.pdf">Résumé</a>
     </div>
-    <article>
-      <h1 class="article-title">Streaming Ingest in Rust: Reconciling Identity and Time Across Messy Sources</h1>
-      <p class="dek">When you fuse many noisy event streams into one model, the hard problems are not throughput - they are identity and time. Here is how I think about normalizing heterogeneous sources, resolving who an event is about, and ordering events that arrive late, out of order, and duplicated.</p>
-      <div class="meta">Prabhav Nalhe &middot; 2026 &middot; ~7 min read</div>
-      <figure class="diagram">
+  </div>
+</nav>
+
+<div class="page-grid">
+  <article class="post-body">
+    <p class="crumb"><a href="../index.html">← all notes</a></p>
+    <h1 class="post-title">Streaming Ingest in Rust: Reconciling Identity and Time Across Messy Sources</h1>
+    <div class="post-meta"><span>2026</span><span>·</span><span>7 min read</span></div>
+    <div class="post-tags"><span>rust</span><span>streaming</span><span>distributed systems</span></div>
+    <p class="post-dek">When you fuse many noisy event streams into one model, the hard problems are not throughput - they are identity and time. Here is how I think about normalizing heterogeneous sources, resolving who an event is about, and ordering events that arrive late, out of order, and duplicated.</p>
+
+    <div class="prose">
+<figure class="diagram">
 <pre class="mermaid">
 flowchart LR
   T["traces"] --> FU["normalize<br/>identity + time"]
@@ -75,19 +63,19 @@ flowchart LR
 </pre>
 <figcaption>Fusing heterogeneous sources is mostly reconciliation: the same service is named differently across signals (identity) and events arrive out of order (time). Resolve both and the unified graph falls out.</figcaption></figure>
 
-      <h2>The shape of the problem: many sources, one model</h2>
+      <h2 id="the-shape-of-the-problem-many-sources-one-model">The shape of the problem: many sources, one model</h2>
       <p>High-throughput ingest reads as a performance problem. Throughput matters, but on this kind of system the problems that actually cost you are identity and time. You are pulling events from sources that were never designed to agree with each other - different schemas, different field names for the same concept, different time semantics, different reliability guarantees. One source emits well-formed records with stable identifiers. Another emits half-populated rows where the key field is sometimes blank. A third backfills history in bursts that arrive hours after the events actually happened. Your job is to land all of it in a single internal model that downstream consumers can trust.</p>
       <p>The instinct is to write a parser per source and move on. That scales badly, because every downstream query then has to know which source a record came from and how that source lies. The better move is to define one canonical event model up front - the fields you actually reason about, with explicit types and explicit nullability - and treat each source adapter as a pure function from that source's raw shape into the canonical shape. The adapter is the only place that knows the source's quirks. Everything past it sees one model. This is the same discipline as an anti-corruption layer in domain-driven design: a translation boundary whose entire job is to keep one system's model from leaking into another's. The messiness is contained at the edge, and it does not bleed into the core.</p>
-      <h2>Identity resolution: deciding who an event is about</h2>
+      <h2 id="identity-resolution-deciding-who-an-event-is-about">Identity resolution: deciding who an event is about</h2>
       <p>Once events share a model, the next question is which of them describe the same entity. This is identity resolution, and it is where a surprising amount of the real engineering lives. The easy case is a shared stable key across sources. The common case is that you have no single key - you have a bag of weak signals, some of them present, some of them stale, some of them wrong, and you have to decide whether two events refer to the same thing.</p>
       <p>The pattern that works is to separate the matching policy from the matching mechanism. The mechanism is a deterministic set of rules applied in priority order: if a strong identifier matches, bind immediately; otherwise fall back to combinations of weaker signals, and below some confidence floor, refuse to merge and keep the records separate rather than guess. The policy - which signals count as strong, what the floor is - is data you can change without touching code. Two principles keep this honest. First, prefer under-merging to over-merging: a split identity is a visible, fixable annoyance, while a wrong merge silently corrupts every downstream count and is nearly impossible to unwind. Second, make every binding explain itself - record which rule fired and which signals it used - so that when a match looks wrong, you can trace it to evidence instead of arguing about a black box.</p>
-      <h2>Event time versus processing time</h2>
+      <h2 id="event-time-versus-processing-time">Event time versus processing time</h2>
       <p>The single most expensive mistake in stream processing is conflating when something happened with when you found out about it. Event time is the timestamp the source attaches to the thing that occurred. Processing time is the wall clock when your pipeline sees the record. They are routinely far apart - a source buffers and flushes late, a backfill replays last week, a clock is skewed, a retry redelivers an old event. If you key any logic on processing time, your results change depending on how busy your pipeline was, which means they are not reproducible and not correct.</p>
       <p>The rule I hold to is: reason in event time, and treat lateness as a first-class input rather than an error. That means carrying the event timestamp through the whole pipeline untouched, and being explicit about how long you are willing to wait for stragglers before you consider a window closed. There is a real tradeoff here - wait longer and results are more complete but more delayed; close sooner and results are timely but may be revised when a late event arrives. If your downstream consumers can accept revisions, the better move is usually to emit a provisional result and correct it when a late event lands, rather than pretend a completeness you do not have. If they cannot accept corrections, you are forced to wait, and the waiting bound becomes a hard product decision. Either way it is a decision you make on purpose, with a stated bound, not an accident of load.</p>
-      <h2>Ordering, dedup, and surviving the firehose</h2>
+      <h2 id="ordering-dedup-and-surviving-the-firehose">Ordering, dedup, and surviving the firehose</h2>
       <p>Out-of-order and duplicate delivery are not edge cases; at volume they are the steady state. Most streaming transports give you at-least-once delivery, which means duplicates are guaranteed and you have to design them out. The way to stay sane is to make every operation idempotent and keyed on a stable identity from the event itself - a source-provided id, or a content hash over the fields that define identity when there is no id, with the caveat that a content hash collapses any two byte-identical events, so it only works when identical content genuinely means the same event. Get the key right and reprocessing the same event lands in the same place and changes nothing. Idempotency is what lets you replay safely after a crash, which you will need to do.</p>
       <p>Global ordering across sources is usually neither achievable nor necessary, and chasing it will wreck your throughput. What you actually need is ordering within an identity - the events about one entity in event-time order - which you get by partitioning the stream on identity and sorting within a key up to your lateness bound. Far cheaper than a global sort, though not free. The other thing the firehose forces on you is backpressure. A pipeline that consumes faster than it can process does not speed up; it grows an unbounded queue and then falls over. The fix is to make slowness propagate backwards: bound your buffers, and when a downstream stage is full, the upstream stage must block or slow rather than pile up work in memory. Bounded channels whose senders await when the buffer is full, plus a clear policy for when you genuinely cannot keep up - shed, sample, or spill - are the difference between graceful degradation and an out-of-memory crash under load.</p>
-      <h2>Why Rust is a good fit for this</h2>
+      <h2 id="why-rust-is-a-good-fit-for-this">Why Rust is a good fit for this</h2>
       <p>None of the above strictly requires Rust, but the language earns its place on this kind of system. Ingest paths are long-lived, concurrent, and full of buffers being handed between stages - exactly the setting where data races and aliasing bugs hide and where they are hardest to reproduce under load. Rust's ownership model turns most of those into compile errors. When the borrow checker accepts a pipeline that moves data across async tasks, you have a compile-time guarantee that any mutable state shared across those stages is synchronized rather than racing - no data races in safe code, and you got it without a garbage collector pausing you mid-firehose.</p>
       <p>The other payoff is that the type system lets you make the hard parts unrepresentable rather than merely tested. Model the canonical event as a struct where optional fields are Option types and known source-specific cases are enum variants, with an explicit catch-all variant for values you do not recognize. Then the compiler forces every consumer to handle the empty and unrecognized cases - as long as you resist unwrap() and catch-all match arms, which quietly throw the guarantee away. Predictable latency matters too: no GC means no stop-the-world pause landing in the middle of a backpressure spike. The cost is real - the borrow checker is strict and async Rust has a learning curve - so the honest framing is that Rust is worth it precisely when the data is high-volume and the correctness and tail-latency stakes are high enough to pay for that strictness. For a throwaway batch job it would be overkill. For a path that fuses many live streams and has to be correct and fast at the same time, it is the right tool.</p>
       <div class="takeaways">
@@ -100,16 +88,62 @@ flowchart LR
           <li>Backpressure is mandatory, not optional - use bounded channels whose senders await when full so slowness propagates upstream instead of growing an unbounded queue. Rust pays for itself here by turning data races into compile errors and giving GC-free, predictable tail latency.</li>
         </ul>
       </div>
-      <div class="post-foot">
-        <a href="/notes/">&larr; more notes</a>
-        <a href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a>
+    </div>
+
+    <div class="post-footer">
+      <div class="author-card">
+        <div class="av">PN</div>
+        <div>
+          <h4>Prabhav Nalhe</h4>
+          <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
+        </div>
       </div>
-    </article>
+      <div class="next-prev">
+        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
+        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      </div>
+    </div>
+  </article>
+
+  <aside class="toc-rail">
+    <div class="toc">
+      <h4>On this page</h4>
+      <a href="#the-shape-of-the-problem-many-sources-one-model">The shape of the problem: many sources, one model</a>
+      <a href="#identity-resolution-deciding-who-an-event-is-about">Identity resolution: deciding who an event is about</a>
+      <a href="#event-time-versus-processing-time">Event time versus processing time</a>
+      <a href="#ordering-dedup-and-surviving-the-firehose">Ordering, dedup, and surviving the firehose</a>
+      <a href="#why-rust-is-a-good-fit-for-this">Why Rust is a good fit for this</a>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <span>San Jose, CA · <span id="local-time"></span></span>
+    <div class="right">
+      <a href="https://github.com/nprabhav">GitHub</a>
+      <a href="https://linkedin.com/in/nprabhav">LinkedIn</a>
+      <a href="../../resume.pdf">Résumé</a>
+      <span>© 2026 Prabhav Nalhe</span>
+    </div>
   </div>
-  <footer class="wrap">&copy; 2026 Prabhav Nalhe &middot; San Jose, CA</footer>
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });
-  </script>
+</footer>
+
+<div id="palette-overlay" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div id="palette">
+    <div class="pal-input-row">
+      <span class="prompt-c">nprabhav:~$</span>
+      <input id="pal-input" placeholder="type a command or search…" autocomplete="off" spellcheck="false">
+    </div>
+    <div id="pal-list"></div>
+    <div class="pal-foot"><span>↑↓ navigate</span><span>↵ run</span><span>esc close</span></div>
+  </div>
+</div>
+
+<script src="../../assets/js/site.js" defer></script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });
+</script>
 </body>
 </html>

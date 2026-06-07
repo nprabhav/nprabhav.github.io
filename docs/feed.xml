@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Prabhav Nalhe — Notes</title>
+  <link>https://prabhavnalhe.com/notes/</link>
+  <description>Notes on distributed systems, reliability engineering, and LLM agents for infrastructure.</description>
+  <language>en-us</language>
+  <atom:link href="https://prabhavnalhe.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>The Service Graph Is a Lower Bound</title>
+    <link>https://prabhavnalhe.com/notes/service-graph-lying/</link>
+    <guid>https://prabhavnalhe.com/notes/service-graph-lying/</guid>
+    <pubDate>05 Jan 2026 09:00:00 -0800</pubDate>
+    <description>The dependency graph you draw from RPC traffic is real but incomplete. The dependencies that take you down are usually the ones no edge in that graph represents - shared config…</description>
+  </item>
+  <item>
+    <title>Streaming Ingest in Rust</title>
+    <link>https://prabhavnalhe.com/notes/streaming-ingest-rust/</link>
+    <guid>https://prabhavnalhe.com/notes/streaming-ingest-rust/</guid>
+    <pubDate>12 Jan 2026 09:00:00 -0800</pubDate>
+    <description>When you fuse many noisy event streams into one model, the hard problems are not throughput - they are identity and time. Here is how I think about normalizing heterogeneous…</description>
+  </item>
+  <item>
+    <title>Closing the Loop</title>
+    <link>https://prabhavnalhe.com/notes/closing-the-loop/</link>
+    <guid>https://prabhavnalhe.com/notes/closing-the-loop/</guid>
+    <pubDate>19 Jan 2026 09:00:00 -0800</pubDate>
+    <description>A pattern worth reusing: when an LLM makes a judgment at scale, do not let it grade itself. Pair a cheap predictor with an expensive verifier that observes ground truth by…</description>
+  </item>
+  <item>
+    <title>Build the Substrate First</title>
+    <link>https://prabhavnalhe.com/notes/self-improving-platform/</link>
+    <guid>https://prabhavnalhe.com/notes/self-improving-platform/</guid>
+    <pubDate>26 Jan 2026 09:00:00 -0800</pubDate>
+    <description>Most platforms that reason about a system are really stacks of queries against a model of that system. The recurring lesson is that the model is the constraint: build it as an…</description>
+  </item>
+  <item>
+    <title>Agent Harness vs RAG</title>
+    <link>https://prabhavnalhe.com/notes/agent-harness-vs-rag/</link>
+    <guid>https://prabhavnalhe.com/notes/agent-harness-vs-rag/</guid>
+    <pubDate>02 Feb 2026 09:00:00 -0800</pubDate>
+    <description>Two ways to feed a model context: retrieve fuzzy passages by similarity, or call purpose-built tools that return exact records. Here is how I decide which one a problem actually…</description>
+  </item>
+  <item>
+    <title>Evals Before Features</title>
+    <link>https://prabhavnalhe.com/notes/evals-before-features/</link>
+    <guid>https://prabhavnalhe.com/notes/evals-before-features/</guid>
+    <pubDate>09 Feb 2026 09:00:00 -0800</pubDate>
+    <description>Before you wire an LLM into a real workflow, decide how you will know it is good enough - because the eval is the gate, and the model is just the thing that has to pass it.</description>
+  </item>
+  <item>
+    <title>LLM as a Judge</title>
+    <link>https://prabhavnalhe.com/notes/llm-as-a-judge/</link>
+    <guid>https://prabhavnalhe.com/notes/llm-as-a-judge/</guid>
+    <pubDate>16 Feb 2026 09:00:00 -0800</pubDate>
+    <description>A separate model can score outputs you cannot label by hand - but only if you treat it like a measuring instrument: a few binary dimensions, a calibrated reading, an answer key it…</description>
+  </item>
+  <item>
+    <title>Cost-Aware LLM Pipelines</title>
+    <link>https://prabhavnalhe.com/notes/cost-aware-llm-pipelines/</link>
+    <guid>https://prabhavnalhe.com/notes/cost-aware-llm-pipelines/</guid>
+    <pubDate>23 Feb 2026 09:00:00 -0800</pubDate>
+    <description>Most items in a large workload are easy, and a few are genuinely hard. The cheapest reliable pipeline is the one that spends accordingly: a deterministic fast path for the easy…</description>
+  </item>
+  <item>
+    <title>Designing APIs for Agents, Not Humans</title>
+    <link>https://prabhavnalhe.com/notes/apis-for-agents/</link>
+    <guid>https://prabhavnalhe.com/notes/apis-for-agents/</guid>
+    <pubDate>02 Mar 2026 09:00:00 -0800</pubDate>
+    <description>When an LLM is the caller, the interface is the prompt. Typed responses, idempotent writes, granular composable tools, and machine-readable errors are not nice-to-haves - they are…</description>
+  </item>
+  <item>
+    <title>Your Model Is Not the Product</title>
+    <link>https://prabhavnalhe.com/notes/delivery-is-the-product/</link>
+    <guid>https://prabhavnalhe.com/notes/delivery-is-the-product/</guid>
+    <pubDate>09 Mar 2026 09:00:00 -0800</pubDate>
+    <description>A correct model or a sharp analysis is necessary but not sufficient. What gets internal AI actually used is the last mile almost no one designs for - routing each insight to its…</description>
+  </item>
+  <item>
+    <title>SLO-Driven Risk</title>
+    <link>https://prabhavnalhe.com/notes/slo-driven-risk/</link>
+    <guid>https://prabhavnalhe.com/notes/slo-driven-risk/</guid>
+    <pubDate>16 Mar 2026 09:00:00 -0800</pubDate>
+    <description>Reliability effort gets spent on whatever feels scary in the room. Here is how to replace that gut feel with a defensible number built from SLOs, error budgets, and a clean…</description>
+  </item>
+  <item>
+    <title>Scaling a Live Stream to a Billion Viewers</title>
+    <link>https://prabhavnalhe.com/notes/scaling-live-to-a-billion/</link>
+    <guid>https://prabhavnalhe.com/notes/scaling-live-to-a-billion/</guid>
+    <pubDate>23 Mar 2026 09:00:00 -0800</pubDate>
+    <description>A live broadcast turns one source into millions of simultaneous viewers in seconds. The hard part is not the video - it is keeping a viral spike from melting your origin. Here are…</description>
+  </item>
+  <item>
+    <title>Natural Language to SQL, Then and Now</title>
+    <link>https://prabhavnalhe.com/notes/text-to-sql-then-and-now/</link>
+    <guid>https://prabhavnalhe.com/notes/text-to-sql-then-and-now/</guid>
+    <pubDate>30 Mar 2026 09:00:00 -0800</pubDate>
+    <description>In 2018 I helped build an RNN model that turned English questions into SQL, trained on WikiSQL and later published. Today a general-purpose LLM does the same thing with no…</description>
+  </item>
+</channel>
+</rss>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dependency Explanations: LLM agents that earn trust — Prabhav Nalhe</title>
+<meta name="description" content="An LLM agent harness over 16 purpose-built tools — near-100% coverage of dependency explanations at ~$0.15 a pair.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://prabhavnalhe.com/work/dependency-explanations.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dependency Explanations: LLM agents that earn trust">
+<meta property="og:description" content="An LLM agent harness over 16 purpose-built tools — near-100% coverage of dependency explanations at ~$0.15 a pair.">
+<meta property="og:image" content="https://prabhavnalhe.com/og.png">
+<script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.setAttribute('data-theme','light')}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body data-root="..">
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <div id="scroll-progress"></div>
+  <div class="nav-inner">
+    <a class="logo" href="../index.html">nprabhav:~$&nbsp;<span class="cursor">▊</span></a>
+    <div class="nav-links">
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#writing">Writing</a>
+      <button class="kbd-hint" id="pal-open"><span>⌘</span><span>K</span></button>
+      <button id="theme-toggle" aria-label="Toggle theme">◐</button>
+      <a class="nav-resume" href="../resume.pdf">Résumé</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-grid">
+  <article class="post-body">
+    <p class="crumb"><a href="../index.html#work">← selected work</a> / case study</p>
+    <h1 class="post-title">Dependency Explanations: LLM agents that earn trust</h1>
+    <div class="post-meta"><span>case study</span><span>·</span><span>2025 — present</span><span>·</span><span>9 min read</span></div>
+    <div class="post-tags"><span>llm agents</span><span>evals</span><span>mcp</span><span>reliability</span></div>
+
+    <div class="prose">
+      <div class="callout"><span class="ic">$</span><span><strong>Summary</strong> — An LLM agent harness over 16 purpose-built tools that investigates every service-dependency edge and writes a human-readable explanation with a risk classification. Near-100% coverage at ~$0.15 per pair. Details simplified for public sharing.</span></div>
+
+      <h2 id="context">Context</h2>
+      <p>The <a href="dependency-service.html">canonical dependency graph</a> answers <em>what</em> depends on <em>what</em>. It can't answer the question engineers actually ask during reviews and incidents: <strong>why does this dependency exist, and is it safe to remove?</strong> Answering that manually means reading code, configs, and traffic samples — twenty minutes per edge, across hundreds of thousands of edges. It never happened.</p>
+
+      <h2 id="approach">Approach: tools over prompts</h2>
+      <p>The naive version — stuff context into a prompt, ask a model to guess — produced fluent nonsense. What worked was inverting the design: a constrained agent loop where the model's job is to <em>investigate</em>, not recall.</p>
+      <ul>
+        <li><strong>16 purpose-built tools</strong>, each answering one narrow question well: who owns this service, what does the client config declare, what does sampled traffic show, where in code is the call site, what changed recently.</li>
+        <li><strong>Structured output</strong> — every run ends in an explanation plus a typed risk classification, not free text.</li>
+        <li><strong>Budgeted loops</strong> — the agent gets a bounded number of tool calls; ambiguity is surfaced as "low confidence," never papered over.</li>
+      </ul>
+      <pre><code><span class="c"># the contract, simplified</span>
+explain(edge) -> {
+  explanation: str,        <span class="c"># grounded in tool evidence, with citations</span>
+  classification: RiskTier,
+  confidence: float,
+  evidence: [ToolCall],    <span class="c"># auditable trail</span>
+}</code></pre>
+
+      <h2 id="evals">Evals were the product</h2>
+      <p>The harness only became trustworthy when the eval suite did. We built a golden set of edges with expert-verified explanations, scored every change against it, and treated regressions like test failures. Prompt tweaks, tool changes, and model upgrades all gated on evals. The discipline is boring; it is also the entire reason coverage reached ~100% without a human reviewing every output.</p>
+
+      <h2 id="cost">Getting to ~$0.15 a pair</h2>
+      <ul>
+        <li><strong>Prompt caching</strong> for the static harness preamble and tool schemas.</li>
+        <li><strong>Model routing</strong> — a small model handles easy edges; escalation to a larger model only on low confidence.</li>
+        <li><strong>Evidence reuse</strong> — tool results are cached across edges that share a service.</li>
+      </ul>
+
+      <h2 id="impact">Impact</h2>
+      <ul>
+        <li>Near-100% of dependency edges carry a current, grounded explanation.</li>
+        <li>Risk classifications feed the protection program and the <a href="fault-injection-loop.html">fault-injection loop</a>.</li>
+        <li>Incident responders read the explanation instead of paging the owning team at 3am.</li>
+      </ul>
+
+      <h2 id="lessons">Lessons</h2>
+      <p>Agents earn trust through tools and evals, not model choice. Every hour spent making a tool's output cleaner beat an hour of prompt engineering. And structured output with an auditable evidence trail is what let humans trust — and debug — the system.</p>
+    </div>
+
+    <div class="post-footer">
+      <div class="author-card">
+        <div class="av">PN</div>
+        <div>
+          <h4>Prabhav Nalhe</h4>
+          <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../notes/index.html">the notes</a>.</p>
+        </div>
+      </div>
+      <div class="next-prev">
+        <a class="np" href="../index.html#work"><span>← Back</span><b>All selected work</b></a>
+        <a class="np next" href="fault-injection-loop.html"><span>Related →</span><b>Case study: Fault-Injection Loop</b></a>
+      </div>
+    </div>
+  </article>
+
+  <aside class="toc-rail">
+    <div class="toc">
+      <h4>On this page</h4><a href="#context">Context</a><a href="#approach">Tools over prompts</a><a href="#evals">Evals</a><a href="#cost">Cost</a><a href="#impact">Impact</a><a href="#lessons">Lessons</a></div>
+  </aside>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <span>San Jose, CA · <span id="local-time"></span></span>
+    <div class="right">
+      <a href="https://github.com/nprabhav">GitHub</a>
+      <a href="https://linkedin.com/in/nprabhav">LinkedIn</a>
+      <a href="../resume.pdf">Résumé</a>
+      <span>© 2026 Prabhav Nalhe</span>
+    </div>
+  </div>
+</footer>
+
+<div id="palette-overlay" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div id="palette">
+    <div class="pal-input-row">
+      <span class="prompt-c">nprabhav:~$</span>
+      <input id="pal-input" placeholder="type a command or search…" autocomplete="off" spellcheck="false">
+    </div>
+    <div id="pal-list"></div>
+    <div class="pal-foot"><span>↑↓ navigate</span><span>↵ run</span><span>esc close</span></div>
+  </div>
+</div>
+
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case Study: Dependency Service — Prabhav Nalhe</title>
+<meta name="description" content="How we built a canonical service-dependency graph in Rust — fusing six telemetry sources in real time at ~20 GB/s.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://prabhavnalhe.com/work/dependency-service.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Case Study: Dependency Service">
+<meta property="og:description" content="Fusing six telemetry sources into one canonical dependency graph, in Rust, at ~20 GB/s.">
+<meta property="og:image" content="https://prabhavnalhe.com/og.png">
+<script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.setAttribute('data-theme','light')}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body data-root="..">
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <div id="scroll-progress"></div>
+  <div class="nav-inner">
+    <a class="logo" href="../index.html">nprabhav:~$&nbsp;<span class="cursor">▊</span></a>
+    <div class="nav-links">
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#writing">Writing</a>
+      <button class="kbd-hint" id="pal-open"><span>⌘</span><span>K</span></button>
+      <button id="theme-toggle" aria-label="Toggle theme">◐</button>
+      <a class="nav-resume" href="../resume.pdf">Résumé</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-grid">
+  <article class="post-body">
+    <p class="crumb"><a href="../index.html#work">← selected work</a> / case study</p>
+    <h1 class="post-title">Dependency Service: one graph to trust</h1>
+    <div class="post-meta">
+      <span>case study</span><span>·</span><span>2024 — present</span><span>·</span><span>10 min read</span>
+    </div>
+    <div class="post-tags"><span>rust</span><span>streaming</span><span>graphs</span><span>reliability</span></div>
+
+    <div class="prose">
+      <div class="callout"><span class="ic">$</span><span><strong>Summary</strong> — A Rust streaming system that fuses six telemetry sources (~20 GB/s) into one canonical service-dependency graph. It became the source of truth behind dependency notifications, a protection program adopted by 1,000+ services, and a fault-injection loop. Details below are simplified and shared at a level consistent with public engineering writing.</span></div>
+
+      <h2 id="context">Context</h2>
+      <p>At hyperscale, "which services depend on which" sounds like a solved problem. It isn't. Six different telemetry systems each held a partial, mutually inconsistent picture: RPC traces, mesh flow logs, network connections, client-library declarations, configuration intent, and routing topology. During incidents — the only time anyone urgently needs this data — engineers got six different answers.</p>
+
+      <h2 id="problem">The problem, precisely</h2>
+      <ul>
+        <li><strong>Coverage gaps:</strong> sampled tracing misses low-QPS but critical calls; the mesh can't see sidecar-bypassing traffic.</li>
+        <li><strong>Staleness:</strong> declared dependencies outlive real ones — nobody deletes old client configs.</li>
+        <li><strong>Identity mismatch:</strong> network-level data sees endpoints, not services.</li>
+        <li><strong>Trust:</strong> with six sources disagreeing, every consumer built their own ad-hoc reconciliation — badly.</li>
+      </ul>
+
+      <h2 id="architecture">Architecture</h2>
+      <figure>
+        <div class="diagram"><pre>
+ rpc-traces ─┐
+ mesh-flows ─┤                       ┌─→ notifications
+ net-conns ──┤   ┌──────────────┐    │
+ client-libs ┼──▶│ stream fusion │───┼─→ protection program
+ config-decl─┤   │  (rust, ~20  │    │
+ lb-routes ──┘   │   GB/s)      │    └─→ risk classifier
+                 └──────┬───────┘
+                        ▼
+              canonical dependency graph
+              (evidence + confidence per edge)</pre></div>
+        <figcaption>six sources in, one graph out — every edge carries its evidence</figcaption>
+      </figure>
+      <p>The pipeline is a Rust streaming service. Each telemetry source is normalized into <code>Observation</code> events; edges accumulate observations rather than verdicts:</p>
+      <pre><code><span class="c">// simplified: edges carry evidence, not assertions</span>
+<span class="k">struct</span> <span class="f">Edge</span> {
+    src: ServiceId,
+    dst: ServiceId,
+    evidence: SmallVec&lt;[Observation; <span class="s">6</span>]&gt;,
+    confidence: <span class="k">f32</span>,   <span class="c">// derived continuously, never asserted</span>
+    last_seen: Timestamp,
+}</code></pre>
+      <p>Three design decisions did most of the work:</p>
+      <ol>
+        <li><strong>Model evidence, not facts.</strong> Consumers see <em>why</em> an edge exists and how confident the system is — an edge seen by tracing and mesh flows in the last hour is near-certain; one living only in a 90-day-stale client config is flagged "probably dead."</li>
+        <li><strong>Freshness beats completeness.</strong> Confidence decays continuously instead of being recomputed in nightly batches. A 95%-complete graph that's thirty seconds fresh beats a complete one that's six hours stale — incident responders live in the present.</li>
+        <li><strong>Never silently delete.</strong> Edges are demoted and flagged, never dropped without human confirmation. Reliability tooling that silently removes data is how you cause the incident you were built to prevent.</li>
+      </ol>
+
+      <h2 id="performance">Performance notes</h2>
+      <p>Sustaining ~20 GB/s of fused telemetry came down to unglamorous engineering: zero-copy deserialization on the hot path, per-source backpressure so one lagging stream can't stall the rest, and shard-by-service partitioning so edge state updates stay core-local. Rust's ownership model made the zero-copy design safe to maintain across contributors.</p>
+
+      <h2 id="impact">Impact</h2>
+      <ul>
+        <li>Became the canonical dependency source — downstream teams deleted their ad-hoc reconciliation pipelines.</li>
+        <li>Powers dependency notifications and a protection program adopted by <strong>1,000+ services</strong>.</li>
+        <li>Feeds the fault-injection loop that produces ground-truth criticality labels.</li>
+        <li>Foundation for LLM-agent dependency explanations (its own story — <a href="../notes/why-dependency-graphs-lie.html">start here</a>).</li>
+      </ul>
+
+      <h2 id="lessons">What I'd do differently</h2>
+      <p>Start the confidence model earlier. The first iteration ranked sources by priority order, and unwinding that into evidence-based scoring cost a quarter. And invest in the decay function sooner — it ended up being the most-tuned ten lines in the codebase.</p>
+    </div>
+
+    <div class="post-footer">
+      <div class="author-card">
+        <div class="av">PN</div>
+        <div>
+          <h4>Prabhav Nalhe</h4>
+          <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../notes/index.html">the notes</a>.</p>
+        </div>
+      </div>
+      <div class="next-prev">
+        <a class="np" href="../index.html#work"><span>← Back</span><b>All selected work</b></a>
+        <a class="np next" href="dependency-explanations.html"><span>Next →</span><b>Case study: Dependency Explanations</b></a>
+      </div>
+    </div>
+  </article>
+
+  <aside class="toc-rail">
+    <div class="toc">
+      <h4>On this page</h4>
+      <a href="#context">Context</a>
+      <a href="#problem">The problem</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#performance">Performance</a>
+      <a href="#impact">Impact</a>
+      <a href="#lessons">Lessons</a>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <span>San Jose, CA · <span id="local-time"></span></span>
+    <div class="right">
+      <a href="https://github.com/nprabhav">GitHub</a>
+      <a href="https://linkedin.com/in/nprabhav">LinkedIn</a>
+      <a href="../resume.pdf">Résumé</a>
+      <span>© 2026 Prabhav Nalhe</span>
+    </div>
+  </div>
+</footer>
+
+<div id="palette-overlay" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div id="palette">
+    <div class="pal-input-row">
+      <span class="prompt-c">nprabhav:~$</span>
+      <input id="pal-input" placeholder="type a command or search…" autocomplete="off" spellcheck="false">
+    </div>
+    <div id="pal-list"></div>
+    <div class="pal-foot"><span>↑↓ navigate</span><span>↵ run</span><span>esc close</span></div>
+  </div>
+</div>
+
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>

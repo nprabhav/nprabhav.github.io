@@ -1,93 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Closing the Loop: Fault Injection as a Ground-Truth Engine for an LLM Classifier - Prabhav Nalhe</title>
-  <meta name="description" content="A pattern worth reusing: when an LLM makes a judgment at scale, do not let it grade itself - pair a cheap predictor with an expensive verifier that observes ground truth by breaking things on purpose." />
-  <meta name="author" content="Prabhav Nalhe" />
-  <link rel="canonical" href="https://prabhavnalhe.com/notes/closing-the-loop/" />
-
-  <meta property="og:title" content="Closing the Loop: Fault Injection as a Ground-Truth Engine for an LLM Classifier" />
-  <meta property="og:description" content="Pair a cheap predictor with an expensive verifier that observes ground truth by breaking things on purpose - and treat their disagreements as the most valuable signal you have." />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://prabhavnalhe.com/notes/closing-the-loop/" />
-  <meta property="og:image" content="https://prabhavnalhe.com/og.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://prabhavnalhe.com/og.png" />
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-
-  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg:#FFFFFF; --ink:#37352F; --muted:#787774; --faint:rgba(55,53,47,0.4);
-      --accent:#2383E2; --link:#337EA9; --block:#F7F6F3; --rule:rgba(55,53,47,0.09);
-      --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
-      --mono: "SF Mono", "JetBrains Mono", "Menlo", "Consolas", monospace;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans);
-           font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
-    a { color:var(--accent); text-decoration:none; }
-    a:hover { text-decoration:underline; text-underline-offset:2px; }
-    .wrap { max-width:700px; margin:0 auto; padding:0 26px; }
-
-    .bar { display:flex; justify-content:space-between; align-items:center; padding:20px 0; font-size:14.5px; }
-    .logo { font-family:var(--mono); font-weight:700; font-size:15px; color:var(--ink);
-            letter-spacing:0.3px; display:inline-flex; align-items:center; }
-    .logo:hover { text-decoration:none; }
-    .logo .cur { display:inline-block; width:8px; height:1.05em; background:var(--ink);
-                 margin-left:5px; transform:translateY(1px); animation:blink 1.1s steps(1) infinite; }
-    @keyframes blink { 0%,50%{opacity:1;} 50.01%,100%{opacity:0;} }
-    @media (prefers-reduced-motion: reduce){ .logo .cur{ animation:none; } }
-    .bar .home { color:var(--muted); }
-    .bar .home:hover { color:var(--ink); text-decoration:underline; }
-
-    article { padding:18px 0 0; }
-    .article-title { font-size:34px; font-weight:700; line-height:1.2; letter-spacing:-0.6px; margin:6px 0 14px; }
-    .dek { font-size:19px; color:var(--muted); line-height:1.5; margin:0 0 18px; }
-    .meta { font-family:var(--mono); font-size:13px; color:var(--faint); margin:0 0 30px;
-            padding-bottom:22px; border-bottom:1px solid var(--rule); }
-    article h2 { font-size:22px; font-weight:600; line-height:1.3; margin:36px 0 12px; }
-    article p { margin:0 0 18px; }
-
-    .takeaways { background:var(--block); border-radius:8px; padding:20px 22px; margin:36px 0 0; }
-    .takeaways h3 { font-size:13px; font-family:var(--mono); font-weight:600; color:var(--muted);
-                    text-transform:uppercase; letter-spacing:0.6px; margin:0 0 12px; }
-    .takeaways ul { margin:0; padding-left:20px; }
-    .takeaways li { margin-bottom:10px; font-size:16px; line-height:1.6; }
-
-    .post-foot { margin:40px 0 0; padding:22px 0 0; border-top:1px solid var(--rule);
-                 display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:15px; }
-    footer { color:var(--faint); font-size:13px; padding:36px 0 48px; margin-top:30px; border-top:1px solid var(--rule); }
-    footer a { color:var(--muted); } footer a:hover { color:var(--ink); }
-
-    @media print {
-      .bar .home, .post-foot { display:none; }
-      a { color:#000; }
-      a[href^="http"]::after { content:" (" attr(href) ")"; font-size:9pt; color:#444; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Closing the Loop: Fault Injection as a Ground-Truth Engine for an LLM Classifier — Prabhav Nalhe</title>
+<meta name="description" content="A pattern worth reusing: when an LLM makes a judgment at scale, do not let it grade itself. Pair a cheap predictor with an expensive verifier that observes ground truth by breaking things on purpose…">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://prabhavnalhe.com/notes/closing-the-loop/">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Closing the Loop: Fault Injection as a Ground-Truth Engine for an LLM Classifier">
+<meta property="og:description" content="A pattern worth reusing: when an LLM makes a judgment at scale, do not let it grade itself. Pair a cheap predictor with an expensive verifier that observes ground truth by breaking things on purpose…">
+<meta property="og:url" content="https://prabhavnalhe.com/notes/closing-the-loop/">
+<meta property="og:image" content="https://prabhavnalhe.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://prabhavnalhe.com/og.png">
+<script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.setAttribute('data-theme','light')}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
 </head>
+<body data-root="../..">
 
-<body>
-  <div class="wrap">
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
 
-    <div class="bar">
-      <a href="/" class="logo">&gt;&nbsp;nprabhav:~$<span class="cur"></span></a>
-      <a href="/notes/" class="home">&larr; notes</a>
+<nav>
+  <div id="scroll-progress"></div>
+  <div class="nav-inner">
+    <a class="logo" href="../../index.html">nprabhav:~$&nbsp;<span class="cursor">▊</span></a>
+    <div class="nav-links">
+      <a href="../../index.html#experience">Experience</a>
+      <a href="../../index.html#work">Work</a>
+      <a href="../index.html">Writing</a>
+      <button class="kbd-hint" id="pal-open"><span>⌘</span><span>K</span></button>
+      <button id="theme-toggle" aria-label="Toggle theme">◐</button>
+      <a class="nav-resume" href="../../resume.pdf">Résumé</a>
     </div>
+  </div>
+</nav>
 
-    <article>
-      <h1 class="article-title">Closing the Loop: Fault Injection as a Ground-Truth Engine for an LLM Classifier</h1>
-      <p class="dek">A pattern worth reusing: when an LLM makes a judgment at scale, do not let it grade itself. Pair a cheap predictor with an expensive verifier that observes ground truth by breaking things on purpose - and treat their disagreements as the most valuable signal you have.</p>
-      <div class="meta">Prabhav Nalhe &middot; 2026 &middot; ~6 min read</div>
+<div class="page-grid">
+  <article class="post-body">
+    <p class="crumb"><a href="../index.html">← all notes</a></p>
+    <h1 class="post-title">Closing the Loop: Fault Injection as a Ground-Truth Engine for an LLM Classifier</h1>
+    <div class="post-meta"><span>2026</span><span>·</span><span>6 min read</span></div>
+    <div class="post-tags"><span>fault injection</span><span>ml labels</span><span>chaos eng</span></div>
+    <p class="post-dek">A pattern worth reusing: when an LLM makes a judgment at scale, do not let it grade itself. Pair a cheap predictor with an expensive verifier that observes ground truth by breaking things on purpose - and treat their disagreements as the most valuable signal you have.</p>
 
-      <figure class="diagram">
+    <div class="prose">
+<figure class="diagram">
 <pre class="mermaid">
 flowchart LR
   C["LLM classifier<br/>cheap, predicts fleet-wide"] -->|"predictions to check"| V["fault injection<br/>expensive, verifies a sample"]
@@ -98,24 +62,24 @@ flowchart LR
 </pre>
 <figcaption>A cheap predictor labels the whole fleet; an expensive verifier checks a sample by breaking things on purpose. Their disagreements become the verified labels that correct the predictor.</figcaption></figure>
 
-      <h2>The problem: a classifier that is confident but unverifiable</h2>
+      <h2 id="the-problem-a-classifier-that-is-confident-but-unverifiable">The problem: a classifier that is confident but unverifiable</h2>
       <p>Picture an LLM classifying, across a large fleet of services, whether each dependency is hard or soft. A hard dependency takes its caller down when it fails; a soft one degrades gracefully - a cache miss, a fallback path, a feature that quietly turns off. You fortify the hard ones and leave the soft ones alone, so the cost of a wrong label is real: either you burn engineering on phantom risk, or you leave a true single-point-of-failure exposed.</p>
       <p>The classifier reads call sites, the introducing change, service metadata, and the surrounding code, and emits a label plus a failure-impact summary. Producing a confident label is easy. Knowing it is correct is the hard part. A model can read a code path and reason its way to "hard" with total fluency and still be wrong, because real behavior depends on retry policy, timeouts, circuit breakers, and fallbacks that are not always legible from the source. Self-reported confidence is not ground truth. So the real design question is: where does verified truth come from, at a scale that keeps the classifier honest over time?</p>
 
-      <h2>The mechanism: disable one dependency, watch what breaks, record the label</h2>
+      <h2 id="the-mechanism-disable-one-dependency-watch-what-breaks-record-the-label">The mechanism: disable one dependency, watch what breaks, record the label</h2>
       <p>The way out is to stop inferring criticality and start measuring it - by breaking things on purpose in a controlled, non-production environment. With a chaos and fault-injection framework, you can build an experiment harness that turns failures into labels. It runs one clean experiment at a time: take a single dependency edge, inject a fault that disables exactly that edge, hold everything else constant, and watch which SLOs and SLIs move.</p>
       <p>If disabling the edge breaches the caller's error budget or drops a key SLI, the edge is hard, and the experiment records it as an observed outcome - not a model opinion. If the caller absorbs the loss within budget, it is soft. One-dependency-at-a-time isolation is the whole trick: when only one thing changed, the degradation you measure can only be caused by that thing. That is what makes the result a label instead of an anecdote.</p>
 
-      <h2>The loop: experiments become labels, labels keep the classifier honest</h2>
+      <h2 id="the-loop-experiments-become-labels-labels-keep-the-classifier-honest">The loop: experiments become labels, labels keep the classifier honest</h2>
       <p>Every experiment emits a row: this edge, under this fault, produced this SLO or SLI degradation, therefore this observed hardness. That is exactly the verified ground truth the classifier was missing, and it becomes the label set you cross-validate and tune against - so a prediction for an edge can be checked against what actually happened when that edge was severed in the lab.</p>
       <p>The two halves are complementary. The classifier covers the whole fleet cheaply because inference is cheap; the harness covers a smaller slice expensively but with certainty. So you let the cheap thing predict everywhere and the expensive thing verify and correct. When the harness disagrees with the model - the model said soft, the experiment breached the budget - that disagreement is the highest-value signal in the system. It points straight at where reasoning-from-code misses production reality: an undocumented retry storm, a missing fallback, a shared resource the code did not make obvious. Those disagreements feed back as corrected reference labels and adjustments to the prompting and decision thresholds - no model weights are trained; the classifier is improved through eval and tuning. And a held-out slice of verified labels is reserved purely to score the model, so the grading stays honest too. The accuracy you report then means something, because it is measured against observed outcomes rather than the model's own confidence.</p>
 
-      <h2>The evaluation methodology: code-verified truth, cross-validation, anti-contamination</h2>
+      <h2 id="the-evaluation-methodology-code-verified-truth-cross-validation-anti-contamination">The evaluation methodology: code-verified truth, cross-validation, anti-contamination</h2>
       <p>An accuracy number is only worth as much as the methodology behind it. The eval should test the model against truth it could not see in advance, not flatter it. Three principles hold it together.</p>
       <p>First, code-verified ground truth: anchor reference labels to verifiable artifacts - the actual call sites, the introducing change, the concrete failure behavior - so a label traces to evidence rather than vibes. Second, fault-injection cross-validation: check the model's predictions against the independent, experimentally-observed outcomes. The two pipelines derive truth differently - one reasons over code, the other breaks the dependency and watches the SLO - so agreement earns trust and disagreement reveals either a model error or a coverage gap, both useful. Third, anti-contamination: because this is an LLM classifier and not a trained model, the contamination risk is in-context, not in a training set. The verified outcome must never be visible to the model at inference time - not in the prompt, not in the tool results, not as a few-shot example - or you measure look-up instead of reasoning.</p>
       <p>Two smaller decisions matter for trust. Lowering the model's sampling temperature (roughly 1.0 down to 0.2) reduces hallucinated code paths and makes runs reproducible, which you need when grading against a fixed label set and the same input must give the same output. It is a reproducibility lever, not a hallucination cure. And the LLM component here is not a retrieval-with-embeddings system; it is a tool-using agent harness that does structured retrieval by calling purpose-built tools - build-graph queries, source fetches, blame and diff attribution, traces, service metadata - and reasoning over what they return. There are no vector embeddings and no semantic search in the path; retrieval is explicit, auditable tool calls, which is part of why a label can always be traced back to its evidence.</p>
 
-      <h2>Why this is the right shape for a self-improving system</h2>
+      <h2 id="why-this-is-the-right-shape-for-a-self-improving-system">Why this is the right shape for a self-improving system</h2>
       <p>The lesson outlasts any one system. If you have an LLM making a judgment at scale and an expensive way to observe ground truth at small scale, do not make the model self-certify and do not try to label everything by hand. Build the cheap predictor and the expensive verifier as separate pipelines that derive truth by different means, then wire the verifier's disagreements back into the predictor. The disagreements are where the model is wrong in ways its own confidence can never reveal, and they are finite - you only need to verify enough to keep the boundary calibrated, not the whole fleet.</p>
       <p>The payoff is that accuracy stops being a one-time launch metric and becomes a maintained property. Services change, dependencies are added, fallbacks rot. A classifier graded once and trusted forever silently decays. A classifier with a continuous fault-injection loop behind it gets corrected by reality on a steady cadence, so its labels stay good as the system moves underneath it. That is the difference between a model that looked accurate on launch day and one that stays accurate.</p>
 
@@ -129,18 +93,62 @@ flowchart LR
           <li>Continuous ground truth turns accuracy from a launch-day snapshot into a maintained property: the loop corrects for drift through eval and tuning, with no model weights trained.</li>
         </ul>
       </div>
+    </div>
 
-      <div class="post-foot">
-        <a href="/notes/">&larr; more notes</a>
-        <a href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a>
+    <div class="post-footer">
+      <div class="author-card">
+        <div class="av">PN</div>
+        <div>
+          <h4>Prabhav Nalhe</h4>
+          <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
+        </div>
       </div>
-    </article>
+      <div class="next-prev">
+        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
+        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      </div>
+    </div>
+  </article>
 
+  <aside class="toc-rail">
+    <div class="toc">
+      <h4>On this page</h4>
+      <a href="#the-problem-a-classifier-that-is-confident-but-unverifiable">The problem: a classifier that is confident but unverifiable</a>
+      <a href="#the-mechanism-disable-one-dependency-watch-what-breaks-record-the-label">The mechanism: disable one dependency, watch what breaks, record the label</a>
+      <a href="#the-loop-experiments-become-labels-labels-keep-the-classifier-honest">The loop: experiments become labels, labels keep the classifier honest</a>
+      <a href="#the-evaluation-methodology-code-verified-truth-cross-validation-anti-contamination">The evaluation methodology: code-verified truth, cross-validation, anti-contamination</a>
+      <a href="#why-this-is-the-right-shape-for-a-self-improving-system">Why this is the right shape for a self-improving system</a>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <span>San Jose, CA · <span id="local-time"></span></span>
+    <div class="right">
+      <a href="https://github.com/nprabhav">GitHub</a>
+      <a href="https://linkedin.com/in/nprabhav">LinkedIn</a>
+      <a href="../../resume.pdf">Résumé</a>
+      <span>© 2026 Prabhav Nalhe</span>
+    </div>
   </div>
-  <footer class="wrap">&copy; 2026 Prabhav Nalhe &middot; San Jose, CA</footer>
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });
-  </script>
+</footer>
+
+<div id="palette-overlay" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div id="palette">
+    <div class="pal-input-row">
+      <span class="prompt-c">nprabhav:~$</span>
+      <input id="pal-input" placeholder="type a command or search…" autocomplete="off" spellcheck="false">
+    </div>
+    <div id="pal-list"></div>
+    <div class="pal-foot"><span>↑↓ navigate</span><span>↵ run</span><span>esc close</span></div>
+  </div>
+</div>
+
+<script src="../../assets/js/site.js" defer></script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });
+</script>
 </body>
 </html>

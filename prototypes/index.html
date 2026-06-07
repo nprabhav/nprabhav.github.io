@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Portfolio redesign — prototypes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c10; --panel:#15151c; --hi:#f4f4f1; --muted:#9a9a93; --faint:#66665e; --line:rgba(255,255,255,.1);
+    --accent:#8B82FF;
+    --sans:"Inter",ui-sans-serif,-apple-system,BlinkMacSystemFont,sans-serif;
+    --serif:"Newsreader",Georgia,serif; --mono:"JetBrains Mono","SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--muted);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;}
+  a{color:var(--accent);text-decoration:none;}
+  .wrap{max-width:1060px;margin:0 auto;padding:62px 28px 90px;}
+  .kick{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px;}
+  h1{font-family:var(--serif);font-weight:600;font-size:46px;letter-spacing:-0.02em;margin:0 0 12px;line-height:1.04;color:var(--hi);}
+  .sub{font-size:17px;color:var(--muted);max-width:64ch;margin:0;}
+  .sub b{color:var(--hi);font-weight:600;}
+  .bar{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;font-size:13px;}
+  .bar a{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:7px 12px;transition:all .15s;}
+  .bar a:hover{border-color:var(--accent);color:var(--accent);}
+  .bar a.star{border-color:color-mix(in srgb,var(--accent) 45%,transparent);color:var(--accent);}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:42px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s ease,box-shadow .2s ease,border-color .2s;}
+  .card:hover{transform:translateY(-5px);box-shadow:0 18px 40px -16px rgba(0,0,0,.6);border-color:color-mix(in srgb,var(--accent) 40%,transparent);}
+  .thumb{height:128px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+  .thumb.a{background:linear-gradient(135deg,#10131f,#1a2348);}
+  .thumb.b{background:linear-gradient(135deg,#1b1610,#3a2415);}
+  .thumb.c{background:linear-gradient(135deg,#100f1c,#241f48),linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/16px 16px;}
+  .thumb .glyph{font-family:var(--serif);font-size:50px;font-weight:600;color:rgba(255,255,255,.16);position:absolute;}
+  .thumb .tag{font-family:var(--mono);font-size:11.5px;color:#fff;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:5px 13px;backdrop-filter:blur(4px);z-index:1;}
+  .body{padding:20px 20px 22px;display:flex;flex-direction:column;flex:1;}
+  .vid{font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin:0 0 5px;}
+  .vname{font-family:var(--serif);font-weight:600;font-size:22px;letter-spacing:-0.01em;margin:0 0 12px;color:var(--hi);}
+  .vdesc{font-size:13.5px;color:var(--muted);line-height:1.55;margin:0 0 16px;flex:1;}
+  .feats{list-style:none;margin:0 0 18px;padding:0;}
+  .feats li{font-size:12.5px;color:var(--hi);padding:3px 0 3px 18px;position:relative;}
+  .feats li::before{content:"›";position:absolute;left:2px;color:var(--accent);font-family:var(--mono);}
+  .open{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#0a0820;font-size:14px;font-weight:600;padding:11px 16px;border-radius:9px;transition:filter .15s;}
+  .open:hover{filter:brightness(1.08);}
+  .note{margin-top:46px;font-size:13.5px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;line-height:1.65;}
+  .note code{font-family:var(--mono);font-size:12px;background:rgba(255,255,255,.06);padding:1px 6px;border-radius:4px;color:var(--hi);}
+  .note b{color:var(--hi);}
+  @media (max-width:760px){.grid{grid-template-columns:1fr;}h1{font-size:34px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kick">prabhavnalhe.com · redesign prototypes</p>
+  <h1>Three directions, leveled up.</h1>
+  <p class="sub">All three are now at <b>v5 tier</b> — system-matched <b>light/dark themes</b> (toggle, remembered), live dependency-graph
+    canvas, magnetic cursor, count-up metrics, scroll reveals — and each makes the <b>5-system arc</b> its signature, rendered three different ways.
+    Tip: hit the <b>◐</b> in the nav to flip themes. Pick a winner, or mix.</p>
+  <div class="bar">
+    <a class="star" href="v5-pro.html">★ v5-pro (your bar)</a>
+    <a href="variant-a-brief.html">A · Brief</a>
+    <a href="variant-b-editorial.html">B · Editorial</a>
+    <a href="variant-c-canvas.html">C · Canvas</a>
+  </div>
+
+  <div class="grid">
+    <a class="card" href="variant-a-brief.html">
+      <div class="thumb a"><span class="glyph">§</span><span class="tag">engineering brief</span></div>
+      <div class="body">
+        <p class="vid">Variant A</p><h2 class="vname">The Brief</h2>
+        <p class="vdesc">A beautifully typeset design doc / RFC. Front-matter header, ghost section numerals, ⌘K command palette. The arc is a precise pipeline that <b>executes</b> — fills + lights up stage by stage.</p>
+        <ul class="feats"><li>IBM Plex, spec-sheet rigor</li><li>Arc = self-executing pipeline</li><li>⌘K palette + count-up stats</li></ul>
+        <span class="open">Open Variant A →</span>
+      </div>
+    </a>
+    <a class="card" href="variant-b-editorial.html">
+      <div class="thumb b"><span class="glyph">Aa</span><span class="tag">editorial</span></div>
+      <div class="body">
+        <p class="vid">Variant B</p><h2 class="vname">Editorial</h2>
+        <p class="vdesc">Magazine-grade. Newsreader serif, line-mask headline reveal, drop-cap lead, warm paper/ink themes. The arc is a <b>self-drawing vertical timeline</b> with a curved feedback loop.</p>
+        <ul class="feats"><li>Serif display, generous air</li><li>Arc = drawing-in timeline</li><li>Most distinctive / human</li></ul>
+        <span class="open">Open Variant B →</span>
+      </div>
+    </a>
+    <a class="card" href="variant-c-canvas.html">
+      <div class="thumb c"><span class="glyph">⟳</span><span class="tag">systems canvas</span></div>
+      <div class="body">
+        <p class="vid">Variant C</p><h2 class="vname">Systems Canvas</h2>
+        <p class="vdesc">Product/dashboard. Sticky sidebar + scrollspy, full-page graph canvas, dotted grid. The arc is <b>interactive cards</b> over an animated flow, and your <b>live terminal</b> returns as the command surface.</p>
+        <ul class="feats"><li>Sidebar nav, animated pipeline</li><li>Arc = interactive card hero</li><li>Keeps the interactive terminal</li></ul>
+        <span class="open">Open Variant C →</span>
+      </div>
+    </a>
+  </div>
+
+  <p class="note">
+    These live in <code>/prototypes/</code> and are <b>not deployed</b> — <code>docs/index.html</code> (the live site) and your <code>v5-pro.html</code> are untouched.
+    Content is reused from your live site; per your call, the public <code>~$100M</code> figure is softened to "revenue-critical dependencies"
+    while the technical-scale numbers, <b>5 systems</b>, and the <b>~15%</b> hook stay. Writing links point to your real notes.
+    Pick a direction (or a mix) and I'll polish it and move it into <code>docs/</code>.
+  </p>
+</div>
+</body>
+</html>

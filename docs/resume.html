@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Résumé — Prabhav Nalhe</title>
+<meta name="description" content="Résumé of Prabhav Nalhe — software engineer, distributed systems & reliability. Currently at Meta.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://prabhavnalhe.com/resume.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.setAttribute('data-theme','light')}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0a0a; --hi:#f5f5f3; --text:#c9c9c4; --lo:#8a8a85; --faint:#5c5c58;
+    --line:rgba(255,255,255,.1); --accent:#6ee7a0;
+    --sans:'Inter',-apple-system,sans-serif; --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  }
+  [data-theme="light"] {
+    --bg:#fcfcfa; --hi:#16161a; --text:#3c3c41; --lo:#6f6f74; --faint:#9c9ca1;
+    --line:rgba(20,20,24,.12); --accent:#0f8a4d;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .sheet { max-width:760px; margin:0 auto; padding:56px 28px 80px; }
+  .topbar { display:flex; gap:12px; margin-bottom:40px; font-size:13.5px; }
+  .topbar a { color:var(--lo); text-decoration:none; }
+  .topbar a:hover { color:var(--accent); }
+  .topbar .print {
+    margin-left:auto; border:1px solid var(--line); border-radius:999px; padding:6px 16px;
+    color:var(--text); cursor:pointer; background:none; font-size:13px; font-weight:600; font-family:var(--sans);
+  }
+  .topbar .print:hover { border-color:var(--accent); color:var(--accent); }
+  header h1 { font-size:32px; font-weight:750; letter-spacing:-.03em; color:var(--hi); }
+  header .role { margin-top:4px; font-size:16px; color:var(--lo); }
+  header .contact { margin-top:10px; font-family:var(--mono); font-size:12.5px; color:var(--faint); display:flex; gap:14px; flex-wrap:wrap; }
+  header .contact a { color:var(--faint); text-decoration:none; }
+  header .contact a:hover { color:var(--accent); }
+  h2 { margin:36px 0 14px; font-family:var(--mono); font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); border-bottom:1px solid var(--line); padding-bottom:8px; }
+  .job { margin-bottom:20px; }
+  .job-head { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .job-head h3 { font-size:16px; font-weight:650; color:var(--hi); }
+  .job-head .role { color:var(--lo); font-size:14px; }
+  .job-head .when { margin-left:auto; font-family:var(--mono); font-size:12px; color:var(--faint); }
+  .job p { font-size:14px; color:var(--lo); margin-top:4px; }
+  .job ul { margin-top:6px; padding-left:0; list-style:none; }
+  .job li { position:relative; padding-left:18px; font-size:14px; color:var(--lo); margin-bottom:4px; }
+  .job li::before { content:'→'; position:absolute; left:0; color:var(--accent); font-family:var(--mono); font-size:11px; top:3px; }
+  .job b, .job strong { color:var(--text); font-weight:600; }
+  .skills-row { display:flex; gap:14px; padding:6px 0; font-size:14px; }
+  .skills-row dt { font-family:var(--mono); font-size:12px; color:var(--faint); min-width:96px; padding-top:2px; }
+  .skills-row dd { color:var(--lo); }
+  .edu { display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; padding:5px 0; font-size:14px; }
+  .edu b { color:var(--hi); font-weight:600; }
+  .edu span { color:var(--lo); }
+  .edu .when { margin-left:auto; font-family:var(--mono); font-size:12px; color:var(--faint); }
+  a.inline { color:var(--accent); text-decoration:none; }
+  a.inline:hover { text-decoration:underline; }
+
+  @media print {
+    :root { --bg:#fff; --hi:#111; --text:#222; --lo:#444; --faint:#777; --line:#ddd; --accent:#0f8a4d; }
+    body { font-size:12.5px; }
+    .sheet { padding:0; max-width:none; }
+    .topbar { display:none; }
+    h2 { margin-top:20px; }
+    a { color:inherit !important; text-decoration:none !important; }
+    .job li::before { color:#555; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="topbar">
+    <a href="index.html">← prabhavnalhe.com</a>
+    <a href="resume.pdf">Download PDF</a>
+    <button class="print" onclick="print()">Print ⌘P</button>
+  </div>
+
+  <header>
+    <h1>Prabhav Nalhe</h1>
+    <p class="role">Software Engineer — Distributed Systems &amp; Reliability</p>
+    <div class="contact">
+      <span>San Jose, CA</span>
+      <a href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a>
+      <a href="https://prabhavnalhe.com">prabhavnalhe.com</a>
+      <a href="https://github.com/nprabhav">github.com/nprabhav</a>
+      <a href="https://linkedin.com/in/nprabhav">linkedin.com/in/nprabhav</a>
+    </div>
+  </header>
+
+  <h2>Experience</h2>
+
+  <div class="job">
+    <div class="job-head"><h3>Meta</h3><span class="role">Software Engineer, Reliability Infra</span><span class="when">2024 — present</span></div>
+    <p>Service-dependency reliability — a platform addressing a double-digit share of the company's top-severity incidents.</p>
+    <ul>
+      <li>Built the <strong>canonical dependency graph</strong> in Rust — stream-fusion over six telemetry sources at ~20 GB/s.</li>
+      <li>Designed dependency notifications and a <strong>protection program adopted by 1,000+ services</strong>.</li>
+      <li>Led a <strong>fault-injection program</strong> that eliminated risky dependencies, protecting nine-figure revenue exposure.</li>
+      <li>Brought <strong>LLM agents</strong> into the stack — 16-tool harness explaining and classifying dependency risk at fleet scale (~$0.15/pair, near-100% coverage).</li>
+    </ul>
+  </div>
+
+  <div class="job">
+    <div class="job-head"><h3>Fidelity Investments</h3><span class="role">Software Engineer</span><span class="when">2023</span></div>
+    <ul>
+      <li>Built a <strong>15M-document</strong> search and indexing pipeline (AWS Lambda, SQS, Solr).</li>
+      <li>Built a real-time reporting system for financial research.</li>
+    </ul>
+  </div>
+
+  <div class="job">
+    <div class="job-head"><h3>Quest Global</h3><span class="role">Software Engineer</span><span class="when">2018 — 2021</span></div>
+    <ul>
+      <li>Voice authentication and OTA update infrastructure for automotive ECUs, serving <strong>10K+ users</strong>.</li>
+    </ul>
+  </div>
+
+  <h2>Skills</h2>
+  <dl>
+    <div class="skills-row"><dt>languages</dt><dd>Python, Rust, C/C++, Java, TypeScript, SQL</dd></div>
+    <div class="skills-row"><dt>systems</dt><dd>Distributed systems, streaming, fault injection, microservices, API design, SLO/SLI</dd></div>
+    <div class="skills-row"><dt>cloud / data</dt><dd>AWS, Kubernetes, Docker, Kafka, Redis, MySQL, PostgreSQL, Solr</dd></div>
+    <div class="skills-row"><dt>ai / ml</dt><dd>LLM agents, MCP, evals, prompt caching, inference routing</dd></div>
+  </dl>
+
+  <h2>Education</h2>
+  <div class="edu"><b>Stony Brook University</b><span>M.S. Computer Science · GPA 3.92</span><span class="when">2021 — 2022</span></div>
+  <div class="edu"><b>Pune Institute of Computer Technology</b><span>B.E. Computer Science</span><span class="when">2014 — 2018</span></div>
+
+  <h2>Publication</h2>
+  <div class="edu"><span>Co-author · <a class="inline" href="https://doi.org/10.48550/arXiv.2208.04415">Deep Learning Driven Natural Language Text to SQL Query Conversion</a> · IEEE TASLP</span><span class="when">2022</span></div>
+</div>
+</body>
+</html>
