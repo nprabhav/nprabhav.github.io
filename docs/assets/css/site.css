@@ -699,6 +699,73 @@ aside.toc-rail { padding-top: 76px; }
   #read-chip, #toast { transition: opacity .2s; }
 }
 
+/* ---- recruiter brief card ---- */
+.brief-card {
+  border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+  background: color-mix(in srgb, var(--bg-soft) 94%, var(--accent));
+}
+.brief-head, .brief-foot {
+  font-family: var(--mono); font-size: 12.5px; color: var(--text);
+  padding: 14px 20px; border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.brief-head .prompt-c { color: var(--accent); }
+.brief-head .dim, .brief-foot .dim { color: var(--text-faint); }
+.brief-foot { border-bottom: none; border-top: 1px solid var(--line); font-size: 11px; }
+.brief-foot .cursor { color: var(--accent); animation: blink 1.2s steps(1) infinite; }
+.brief-grid { padding: 10px 20px; }
+.brief-grid > div { display: flex; gap: 16px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.brief-grid > div:first-child { border-top: none; }
+.brief-grid dt { font-family: var(--mono); font-size: 11.5px; color: var(--text-faint); min-width: 96px; padding-top: 2px; flex-shrink: 0; }
+.brief-grid dd { color: var(--text-lo); }
+.brief-grid dd a { white-space: nowrap; }
+/* lines print like terminal output when the card reveals */
+.brief-card.reveal .brief-grid > div { opacity: 0; transform: translateX(-8px); transition: opacity .45s var(--ease-out), transform .45s var(--ease-out); }
+.brief-card.reveal.in .brief-grid > div { opacity: 1; transform: none; }
+.brief-card.reveal.in .brief-grid > div:nth-child(2) { transition-delay: .07s; }
+.brief-card.reveal.in .brief-grid > div:nth-child(3) { transition-delay: .14s; }
+.brief-card.reveal.in .brief-grid > div:nth-child(4) { transition-delay: .21s; }
+.brief-card.reveal.in .brief-grid > div:nth-child(5) { transition-delay: .28s; }
+.brief-card.reveal.in .brief-grid > div:nth-child(6) { transition-delay: .35s; }
+.brief-card.reveal.in .brief-grid > div:nth-child(7) { transition-delay: .42s; }
+.brief-card.reveal.in .brief-grid > div:nth-child(8) { transition-delay: .49s; }
+.brief-card.reveal.in .brief-grid > div:nth-child(9) { transition-delay: .56s; }
+.brief-actions { display: flex; gap: 10px; flex-wrap: wrap; padding: 16px 20px; border-top: 1px solid var(--line); }
+.brief-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: 12px; color: var(--text-lo);
+  background: none; border: 1px solid var(--line-strong); border-radius: 999px;
+  padding: 8px 16px; cursor: pointer; text-decoration: none;
+  transition: color .2s, border-color .2s, background .2s, transform .2s var(--ease);
+}
+.brief-btn:hover { color: var(--text-hi); border-color: var(--accent); transform: translateY(-1px); }
+.brief-btn.primary { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); font-weight: 500; }
+.brief-btn.primary:hover { color: var(--accent-ink); filter: brightness(1.08); }
+@media (max-width: 640px) {
+  .brief-grid > div { flex-direction: column; gap: 2px; }
+  .brief-grid dd a { white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brief-card.reveal .brief-grid > div { opacity: 1; transform: none; transition: none; }
+  .brief-foot .cursor { animation: none; }
+}
+
+/* ---- print: recruiters print pages; make it survive paper ---- */
+@media print {
+  nav, .marquee, .name-marquee, #palette-overlay, #cursor-dot, #cursor-ring,
+  #graph-canvas, .hero-glow, #boot, .cta-big, #read-chip, #toast,
+  #constellation-wrap, .filters, .kbd-hint, .brief-actions, aside.toc-rail { display: none !important; }
+  body { background: #fff !important; color: #222 !important; }
+  body::after { display: none !important; }
+  body.locked { overflow: visible; }
+  .reveal, .line-mask > span, .brief-card.reveal .brief-grid > div { opacity: 1 !important; transform: none !important; }
+  h1, h2, h3, .stat b, .post-title, .brief-grid dd { color: #000 !important; }
+  h1 .grad { -webkit-text-fill-color: #000; color: #000; background: none; }
+  a { color: #000 !important; }
+  .xp, .case-card, .brief-card, .stat { break-inside: avoid; }
+  .case-card { position: static !important; }
+}
+
 /* ===== PORT-ADDENDUM: ported-note support ===== */
 .post-dek{font-size:19px;color:var(--text-lo);line-height:1.6;margin:16px 0 0;text-wrap:pretty;}
 .prose .takeaways{background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-top:2.2em;}

@@ -1,6 +1,25 @@
 /* notes-data.js — the notes graph. Array order = curated reading thread.
    links[] are directed "feeds into" edges; the constellation and
    "adjacent in the graph" blocks are derived from them. */
+/* plaintext profile for one-click copy into ATS / recruiter notes */
+window.PROFILE = [
+  'Prabhav Nalhe — Software Engineer (Distributed Systems & Reliability)',
+  'Currently: Meta, Reliability Infrastructure (2024–present) · San Jose, CA',
+  'Experience: ~6 years — Meta, Fidelity Investments, Quest Global',
+  '',
+  'Highlights:',
+  '- Canonical service-dependency graph in Rust — ~20 GB/s stream fusion across six telemetry sources',
+  '- Dependency protection program adopted by 1,000+ services',
+  '- Fault-injection program protecting nine-figure revenue exposure',
+  '- LLM agents explaining and classifying dependency risk at fleet scale',
+  '',
+  'Education: M.S. Computer Science, Stony Brook University (GPA 3.92) · B.E. CS, PICT Pune',
+  'Publication: IEEE TASLP 2022 — Deep Learning Driven NL Text to SQL (arXiv:2208.04415)',
+  '',
+  'Web: https://prabhavnalhe.com · https://github.com/nprabhav · https://linkedin.com/in/nprabhav',
+  'Email: nprabhav111@gmail.com · Résumé: https://prabhavnalhe.com/resume.pdf',
+].join('\n');
+
 window.NOTES_SERIES = {
   systems:  { label: 'Systems & reliability', cssVar: '--c-systems' },
   llm:      { label: 'LLM in production',     cssVar: '--c-llm' },

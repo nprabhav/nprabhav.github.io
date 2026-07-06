@@ -312,6 +312,14 @@ $$('.reveal').forEach(el => io.observe(el));
     { ic: '✍', label: 'Read all notes', hint: 'blog', run: () => location.href = home + '/notes/index.html' },
     { ic: '$', label: 'whoami', hint: 'easter egg', run: () => alert('Prabhav Nalhe — software engineer, infrastructure & reliability.\nSix years across backend and infra, currently at Meta.') },
   ];
+  if (window.PROFILE) {
+    ACTIONS.splice(1, 0,
+      { ic: '⧉', label: 'Copy profile summary', hint: 'for ATS / notes', run: () => {
+          const done = () => window.__toast && window.__toast('$ profile copied — paste anywhere ✓');
+          if (navigator.clipboard) navigator.clipboard.writeText(window.PROFILE).then(done).catch(() => {});
+        } },
+      { ic: '§', label: 'Jump to quick facts', hint: 'recruiter brief', run: () => jump('brief') });
+  }
   /* every note is searchable from the palette */
   if (Array.isArray(window.NOTES)) {
     ACTIONS.push({

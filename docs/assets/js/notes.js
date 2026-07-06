@@ -44,6 +44,24 @@ function toast(msg) {
   clearTimeout(toastT);
   toastT = setTimeout(() => toastEl.classList.remove('show'), 2200);
 }
+window.__toast = toast;
+
+/* ---------- one-click copy (recruiter brief, email) ---------- */
+$$('[data-copy]').forEach(btn => btn.addEventListener('click', () => {
+  const what = btn.dataset.copy;
+  const text = what === 'profile' ? (window.PROFILE || '') : what;
+  if (!text) return;
+  const ok = () => toast(what === 'profile' ? '$ profile copied — paste anywhere ✓' : '$ copied: ' + text + ' ✓');
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok).catch(() => fallback());
+  else fallback();
+  function fallback() {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); ok(); } catch (e) { toast('copy failed — ' + (what === 'profile' ? 'see résumé' : text)); }
+    ta.remove();
+  }
+}));
 
 /* ================================================================
    CONSTELLATION — notes as nodes, ideas as edges, packets as reads
