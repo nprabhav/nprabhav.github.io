@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Notes — Prabhav Nalhe</title>
-<meta name="description" content="Notes on distributed systems, reliability engineering, and LLM agents for infrastructure.">
+<meta name="description" content="Notes on distributed systems, reliability engineering, and LLM agents for infrastructure — written as a graph, because that's how the ideas connect.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="canonical" href="https://prabhavnalhe.com/notes/">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -42,60 +42,107 @@
   <header class="list-hero">
     <p class="crumb"><a href="../index.html">← home</a> / notes</p>
     <h1 style="margin-top:14px">Notes<span class="serif-i" style="color:var(--accent)">.</span></h1>
-    <p>On distributed systems, reliability engineering, and what LLM agents are actually good for in infrastructure.</p>
+    <p>Thirteen notes on distributed systems, reliability, and LLMs in production — drawn as a graph, because that is how the ideas connect. Start anywhere and follow the edges.</p>
   </header>
+</div>
 
-  <section style="padding-top:32px">
-    <a class="note-row" href="service-graph-lying/">
-      <div><h3>The Service Graph Is a Lower Bound</h3><p>The dependency graph you draw from RPC traffic is real but incomplete. The dependencies that take you down are…</p></div>
+<div id="constellation-wrap" aria-hidden="true">
+  <canvas id="constellation"></canvas>
+  <div id="graph-tip"></div>
+  <div class="graph-legend">
+    <span><i style="background:var(--c-systems)"></i>systems &amp; reliability</span>
+    <span><i style="background:var(--c-llm)"></i>llm in production</span>
+    <span><i style="background:var(--c-research)"></i>earlier research</span>
+  </div>
+  <p class="graph-hint">notes are nodes · edges are shared ideas · click a star to read</p>
+</div>
+
+<div class="wrap">
+  <div class="filters" id="note-filters" role="group" aria-label="Filter notes">
+    <button data-filter="all" class="on">all</button>
+    <button data-filter="systems">systems &amp; reliability</button>
+    <button data-filter="llm">llm in production</button>
+    <button data-filter="research">earlier research</button>
+    <span id="notes-count">13 notes</span>
+  </div>
+
+  <section id="notes-list" style="padding-top:20px">
+    <a class="note-row" data-series="systems" data-min="5" href="service-graph-lying/">
+      <span class="idx">01</span>
+      <div><h3><span class="sdot"></span>The Service Graph Is a Lower Bound<span class="badge-start">start here</span></h3><p>The dependency graph you draw from RPC traffic is real but incomplete. The dependencies that take you down are the ones no edge shows.</p>
+        <div class="row-tags"><span>distributed systems</span><span>observability</span></div></div>
       <div class="meta"><span>5 min</span><span>2026</span></div>
     </a>
-    <a class="note-row" href="streaming-ingest-rust/">
-      <div><h3>Streaming Ingest in Rust</h3><p>When you fuse many noisy event streams into one model, the hard problems are not throughput - they are identity and…</p></div>
+    <a class="note-row" data-series="systems" data-min="7" href="streaming-ingest-rust/">
+      <span class="idx">02</span>
+      <div><h3><span class="sdot"></span>Streaming Ingest in Rust</h3><p>When you fuse many noisy event streams into one model, the hard problems are not throughput — they are identity and time.</p>
+        <div class="row-tags"><span>rust</span><span>streaming</span><span>distributed systems</span></div></div>
       <div class="meta"><span>7 min</span><span>2026</span></div>
     </a>
-    <a class="note-row" href="closing-the-loop/">
-      <div><h3>Closing the Loop</h3><p>A pattern worth reusing: when an LLM makes a judgment at scale, do not let it grade itself. Pair a cheap predictor…</p></div>
+    <a class="note-row" data-series="systems" data-min="6" href="self-improving-platform/">
+      <span class="idx">03</span>
+      <div><h3><span class="sdot"></span>Build the Substrate First</h3><p>Most platforms that reason about a system are really stacks of queries against a model of that system. Platform quality is capped by the model underneath.</p>
+        <div class="row-tags"><span>platform</span><span>reliability</span><span>ml</span></div></div>
       <div class="meta"><span>6 min</span><span>2026</span></div>
     </a>
-    <a class="note-row" href="self-improving-platform/">
-      <div><h3>Build the Substrate First</h3><p>Most platforms that reason about a system are really stacks of queries against a model of that system. The recurring…</p></div>
-      <div class="meta"><span>6 min</span><span>2026</span></div>
-    </a>
-    <a class="note-row" href="agent-harness-vs-rag/">
-      <div><h3>Agent Harness vs RAG</h3><p>Two ways to feed a model context: retrieve fuzzy passages by similarity, or call purpose-built tools that return…</p></div>
-      <div class="meta"><span>6 min</span><span>2026</span></div>
-    </a>
-    <a class="note-row" href="evals-before-features/">
-      <div><h3>Evals Before Features</h3><p>Before you wire an LLM into a real workflow, decide how you will know it is good enough - because the eval is the…</p></div>
+    <a class="note-row" data-series="systems" data-min="5" href="slo-driven-risk/">
+      <span class="idx">04</span>
+      <div><h3><span class="sdot"></span>SLO-Driven Risk</h3><p>Reliability effort gets spent on whatever feels scary in the room. Here is how to replace that gut feel with a number.</p>
+        <div class="row-tags"><span>slo/sli</span><span>reliability</span><span>risk</span></div></div>
       <div class="meta"><span>5 min</span><span>2026</span></div>
     </a>
-    <a class="note-row" href="llm-as-a-judge/">
-      <div><h3>LLM as a Judge</h3><p>A separate model can score outputs you cannot label by hand - but only if you treat it like a measuring instrument: a…</p></div>
-      <div class="meta"><span>6 min</span><span>2026</span></div>
-    </a>
-    <a class="note-row" href="cost-aware-llm-pipelines/">
-      <div><h3>Cost-Aware LLM Pipelines</h3><p>Most items in a large workload are easy, and a few are genuinely hard. The cheapest reliable pipeline is the one that…</p></div>
-      <div class="meta"><span>6 min</span><span>2026</span></div>
-    </a>
-    <a class="note-row" href="apis-for-agents/">
-      <div><h3>Designing APIs for Agents, Not Humans</h3><p>When an LLM is the caller, the interface is the prompt. Typed responses, idempotent writes, granular composable…</p></div>
-      <div class="meta"><span>6 min</span><span>2026</span></div>
-    </a>
-    <a class="note-row" href="delivery-is-the-product/">
-      <div><h3>Your Model Is Not the Product</h3><p>A correct model or a sharp analysis is necessary but not sufficient. What gets internal AI actually used is the last…</p></div>
-      <div class="meta"><span>6 min</span><span>2026</span></div>
-    </a>
-    <a class="note-row" href="slo-driven-risk/">
-      <div><h3>SLO-Driven Risk</h3><p>Reliability effort gets spent on whatever feels scary in the room. Here is how to replace that gut feel with a…</p></div>
-      <div class="meta"><span>5 min</span><span>2026</span></div>
-    </a>
-    <a class="note-row" href="scaling-live-to-a-billion/">
-      <div><h3>Scaling a Live Stream to a Billion Viewers</h3><p>A live broadcast turns one source into millions of simultaneous viewers in seconds. The hard part is not the video -…</p></div>
+    <a class="note-row" data-series="systems" data-min="4" href="scaling-live-to-a-billion/">
+      <span class="idx">05</span>
+      <div><h3><span class="sdot"></span>Scaling a Live Stream to a Billion Viewers</h3><p>A live broadcast turns one source into millions of simultaneous viewers in seconds. The hard part is not the video.</p>
+        <div class="row-tags"><span>distributed systems</span><span>streaming</span><span>scale</span></div></div>
       <div class="meta"><span>4 min</span><span>2026</span></div>
     </a>
-    <a class="note-row" href="text-to-sql-then-and-now/">
-      <div><h3>Natural Language to SQL, Then and Now</h3><p>In 2018 I helped build an RNN model that turned English questions into SQL, trained on WikiSQL and later published…</p></div>
+    <a class="note-row" data-series="llm" data-min="6" href="closing-the-loop/">
+      <span class="idx">06</span>
+      <div><h3><span class="sdot"></span>Closing the Loop</h3><p>When an LLM makes a judgment at scale, do not let it grade itself. Pair a cheap predictor with an expensive ground-truth engine.</p>
+        <div class="row-tags"><span>fault injection</span><span>ml labels</span><span>chaos eng</span></div></div>
+      <div class="meta"><span>6 min</span><span>2026</span></div>
+    </a>
+    <a class="note-row" data-series="llm" data-min="5" href="evals-before-features/">
+      <span class="idx">07</span>
+      <div><h3><span class="sdot"></span>Evals Before Features</h3><p>Before you wire an LLM into a real workflow, decide how you will know it is good enough — because the eval is the product spec.</p>
+        <div class="row-tags"><span>evals</span><span>llm</span></div></div>
+      <div class="meta"><span>5 min</span><span>2026</span></div>
+    </a>
+    <a class="note-row" data-series="llm" data-min="6" href="llm-as-a-judge/">
+      <span class="idx">08</span>
+      <div><h3><span class="sdot"></span>LLM as a Judge</h3><p>A separate model can score outputs you cannot label by hand — but only if you treat it like a measuring instrument.</p>
+        <div class="row-tags"><span>evals</span><span>llm</span><span>quality gates</span></div></div>
+      <div class="meta"><span>6 min</span><span>2026</span></div>
+    </a>
+    <a class="note-row" data-series="llm" data-min="6" href="cost-aware-llm-pipelines/">
+      <span class="idx">09</span>
+      <div><h3><span class="sdot"></span>Cost-Aware LLM Pipelines</h3><p>Most items in a large workload are easy, and a few are genuinely hard. The cheapest reliable pipeline routes compute by criticality.</p>
+        <div class="row-tags"><span>llm</span><span>cost</span><span>inference</span></div></div>
+      <div class="meta"><span>6 min</span><span>2026</span></div>
+    </a>
+    <a class="note-row" data-series="llm" data-min="6" href="agent-harness-vs-rag/">
+      <span class="idx">10</span>
+      <div><h3><span class="sdot"></span>Agent Harness vs RAG</h3><p>Two ways to feed a model context: retrieve fuzzy passages by similarity, or call purpose-built tools that return exact answers.</p>
+        <div class="row-tags"><span>llm agents</span><span>rag</span><span>tool calls</span></div></div>
+      <div class="meta"><span>6 min</span><span>2026</span></div>
+    </a>
+    <a class="note-row" data-series="llm" data-min="6" href="apis-for-agents/">
+      <span class="idx">11</span>
+      <div><h3><span class="sdot"></span>Designing APIs for Agents, Not Humans</h3><p>When an LLM is the caller, the interface is the prompt. Typed responses, idempotent writes, granular composable calls.</p>
+        <div class="row-tags"><span>api design</span><span>llm agents</span></div></div>
+      <div class="meta"><span>6 min</span><span>2026</span></div>
+    </a>
+    <a class="note-row" data-series="llm" data-min="6" href="delivery-is-the-product/">
+      <span class="idx">12</span>
+      <div><h3><span class="sdot"></span>Your Model Is Not the Product</h3><p>A correct model or a sharp analysis is necessary but not sufficient. What gets internal AI actually used is the last mile.</p>
+        <div class="row-tags"><span>llm</span><span>product</span></div></div>
+      <div class="meta"><span>6 min</span><span>2026</span></div>
+    </a>
+    <a class="note-row" data-series="research" data-min="3" href="text-to-sql-then-and-now/">
+      <span class="idx">13</span>
+      <div><h3><span class="sdot"></span>Natural Language to SQL, Then and Now</h3><p>In 2018 I helped build an RNN model that turned English questions into SQL. What that project looks like from the LLM era.</p>
+        <div class="row-tags"><span>nlp</span><span>llm</span><span>research</span></div></div>
       <div class="meta"><span>3 min</span><span>2026</span></div>
     </a>
   </section>
@@ -124,6 +171,8 @@
   </div>
 </div>
 
+<script src="../assets/js/notes-data.js" defer></script>
 <script src="../assets/js/site.js" defer></script>
+<script src="../assets/js/notes.js" defer></script>
 </body>
 </html>

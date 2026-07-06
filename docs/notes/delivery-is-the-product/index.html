@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="delivery-is-the-product" data-min="6">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -69,6 +69,7 @@ flowchart LR
       <p>The trap is treating the model as the product. The model is an input. The product is whatever causes an engineer to do something differently because of that input, and most of the work that determines whether that happens lives downstream of the model entirely. I have come to think of this as the delivery layer: routing, defaults, triage, review, and actionability. None of it is the part anyone demos, none of it shows up in a benchmark, and all of it decides whether the model matters. A correct insight that never reaches the one person who can act on it, in a form they can act on, has the same impact as no insight at all.</p>
       <h2 id="route-to-the-owner-do-not-publish-to-a-wall">Route to the owner, do not publish to a wall</h2>
       <p>The most common delivery failure is broadcasting. You produce N findings and put them somewhere central - a dashboard, a report, a channel - and assume the right people will come look. They will not. A central surface puts the burden of discovery on the reader, and the reader has a job that is not reading your surface. Findings on a wall are findings nobody owns.</p>
+      <aside class="pullquote"><span>Findings on a wall are findings nobody owns.</span></aside>
       <p>The fix is to invert it: resolve each insight to a specific owner and deliver it to them, rather than waiting for them to find it. That means the system has to know who owns the code, the service, or the decision each finding touches - which is real plumbing, attribution and ownership lookup, not an afterthought. Then layer subscriptions and sensible defaults on top. The right default is the one that reaches the likely owner without anyone having to configure it, with subscriptions available for the people who want to widen or narrow what they see. Opt-out beats opt-in for anything that matters, because the people who most need a finding are exactly the ones who will never go set up an alert for it. When delivery is addressed to an owner with a default that already includes them, the insight arrives as part of their work instead of as homework.</p>
       <h2 id="make-each-insight-actionable-or-it-is-just-trivia">Make each insight actionable, or it is just trivia</h2>
       <p>An insight that tells someone a fact is far weaker than one that tells them what to do about it. &quot;This dependency looks risky&quot; produces a shrug. &quot;This dependency looks risky, here is the specific call site, here is the evidence the system used to decide, and here is the concrete next step&quot; produces an action. The difference is not the quality of the model. It is whether the delivery layer packaged the output as a decision the recipient can make rather than an observation they have to interpret.</p>
@@ -99,10 +100,11 @@ flowchart LR
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np " href="../apis-for-agents/"><span>← previous in thread</span><b><span class="sdot" data-series="llm"></span>Designing APIs for Agents, Not Humans</b><i>6 min · llm in production</i></a>
+        <a class="np next" href="../text-to-sql-then-and-now/"><span>next in thread →</span><b><span class="sdot" data-series="research"></span>Natural Language to SQL, Then and Now</b><i>3 min · earlier research</i></a>
       </div>
+      <p class="adjacent">adjacent in the graph: <a href="../cost-aware-llm-pipelines/">Cost-Aware LLM Pipelines</a></p>
     </div>
   </article>
 
@@ -141,7 +143,9 @@ flowchart LR
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });

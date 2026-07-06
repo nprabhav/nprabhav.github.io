@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="self-improving-platform" data-min="6">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -77,6 +77,7 @@ flowchart TD
       <h2 id="if-the-model-cannot-verify-itself-grade-it-against-observed-truth">If the model cannot verify itself, grade it against observed truth</h2>
       <p>A model of a system invites judgments that are cheap to compute and hard to confirm. Consider classifying, across a large fleet, whether each dependency is hard - its caller goes down when it fails - or soft, degrading through a cache, a fallback, or a feature that quietly turns off. A language model can read a call site and reason fluently to a label, and a prediction like that is cheap relative to running a physical experiment per element, so it can cover the entire fleet from source. But it cannot verify itself: a model can reason its way to a confident answer and still be wrong, because real behavior lives in retry policy, timeouts, and fallbacks that source does not always make legible.</p>
       <p>Where a judgment has an observable ground truth, the answer is to measure it rather than trust the inference. That is a topic in its own right - I have written separately about pairing a cheap predictor with an expensive verifier that observes outcomes by breaking one thing at a time and watching the SLOs, and treating their disagreements as the highest-value signal. The point here is only its place in the picture: the verifier grades the predictor against observed reality, and the observed labels flow back to correct the predictor's reference set and thresholds through eval and tuning, with no model weights trained. The reason this is even possible is the substrate again - you can only run a clean per-element experiment, or attribute a result back to a specific part of the system, if you have an authoritative model that says what that part is and what it touches.</p>
+      <aside class="pullquote"><span>Where a judgment has an observable ground truth, the answer is to measure it rather than trust the inference.</span></aside>
       <h2 id="build-in-dependency-order-and-keep-the-substrate-fresh">Build in dependency order, and keep the substrate fresh</h2>
       <p>The throughline is an ordering principle, not a fixed architecture. Whatever a given platform's features are, they sit on a model of the system, and that model caps their quality. So build the model first as an owned product with a stated coverage and freshness bar, then build each feature as a traceable query against it, and where a feature makes an unverifiable judgment, grade it against observed truth and feed the corrections back. This is the opposite of the common pattern where detection, dashboards, runbooks, and analyzers are bolted together from whatever signals were on hand and no layer can fully trust the data beneath it.</p>
       <p>The part that is easy to underweight is freshness. Systems change continuously - dependencies get added, fallbacks rot, ownership moves, a retry policy shifts - so a model built once and trusted forever decays silently as the system moves underneath it, and every feature querying it decays with it. Treating the model as a product with an SLA, rather than a side effect of a dashboard, is what keeps the decay in check. The same logic applies to any judgment layer graded against reality: corrected on a cadence, it stays good; graded once, it goes stale. For anyone building one of these, the transferable rule is the order itself - substrate first, features as queries, judgments verified against observed truth - because the substrate's coverage and freshness set the ceiling for everything you put above it.</p>
@@ -100,10 +101,11 @@ flowchart TD
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np " href="../streaming-ingest-rust/"><span>← previous in thread</span><b><span class="sdot" data-series="systems"></span>Streaming Ingest in Rust</b><i>7 min · systems & reliability</i></a>
+        <a class="np next" href="../slo-driven-risk/"><span>next in thread →</span><b><span class="sdot" data-series="systems"></span>SLO-Driven Risk</b><i>5 min · systems & reliability</i></a>
       </div>
+      <p class="adjacent">adjacent in the graph: <a href="../service-graph-lying/">The Service Graph Is a Lower Bound</a> · <a href="../agent-harness-vs-rag/">Agent Harness vs RAG</a></p>
     </div>
   </article>
 
@@ -142,7 +144,9 @@ flowchart TD
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });

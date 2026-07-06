@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="service-graph-lying" data-min="5">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -75,6 +75,7 @@ flowchart TD
       <p>Walk back through the incidents that surprised people - not the ones where a known critical dependency fell over, but the ones where the post-mortem opened with some version of we did not think those two things were related. Almost all of them are implicit edges.</p>
       <p>A config push goes out and a dozen unrelated services degrade at once, because they all read the same key and the push was bad. A cache everyone treated as a soft optimization goes cold - a restart, a mass expiry, or a node loss - the read traffic stampedes the origin, and a system with no edge to the cache owner falls over from the secondary effect. A shared queue backs up, and a consumer you forgot was downstream starts missing its deadlines. A single data store hosts tables for several teams, and one team's runaway query starves everyone else's reads.</p>
       <p>The common shape is fate-sharing on a resource that the call graph never names. The blast radius does not follow request paths - it follows the shared thing. And because the shared thing is shared, the failure arrives at several services simultaneously, which is exactly the pattern that makes an incident hard to diagnose: lots of unrelated-looking alerts, no obvious caller-callee chain to walk up. The graph offered no warning because the coupling was never an edge in it.</p>
+      <aside class="pullquote"><span>The blast radius does not follow request paths - it follows the shared thing.</span></aside>
       <h2 id="surfacing-the-hidden-edges-starts-with-reconciling-identity-across-signals">Surfacing the hidden edges starts with reconciling identity across signals</h2>
       <p>You cannot model an edge you cannot see, and the reason these edges are invisible is usually mundane: the signals that would reveal them live in different systems that name things differently. The config system knows a config key and the principals that read it. The storage layer knows a database instance and the clients connected to it. The deploy system knows a service name. The trace pipeline knows yet another identifier. Same underlying service, four different names, no join key.</p>
       <p>So the first real work is identity reconciliation - building a mapping that says this service, this deploy unit, this database client, and this config consumer are the same thing. It is unglamorous and it is most of the battle. Once you can resolve identity across signals, the implicit edges start to fall out almost mechanically: enumerate everything that reads a given config key and you have the set of services that share its fate; enumerate every client of a data store and you have a shared-fate cluster; enumerate every consumer of a queue and you have the async dependencies the call graph dropped.</p>
@@ -103,10 +104,11 @@ flowchart TD
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np" href="../index.html"><span>← the graph</span><b>All 13 notes</b><i>start of the thread</i></a>
+        <a class="np next" href="../streaming-ingest-rust/"><span>next in thread →</span><b><span class="sdot" data-series="systems"></span>Streaming Ingest in Rust</b><i>7 min · systems & reliability</i></a>
       </div>
+      <p class="adjacent">adjacent in the graph: <a href="../self-improving-platform/">Build the Substrate First</a> · <a href="../slo-driven-risk/">SLO-Driven Risk</a></p>
     </div>
   </article>
 
@@ -144,7 +146,9 @@ flowchart TD
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });

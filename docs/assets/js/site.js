@@ -22,7 +22,8 @@ function toggleTheme() {
     const r = themeBtn.getBoundingClientRect();
     root.style.setProperty('--wipe-x', (r.left + r.width / 2) + 'px');
     root.style.setProperty('--wipe-y', (r.top + r.height / 2) + 'px');
-    document.startViewTransition(applyTheme);
+    try { document.startViewTransition({ update: applyTheme, types: ['theme'] }); }
+    catch (e) { document.startViewTransition(applyTheme); }
   } else applyTheme();
 }
 if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
@@ -229,6 +230,16 @@ $$('.reveal').forEach(el => io.observe(el));
       r: 1.2 + Math.random() * 1.6, pulse: Math.random() * Math.PI * 2,
     }));
   }
+  /* the visitor is a node in the graph too */
+  let px = -1e4, py = -1e4;
+  if (finePointer) {
+    const hero = canvas.parentElement;
+    hero.addEventListener('pointermove', e => {
+      const r = canvas.getBoundingClientRect();
+      px = e.clientX - r.left; py = e.clientY - r.top;
+    });
+    hero.addEventListener('pointerleave', () => { px = py = -1e4; });
+  }
   let last = 0;
   function frame(t) {
     requestAnimationFrame(frame);
@@ -236,6 +247,14 @@ $$('.reveal').forEach(el => io.observe(el));
     last = t;
     ctx.clearRect(0, 0, W, H);
     const rgb = accentRGB();
+    nodes.forEach(n => {
+      const d = Math.hypot(n.x - px, n.y - py);
+      if (d < 170) {
+        ctx.strokeStyle = `rgba(${rgb},${(1 - d / 170) * .32})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(px, py); ctx.stroke();
+      }
+    });
     for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) {
       const a = nodes[i], b = nodes[j];
       const d = Math.hypot(a.x - b.x, a.y - b.y);
@@ -293,6 +312,17 @@ $$('.reveal').forEach(el => io.observe(el));
     { ic: '✍', label: 'Read all notes', hint: 'blog', run: () => location.href = home + '/notes/index.html' },
     { ic: '$', label: 'whoami', hint: 'easter egg', run: () => alert('Prabhav Nalhe — software engineer, infrastructure & reliability.\nSix years across backend and infra, currently at Meta.') },
   ];
+  /* every note is searchable from the palette */
+  if (Array.isArray(window.NOTES)) {
+    ACTIONS.push({
+      ic: '⚄', label: 'Read a random note', hint: 'surprise me',
+      run: () => location.href = home + '/notes/' + window.NOTES[(Math.random() * window.NOTES.length) | 0].slug + '/',
+    });
+    window.NOTES.forEach(n => ACTIONS.push({
+      ic: '✍', label: 'Read: ' + n.t, hint: n.min + ' min',
+      run: () => location.href = home + '/notes/' + n.slug + '/',
+    }));
+  }
   function renderList() {
     const q = palInput.value.trim().toLowerCase();
     filtered = ACTIONS.filter(a => !q || a.label.toLowerCase().includes(q) || a.hint.toLowerCase().includes(q));

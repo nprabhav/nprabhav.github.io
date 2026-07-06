@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="evals-before-features" data-min="5">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -78,6 +78,7 @@ flowchart LR
       <h2 id="build-a-labeled-set-you-actually-trust-and-keep-it-clean">Build a labeled set you actually trust, and keep it clean</h2>
       <p>The eval is only as good as its answer key. A labeled set assembled from whatever was easy to find will quietly encode the same blind spots the model has, and then agreement means nothing. So anchor labels to verifiable evidence rather than to someone's quick judgment - tie each expected answer to a concrete artifact you can point to, so a disputed label can be re-derived from the source instead of re-argued from memory.</p>
       <p>The harder discipline is anti-contamination. If the items you grade against have leaked into what the model can see, you measure recall of the answer, not the reasoning that would produce it. For a hosted model you cannot inspect a training set, so the contamination you can actually control is in-context: the expected answer must never appear in the prompt, in the results of any tool the model calls, or as a few-shot example. Keep a held-out slice that is used only for scoring and never for prompt tuning, so the number you report is measured against inputs the current prompt was not fit to. The moment your tuning loop starts optimizing against the held-out slice, it stops being a held-out slice.</p>
+      <aside class="pullquote"><span>The moment your tuning loop starts optimizing against the held-out slice, it stops being a held-out slice.</span></aside>
       <h2 id="run-a-cross-vendor-bake-off-on-the-same-harness">Run a cross-vendor bake-off on the same harness</h2>
       <p>Once the eval exists, comparing models becomes mechanical instead of anecdotal. Run every candidate - across vendors and across sizes within a vendor - through the identical harness, the same inputs, the same scoring, the same parsing of outputs. Vendor benchmarks are run on the vendor's tasks; yours is run on your task, which is the only one that matters for your decision.</p>
       <p>The harness itself needs to be reproducible, which means pinning model versions and lowering sampling temperature for the graded runs so scoring is far more stable run to run. Lower temperature is a reproducibility lever, not a correctness fix - it makes scoring stable, it does not make a wrong model right. The bake-off output is a table, not a winner: this model leads on correctness but costs more and runs slower, that one is close on quality at a fraction of the latency, a third is strong on the common cases and weak on the adversarial slice. That table is what lets you choose deliberately, and re-choose later when a new model ships, because the gate has not moved even though the candidates have.</p>
@@ -104,10 +105,11 @@ flowchart LR
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np " href="../closing-the-loop/"><span>← previous in thread</span><b><span class="sdot" data-series="llm"></span>Closing the Loop</b><i>6 min · llm in production</i></a>
+        <a class="np next" href="../llm-as-a-judge/"><span>next in thread →</span><b><span class="sdot" data-series="llm"></span>LLM as a Judge</b><i>6 min · llm in production</i></a>
       </div>
+      <p class="adjacent">adjacent in the graph: <a href="../text-to-sql-then-and-now/">Natural Language to SQL, Then and Now</a></p>
     </div>
   </article>
 
@@ -146,7 +148,9 @@ flowchart LR
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });

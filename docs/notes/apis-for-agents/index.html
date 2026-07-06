@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="apis-for-agents" data-min="6">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -72,6 +72,7 @@ flowchart TD
       <h2 id="typed-structured-responses-over-prose-the-model-has-to-parse">Typed, structured responses over prose the model has to parse</h2>
       <p>The highest-leverage change is to return structured, typed data instead of human prose. An agent that gets back JSON with named fields - status as an enum, counts as integers, timestamps as ISO-8601, IDs as opaque strings - can branch on those fields directly. An agent that gets back &quot;Found a few results, the newest from earlier today&quot; has to re-derive meaning from English on every call, and it will be wrong some fraction of the time, silently.</p>
       <p>The goal is to remove inference from the path. Every value the agent needs to make a decision should be a field it can read, not a phrase it has to interpret. Enumerate the states - do not let &quot;pending,&quot; &quot;in progress,&quot; and &quot;running&quot; be three strings that mean the same thing; pick one and document it in the schema. Keep shapes stable: a field that is sometimes a string and sometimes a list forces the model to handle both, and it will eventually handle neither. If a response can be empty, make empty an explicit, typed case (an empty list, a null with a reason) rather than a missing key the agent has to notice is absent.</p>
+      <aside class="pullquote"><span>Every value the agent needs to make a decision should be a field it can read, not a phrase it has to interpret.</span></aside>
       <p>This is also where retrieval should be honest about what it is. When I build retrieval for an agent, it is explicit, typed tool calls - fetch this artifact by ID, query this graph, return these fields - not a blob of fuzzy text the model has to skim. Auditable structured returns are what let you trace any decision back to the exact bytes that produced it.</p>
       <h2 id="idempotency-and-machine-readable-errors-designing-for-the-retry">Idempotency and machine-readable errors: designing for the retry</h2>
       <p>Agents retry. They retry because a call timed out, because the model decided to try again, because a higher-level planner re-ran a step. If your write endpoint is not idempotent, retries create duplicates - two payments, two tickets, two resources - and the agent has no way to know it just did damage. Give every state-changing operation an idempotency key the caller can supply, so a repeated call with the same key is a no-op that returns the original result. This single property converts &quot;retries are dangerous&quot; into &quot;retries are safe,&quot; which is exactly the posture you want from an autonomous caller.</p>
@@ -104,9 +105,9 @@ flowchart TD
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np " href="../agent-harness-vs-rag/"><span>← previous in thread</span><b><span class="sdot" data-series="llm"></span>Agent Harness vs RAG</b><i>6 min · llm in production</i></a>
+        <a class="np next" href="../delivery-is-the-product/"><span>next in thread →</span><b><span class="sdot" data-series="llm"></span>Your Model Is Not the Product</b><i>6 min · llm in production</i></a>
       </div>
     </div>
   </article>
@@ -146,7 +147,9 @@ flowchart TD
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });

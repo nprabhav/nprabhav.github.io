@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="text-to-sql-then-and-now" data-min="3">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -69,6 +69,7 @@ flowchart LR
       <p>The intelligence lived in the architecture and the data, and generalization was narrow by construction. Step outside the benchmark's shape - a join, an unusual phrasing, a much bigger schema - and accuracy fell off, because the model had only ever seen the slice you trained it on.</p>
       <h2 id="what-an-llm-changed">What an LLM changed</h2>
       <p>Today you do not train anything. You hand a general-purpose model the schema and the question in a prompt and it returns SQL, zero-shot or with a couple of examples. The capability moved from a model you build into a model you ask. Joins, nested queries, multiple dialects, oddly phrased questions - things that in 2018 would each have been their own research effort - are mostly handled out of the box.</p>
+      <aside class="pullquote"><span>The capability moved from a model you build into a model you ask.</span></aside>
       <p>The bottleneck moved with it. In 2018 the hard question was whether the model could produce valid SQL at all. Now valid SQL is nearly free, and the hard question is whether it produced the SQL you actually meant.</p>
       <h2 id="what-did-not-change">What did not change</h2>
       <p>The genuinely hard parts were never about SQL syntax. They were semantic, and they are still here. Schema linking: when a user says revenue, which column in a messy hundred-table schema is that? Ambiguity: the same English question has two reasonable SQL readings. Scale: a real warehouse is not one tidy table. None of that was solved by making the model fluent.</p>
@@ -96,10 +97,11 @@ flowchart LR
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np " href="../delivery-is-the-product/"><span>← previous in thread</span><b><span class="sdot" data-series="llm"></span>Your Model Is Not the Product</b><i>6 min · llm in production</i></a>
+        <a class="np next" href="../index.html"><span>the graph →</span><b>All 13 notes</b><i>end of the thread</i></a>
       </div>
+      <p class="adjacent">adjacent in the graph: <a href="../evals-before-features/">Evals Before Features</a> · <a href="../agent-harness-vs-rag/">Agent Harness vs RAG</a></p>
     </div>
   </article>
 
@@ -138,7 +140,9 @@ flowchart LR
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });

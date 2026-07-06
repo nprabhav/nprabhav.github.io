@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="llm-as-a-judge" data-min="6">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -72,6 +72,7 @@ flowchart LR
       <p>Some outputs have a cheap, exact check - a schema that parses, a number that matches, a test that passes - and for those you should never reach for a model. You reach for a judge when correctness is real but not mechanically checkable: did this summary stay faithful to its source, did this answer actually address the question, did this explanation avoid asserting a fact the inputs do not support. Human review can score these, but it does not scale to every output on every prompt change, so most teams fall back to reading a handful of samples and shipping on a good feeling. That is the failure mode worth naming. &quot;Looks fine&quot; is not a measurement, it does not run in CI, and it cannot tell you whether yesterday's prompt edit quietly made things worse. A second model, prompted only to score, turns that vibe into a number you can gate on and track over time. The judge is not there to be smart. It is there to be a consistent, cheap, repeatable instrument - one that gives you the same reading on the same input far more often than a human re-reading samples will.</p>
       <h2 id="score-a-few-binary-dimensions-never-let-the-model-grade-itself">Score a few binary dimensions, never let the model grade itself</h2>
       <p>The first rule is structural: the model that produced the output must not be the model that grades it, and ideally not even the same prompt. Self-grading measures a model's confidence in its own work, which is exactly the thing that is already broken when the work is wrong. Use a separate judge call - a different model or at minimum a clean prompt with no memory of how the answer was generated - so the score reflects the artifact, not the author's self-regard. The second rule is to keep the rubric small and binary. A judge asked to rate quality from one to ten will hand back noise dressed as precision, and the same output can land on different scores from one run to the next. Decompose into a few yes-or-no dimensions instead: is every claim supported by the provided source material, does it answer the question that was actually asked, does it avoid contradicting the inputs, is the format valid. Each is a binary call a judge can make consistently and a human can adjudicate when you check it. Three or four sharp binary dimensions beat one fuzzy scalar every time, because you can see which specific property failed rather than watching an aggregate sag for reasons no one can name.</p>
+      <aside class="pullquote"><span>Self-grading measures a model's confidence in its own work, which is exactly the thing that is already broken when the work is wrong.</span></aside>
       <h2 id="wire-it-inline-and-keep-the-answer-key-out-of-its-sight">Wire it inline, and keep the answer key out of its sight</h2>
       <p>A judge that runs offline in a dashboard catches regressions after they ship. A judge wired inline catches them before delivery. The pattern is a gate: generate the output, score it on the binary dimensions, and if it falls below threshold on a dimension that matters, block it - retry with an adjusted prompt, fall back to a safer response, or route to a human - rather than handing the user something that failed the check. This costs a second model call per request, so reserve the inline gate for paths where shipping a bad output is expensive, and run the cheaper offline version everywhere else. The non-negotiable discipline, exactly as with any eval, is anti-contamination. The judge must score against criteria, not against a leaked answer. If you are evaluating faithfulness, the judge sees the source and the output and rules on whether one supports the other - it does not see a reference answer it can pattern-match to. The moment the expected answer is visible to the judge, in its prompt, in a tool result, or as a few-shot example, you are measuring lookup, not judgment, and the gate will pass things it should have stopped. Lowering the judge's sampling temperature makes its scores far more stable run to run, which is what you need when grading repeatedly against the same dimensions. That is a reproducibility lever, not a correctness fix, and it is not a claim that the judge no longer produces wrong verdicts.</p>
       <h2 id="calibrate-against-humans-then-close-the-loop-on-the-prompt">Calibrate against humans, then close the loop on the prompt</h2>
@@ -98,10 +99,11 @@ flowchart LR
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np " href="../evals-before-features/"><span>← previous in thread</span><b><span class="sdot" data-series="llm"></span>Evals Before Features</b><i>5 min · llm in production</i></a>
+        <a class="np next" href="../cost-aware-llm-pipelines/"><span>next in thread →</span><b><span class="sdot" data-series="llm"></span>Cost-Aware LLM Pipelines</b><i>6 min · llm in production</i></a>
       </div>
+      <p class="adjacent">adjacent in the graph: <a href="../closing-the-loop/">Closing the Loop</a></p>
     </div>
   </article>
 
@@ -140,7 +142,9 @@ flowchart LR
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });

@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="cost-aware-llm-pipelines" data-min="6">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -79,6 +79,7 @@ flowchart LR
       <p>The third is batch versus on-demand. If a workload is not latency-sensitive - overnight reprocessing, backfills, periodic re-scoring of a large set - run it through a batch path rather than the interactive one. Batch inference is materially cheaper per token because it relaxes the latency guarantee, and a lot of fleet-scale LLM work is genuinely offline. Reserve on-demand for the calls a human or a live system is waiting on, and push everything else to batch.</p>
       <h2 id="spend-the-savings-on-quality-where-it-counts">Spend the savings on quality where it counts</h2>
       <p>Cost discipline is not about making the system cheaper at the expense of being worse. It is about freeing budget so you can be more expensive exactly where it improves the result. Once the easy majority is handled by a cheap path, the long tail gets a larger slice of compute than a flat pipeline would ever have allowed - more reasoning steps, more verification, a second pass when confidence is low. Tiering does not lower your ceiling on hard problems; it raises it, because you stopped wasting the budget on easy ones.</p>
+      <aside class="pullquote"><span>Tiering does not lower your ceiling on hard problems; it raises it, because you stopped wasting the budget on easy ones.</span></aside>
       <p>This only holds if you measure quality per tier, not in aggregate. A blended accuracy number hides the failure mode that matters: the fast path quietly getting a class of inputs wrong because nobody escalated them. So I track the fast path's error rate separately from the agent tier's, and I watch the escalation rate over time. A drifting escalation rate is an early signal that the input distribution moved and the boundary needs retuning - the same way any threshold drifts when the world underneath it changes.</p>
       <p>The honest tradeoff to name is that tiering adds moving parts - a router, a boundary to calibrate, per-tier metrics to maintain. That complexity is justified at fleet scale and overkill for low volume. The decision rule is simple: if a single expensive path is affordable at your volume, keep it; the moment cost scales past the value, tier it, and tier it where the difficulty actually splits.</p>
       <div class="takeaways">
@@ -101,10 +102,11 @@ flowchart LR
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np " href="../llm-as-a-judge/"><span>← previous in thread</span><b><span class="sdot" data-series="llm"></span>LLM as a Judge</b><i>6 min · llm in production</i></a>
+        <a class="np next" href="../agent-harness-vs-rag/"><span>next in thread →</span><b><span class="sdot" data-series="llm"></span>Agent Harness vs RAG</b><i>6 min · llm in production</i></a>
       </div>
+      <p class="adjacent">adjacent in the graph: <a href="../delivery-is-the-product/">Your Model Is Not the Product</a></p>
     </div>
   </article>
 
@@ -142,7 +144,9 @@ flowchart LR
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });

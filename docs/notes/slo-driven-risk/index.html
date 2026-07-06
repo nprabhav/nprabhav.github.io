@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="slo-driven-risk" data-min="5">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -74,6 +74,7 @@ flowchart TD
       <h2 id="the-distinction-that-makes-the-number-useful-hard-versus-soft">The distinction that makes the number useful: hard versus soft</h2>
       <p>The single most clarifying cut is whether a dependency is hard or soft. A hard dependency takes its caller down when it fails - there is no fallback, no cache to serve stale from, no feature to quietly switch off. A soft dependency degrades gracefully: the caller absorbs the loss inside its error budget through a fallback path, a cached value, a default, or a feature that turns off without taking the request with it.</p>
       <p>This distinction matters because it is where the budget is won or lost. A hard dependency passes its failures straight through to your SLI: when it breaks, your indicator moves by the full amount. A soft dependency is a shock absorber, and the size of that absorber is exactly the headroom in the error budget. The same external service can be hard for one caller and soft for another depending entirely on what the caller does when it does not get an answer. So the classification is not a property of the dependency in isolation - it is a property of the edge between two services, and that is the right granularity to reason about. Get the hard set right and you know where a single failure becomes an outage. Everything else is a candidate for being left alone.</p>
+      <aside class="pullquote"><span>Get the hard set right and you know where a single failure becomes an outage.</span></aside>
       <h2 id="spending-the-effort-where-the-number-says-to">Spending the effort where the number says to</h2>
       <p>Once every dependency edge carries an estimate of how much error budget it puts at risk and how often, prioritization stops being a debate. Rank the edges by expected budget burned - the share of error budget an edge puts at risk times how often it fails - and spend from the top. The hard edges with high traffic and no fallback are where retries, circuit breakers, replication, and failover drills actually buy down risk. The soft edges near the bottom are where the same effort buys almost nothing, and the honest move is to leave them alone and write down why.</p>
       <p>The discipline cuts the other way too. If you are about to add a retry policy or a standby replica, you should be able to say which SLO it protects and how much budget it preserves. If you cannot, you are spending on a feeling. This is also how you defend the work upward: &quot;this edge is hard, it carries a large share of our traffic, and an outage here spends the whole quarter's budget in minutes&quot; is an argument a non-engineer can evaluate. &quot;It seems risky&quot; is not. The number does not replace judgment - it forces the judgment to be explicit and reviewable, which is what makes it possible to say no to plausible-sounding work that protects nothing.</p>
@@ -100,10 +101,11 @@ flowchart TD
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np " href="../self-improving-platform/"><span>← previous in thread</span><b><span class="sdot" data-series="systems"></span>Build the Substrate First</b><i>6 min · systems & reliability</i></a>
+        <a class="np next" href="../scaling-live-to-a-billion/"><span>next in thread →</span><b><span class="sdot" data-series="systems"></span>Scaling a Live Stream to a Billion Viewers</b><i>4 min · systems & reliability</i></a>
       </div>
+      <p class="adjacent">adjacent in the graph: <a href="../service-graph-lying/">The Service Graph Is a Lower Bound</a> · <a href="../closing-the-loop/">Closing the Loop</a></p>
     </div>
   </article>
 
@@ -142,7 +144,9 @@ flowchart TD
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });

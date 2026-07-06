@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="scaling-live-to-a-billion" data-min="4">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -73,6 +73,7 @@ flowchart LR
       <p>That packaging is what unlocks scale. A segment is just a small, immutable file with a stable URL, so it can be cached and served by an ordinary HTTP edge hierarchy, exactly like any static asset. Adaptive bitrate falls out of the same design: a client on a weak connection simply requests the lower-bitrate version of the next segment. The continuous, stateful problem of live video has been reframed as the well-understood problem of serving small cacheable files to a lot of people.</p>
       <h2 id="beat-the-thundering-herd-coalesce-requests-and-block-on-the-miss">Beat the thundering herd: coalesce requests and block on the miss</h2>
       <p>Segmentation makes the content cacheable, but it does not by itself solve the synchronized-miss problem. The single highest-leverage pattern is request coalescing. When many viewers request the same segment that the edge does not yet have, the edge does not forward all of them upstream. It sends one request, holds the rest behind a short cache-blocking timeout, and when that one fetch returns, it populates the cache and every waiting request is served from it. A million-request stampede becomes one origin fetch.</p>
+      <aside class="pullquote"><span>A million-request stampede becomes one origin fetch.</span></aside>
       <p>This is reinforced by a tiered cache hierarchy: viewer requests hit a nearby edge cache first, edges fall back to a smaller number of regional origin caches, and only those talk to the encoders. Each tier shields the next, and coalescing happens at every level. The effect is that origin load stays roughly flat with respect to audience size - a hundred viewers and a hundred million viewers look almost the same from the encoder's point of view, which is exactly the property you need.</p>
       <h2 id="trade-milliseconds-for-survivability">Trade milliseconds for survivability</h2>
       <p>These patterns cost latency, and that trade is the central design decision. Segmenting into one-second chunks with a rolling manifest adds several seconds of glass-to-glass delay compared to a tightly coupled sub-second transport. For the overwhelming majority of live use cases, a few seconds behind real time is completely acceptable, and in exchange you get cacheability, commodity HTTP transport, and the coalescing that makes a billion-viewer spike survivable. It is the same instinct that shows up across streaming systems: choosing seconds over milliseconds is what lets you put a durable, cacheable layer in the middle.</p>
@@ -100,10 +101,11 @@ flowchart LR
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np " href="../slo-driven-risk/"><span>← previous in thread</span><b><span class="sdot" data-series="systems"></span>SLO-Driven Risk</b><i>5 min · systems & reliability</i></a>
+        <a class="np next" href="../closing-the-loop/"><span>next in thread →</span><b><span class="sdot" data-series="llm"></span>Closing the Loop</b><i>6 min · llm in production</i></a>
       </div>
+      <p class="adjacent">adjacent in the graph: <a href="../streaming-ingest-rust/">Streaming Ingest in Rust</a></p>
     </div>
   </article>
 
@@ -142,7 +144,9 @@ flowchart LR
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });

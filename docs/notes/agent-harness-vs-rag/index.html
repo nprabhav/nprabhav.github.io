@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="agent-harness-vs-rag" data-min="6">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -82,6 +82,7 @@ flowchart TB
       <p>To ground this in my own practice: the retrieval I build is the tool-call kind, and I do not run vector embeddings or semantic search in that path. The model reasons over what structured tools return - graph queries, source fetches, blame and diff attribution, metadata lookups - not over embedded passages. I made that choice deliberately, for the reasons above: in this domain the answer has to trace to evidence, and tool-calls give me that trace.</p>
       <h2 id="traceability-is-the-real-dividing-line">Traceability is the real dividing line</h2>
       <p>If I had to compress the decision to one axis, it would be this: does the answer have to trace to evidence, or only sound right? Many tasks genuinely only need to sound right and helpful - a first-draft summary, a where-do-I-start pointer, a search over messy prose. Approximate retrieval serves those well, and over-engineering them into a typed tool layer is wasted effort.</p>
+      <aside class="pullquote"><span>If I had to compress the decision to one axis, it would be this: does the answer have to trace to evidence, or only sound right?</span></aside>
       <p>But some answers are load-bearing. They get acted on - a label that decides whether a system gets hardened, a judgment that gates a change, a result a reviewer has to be able to challenge. For those, 'the model read some relevant-looking passages and produced this' is not a defensible provenance, because you cannot reconstruct why a specific passage was chosen or confirm it was authoritative. 'The model called this tool, got back this exact record, and reasoned from it' is defensible, because the chain is inspectable end to end. When a human or an audit can demand 'show me where this came from,' the tool-call path can answer with an artifact and the similarity path can only answer with a distance.</p>
       <h2 id="how-to-choose-and-how-to-combine">How to choose, and how to combine</h2>
       <p>In practice the choice is not ideological. Ask three questions of the domain. Is the source structured or is it a fuzzy text corpus - if it is genuinely unstructured prose, lean RAG, because there is nothing typed to call. Must the answer be exact and current, or is approximate-and-recent acceptable - if exactness or live freshness is required, lean tool-calls. And does the output need to trace to evidence - if a person will act on it or contest it, the auditability of explicit tool calls is worth its cost.</p>
@@ -106,10 +107,11 @@ flowchart TB
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np " href="../cost-aware-llm-pipelines/"><span>← previous in thread</span><b><span class="sdot" data-series="llm"></span>Cost-Aware LLM Pipelines</b><i>6 min · llm in production</i></a>
+        <a class="np next" href="../apis-for-agents/"><span>next in thread →</span><b><span class="sdot" data-series="llm"></span>Designing APIs for Agents, Not Humans</b><i>6 min · llm in production</i></a>
       </div>
+      <p class="adjacent">adjacent in the graph: <a href="../self-improving-platform/">Build the Substrate First</a> · <a href="../text-to-sql-then-and-now/">Natural Language to SQL, Then and Now</a></p>
     </div>
   </article>
 
@@ -148,7 +150,9 @@ flowchart TB
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });

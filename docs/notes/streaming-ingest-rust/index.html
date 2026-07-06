@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="streaming-ingest-rust" data-min="7">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -71,6 +71,7 @@ flowchart LR
       <p>The pattern that works is to separate the matching policy from the matching mechanism. The mechanism is a deterministic set of rules applied in priority order: if a strong identifier matches, bind immediately; otherwise fall back to combinations of weaker signals, and below some confidence floor, refuse to merge and keep the records separate rather than guess. The policy - which signals count as strong, what the floor is - is data you can change without touching code. Two principles keep this honest. First, prefer under-merging to over-merging: a split identity is a visible, fixable annoyance, while a wrong merge silently corrupts every downstream count and is nearly impossible to unwind. Second, make every binding explain itself - record which rule fired and which signals it used - so that when a match looks wrong, you can trace it to evidence instead of arguing about a black box.</p>
       <h2 id="event-time-versus-processing-time">Event time versus processing time</h2>
       <p>The single most expensive mistake in stream processing is conflating when something happened with when you found out about it. Event time is the timestamp the source attaches to the thing that occurred. Processing time is the wall clock when your pipeline sees the record. They are routinely far apart - a source buffers and flushes late, a backfill replays last week, a clock is skewed, a retry redelivers an old event. If you key any logic on processing time, your results change depending on how busy your pipeline was, which means they are not reproducible and not correct.</p>
+      <aside class="pullquote"><span>The single most expensive mistake in stream processing is conflating when something happened with when you found out about it.</span></aside>
       <p>The rule I hold to is: reason in event time, and treat lateness as a first-class input rather than an error. That means carrying the event timestamp through the whole pipeline untouched, and being explicit about how long you are willing to wait for stragglers before you consider a window closed. There is a real tradeoff here - wait longer and results are more complete but more delayed; close sooner and results are timely but may be revised when a late event arrives. If your downstream consumers can accept revisions, the better move is usually to emit a provisional result and correct it when a late event lands, rather than pretend a completeness you do not have. If they cannot accept corrections, you are forced to wait, and the waiting bound becomes a hard product decision. Either way it is a decision you make on purpose, with a stated bound, not an accident of load.</p>
       <h2 id="ordering-dedup-and-surviving-the-firehose">Ordering, dedup, and surviving the firehose</h2>
       <p>Out-of-order and duplicate delivery are not edge cases; at volume they are the steady state. Most streaming transports give you at-least-once delivery, which means duplicates are guaranteed and you have to design them out. The way to stay sane is to make every operation idempotent and keyed on a stable identity from the event itself - a source-provided id, or a content hash over the fields that define identity when there is no id, with the caveat that a content hash collapses any two byte-identical events, so it only works when identical content genuinely means the same event. Get the key right and reprocessing the same event lands in the same place and changes nothing. Idempotency is what lets you replay safely after a crash, which you will need to do.</p>
@@ -98,10 +99,11 @@ flowchart LR
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np " href="../service-graph-lying/"><span>← previous in thread</span><b><span class="sdot" data-series="systems"></span>The Service Graph Is a Lower Bound</b><i>5 min · systems & reliability</i></a>
+        <a class="np next" href="../self-improving-platform/"><span>next in thread →</span><b><span class="sdot" data-series="systems"></span>Build the Substrate First</b><i>6 min · systems & reliability</i></a>
       </div>
+      <p class="adjacent">adjacent in the graph: <a href="../scaling-live-to-a-billion/">Scaling a Live Stream to a Billion Viewers</a></p>
     </div>
   </article>
 
@@ -140,7 +142,9 @@ flowchart LR
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });

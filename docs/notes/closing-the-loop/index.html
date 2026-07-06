@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/site.css">
 </head>
-<body data-root="../..">
+<body data-root="../.." data-note="closing-the-loop" data-min="6">
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
@@ -69,6 +69,7 @@ flowchart LR
       <h2 id="the-mechanism-disable-one-dependency-watch-what-breaks-record-the-label">The mechanism: disable one dependency, watch what breaks, record the label</h2>
       <p>The way out is to stop inferring criticality and start measuring it - by breaking things on purpose in a controlled, non-production environment. With a chaos and fault-injection framework, you can build an experiment harness that turns failures into labels. It runs one clean experiment at a time: take a single dependency edge, inject a fault that disables exactly that edge, hold everything else constant, and watch which SLOs and SLIs move.</p>
       <p>If disabling the edge breaches the caller's error budget or drops a key SLI, the edge is hard, and the experiment records it as an observed outcome - not a model opinion. If the caller absorbs the loss within budget, it is soft. One-dependency-at-a-time isolation is the whole trick: when only one thing changed, the degradation you measure can only be caused by that thing. That is what makes the result a label instead of an anecdote.</p>
+      <aside class="pullquote"><span>One-dependency-at-a-time isolation is the whole trick: when only one thing changed, the degradation you measure can only be caused by that thing.</span></aside>
 
       <h2 id="the-loop-experiments-become-labels-labels-keep-the-classifier-honest">The loop: experiments become labels, labels keep the classifier honest</h2>
       <p>Every experiment emits a row: this edge, under this fault, produced this SLO or SLI degradation, therefore this observed hardness. That is exactly the verified ground truth the classifier was missing, and it becomes the label set you cross-validate and tune against - so a prediction for an edge can be checked against what actually happened when that edge was severed in the lab.</p>
@@ -103,10 +104,11 @@ flowchart LR
           <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../index.html">more notes</a>.</p>
         </div>
       </div>
-      <div class="next-prev">
-        <a class="np" href="../index.html"><span>← Back</span><b>All notes</b></a>
-        <a class="np next" href="../../index.html#work"><span>Related →</span><b>Selected work</b></a>
+      <div class="next-prev thread-nav">
+        <a class="np " href="../scaling-live-to-a-billion/"><span>← previous in thread</span><b><span class="sdot" data-series="systems"></span>Scaling a Live Stream to a Billion Viewers</b><i>4 min · systems & reliability</i></a>
+        <a class="np next" href="../evals-before-features/"><span>next in thread →</span><b><span class="sdot" data-series="llm"></span>Evals Before Features</b><i>5 min · llm in production</i></a>
       </div>
+      <p class="adjacent">adjacent in the graph: <a href="../slo-driven-risk/">SLO-Driven Risk</a> · <a href="../llm-as-a-judge/">LLM as a Judge</a></p>
     </div>
   </article>
 
@@ -145,7 +147,9 @@ flowchart LR
   </div>
 </div>
 
+<script src="../../assets/js/notes-data.js" defer></script>
 <script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/notes.js" defer></script>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad:true, look:'handDrawn', theme:'neutral', securityLevel:'loose', themeVariables:{ fontFamily:"'Patrick Hand', cursive" } });
