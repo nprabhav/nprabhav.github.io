@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Break My Website - Fault-Injection Sandbox · Prabhav Nalhe</title>
+<meta name="description" content="An interactive fault-injection sandbox: click a service to take it down and watch the failure cascade through sync calls, shared stores, and async queues.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://prabhavnalhe.com/play/">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Break My Website - a fault-injection sandbox">
+<meta property="og:description" content="Click a service. Watch the cascade. Learn why the dependencies that take you down are the ones no RPC edge shows.">
+<meta property="og:url" content="https://prabhavnalhe.com/play/">
+<meta property="og:image" content="https://prabhavnalhe.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.setAttribute('data-theme','light')}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+<style>
+  .play-hero { padding: 76px 0 8px; }
+  .play-hero h1 { font-size: clamp(30px, 5vw, 46px); }
+  .play-hero p.sub { margin-top: 14px; color: var(--text-lo); font-size: 16px; max-width: 640px; line-height: 1.7; }
+  .play-hero p.sub b { color: var(--text); font-weight: 550; }
+
+  .sim-shell { max-width: var(--col-wide); margin: 30px auto 0; padding: 0 24px; display: grid; grid-template-columns: 1fr 300px; gap: 18px; }
+  .sim-stage { position: relative; height: 480px; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--bg-soft); }
+  #sim-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  #sim-tip { position: absolute; transform: translate(-50%, -118%); pointer-events: none; padding: 8px 13px; border-radius: 10px; background: color-mix(in srgb, var(--bg) 88%, var(--accent)); border: 1px solid var(--line-strong); opacity: 0; transition: opacity .15s; text-align: center; z-index: 2; }
+  #sim-tip.show { opacity: 1; }
+  #sim-tip b { display: block; font-size: 12.5px; color: var(--text-hi); }
+  #sim-tip span { font-family: var(--mono); font-size: 10.5px; color: var(--text-faint); }
+  .sim-legend { position: absolute; left: 16px; bottom: 12px; display: flex; gap: 14px; flex-wrap: wrap; font-family: var(--mono); font-size: 10px; color: var(--text-faint); pointer-events: none; }
+  .sim-legend i { display: inline-block; vertical-align: middle; margin-right: 5px; }
+  .sim-legend .sw { width: 16px; border-top: 1.6px solid var(--text-faint); }
+  .sim-legend .sw.dash { border-top-style: dashed; }
+  .sim-legend .sw.dot { border-top-style: dotted; }
+
+  .sim-rail { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .sim-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .sim-stats > div { background: var(--bg-soft); padding: 12px 14px; }
+  .sim-stats b { display: block; font-family: var(--mono); font-weight: 500; font-size: 17px; color: var(--text-hi); letter-spacing: -.02em; }
+  .sim-stats b.bad { color: #e5484d; }
+  .sim-stats span { display: block; margin-top: 2px; font-family: var(--mono); font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-faint); }
+  .sim-log { flex: 1; min-height: 200px; max-height: 300px; overflow-y: auto; border: 1px solid var(--line); border-radius: 14px; background: #0c0e10; padding: 12px 14px; font-family: var(--mono); font-size: 11px; line-height: 1.8; color: #8a8a85; }
+  [data-theme="light"] .sim-log { background: #14181f; }
+  .sim-log .t { color: #5c5c58; margin-right: 8px; }
+  .sim-log .down { color: #e5484d; }
+  .sim-log .deg { color: #f0b429; }
+  .sim-log .ok { color: #6ee7a0; }
+  .sim-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .sim-btn { flex: 1; white-space: nowrap; font-family: var(--mono); font-size: 11.5px; color: var(--text-lo); background: none; border: 1px solid var(--line-strong); border-radius: 999px; padding: 9px 14px; cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
+  .sim-btn:hover { color: var(--text-hi); border-color: var(--accent); }
+  .sim-btn.armed { color: #e5484d; border-color: color-mix(in srgb, #e5484d 55%, transparent); background: color-mix(in srgb, #e5484d 8%, transparent); }
+
+  .play-explain { max-width: var(--col); margin: 56px auto 0; padding: 0 24px; }
+  .play-explain h2 { font-size: 20px; font-weight: 650; color: var(--text-hi); letter-spacing: -.02em; }
+  .play-explain p { margin-top: 12px; color: var(--text-lo); font-size: 15px; line-height: 1.75; }
+  .play-explain .cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 22px; }
+  .play-explain .cards > div { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .play-explain .cards h3 { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 500; }
+  .play-explain .cards p { font-size: 13px; margin-top: 8px; color: var(--text-lo); }
+  .play-explain .foot-link { margin-top: 26px; font-size: 14.5px; }
+
+  @media (max-width: 900px) {
+    .sim-shell { grid-template-columns: 1fr; }
+    .sim-stage { height: 400px; }
+    .sim-log { max-height: 200px; }
+    .play-explain .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-root="..">
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <div id="scroll-progress"></div>
+  <div class="nav-inner">
+    <a class="logo" href="../index.html">nprabhav:~$&nbsp;<span class="cursor">▊</span></a>
+    <div class="nav-links">
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#work">Work</a>
+      <a href="../notes/index.html">Writing</a>
+      <button class="kbd-hint" id="pal-open"><span>⌘</span><span>K</span></button>
+      <button id="theme-toggle" aria-label="Toggle theme">◐</button>
+      <a class="nav-resume" href="../resume.pdf">Résumé</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header class="play-hero">
+    <p class="crumb"><a href="../index.html">← home</a> / play</p>
+    <h1 style="margin-top:14px">Break my website<span class="serif-i" style="color:var(--accent)">.</span></h1>
+    <p class="sub">This is a mock e-commerce backend. <b>Click any service to take it down</b> and watch the failure cascade - synchronous calls fail upstream, shared stores fail sideways, queues fail late. Exactly the physics I work on at Meta, minus the pager.</p>
+  </header>
+</div>
+
+<div class="sim-shell">
+  <div class="sim-stage">
+    <canvas id="sim-canvas"></canvas>
+    <div id="sim-tip"></div>
+    <div class="sim-legend">
+      <span><i class="sw"></i>sync call</span>
+      <span><i class="sw dash"></i>shared store</span>
+      <span><i class="sw dot"></i>async queue</span>
+      <span><i style="width:8px;height:8px;border-radius:50%;background:#6ee7a0"></i>up</span>
+      <span><i style="width:8px;height:8px;border-radius:50%;background:#f0b429"></i>degraded</span>
+      <span><i style="width:8px;height:8px;border-radius:50%;background:#e5484d"></i>down</span>
+    </div>
+  </div>
+  <div class="sim-rail">
+    <div class="sim-stats">
+      <div><b id="st-uptime">100%</b><span>user-facing health</span></div>
+      <div><b id="st-fail">0</b><span>failing req/s</span></div>
+      <div><b id="st-cost">$0</b><span>simulated revenue lost</span></div>
+      <div><b id="st-blast">0</b><span>blast radius (services)</span></div>
+    </div>
+    <div class="sim-actions">
+      <button class="sim-btn" id="btn-heal">✚ heal all</button>
+      <button class="sim-btn" id="btn-chaos">🐒 chaos monkey: off</button>
+    </div>
+    <div class="sim-log" id="sim-log" aria-live="polite"></div>
+  </div>
+</div>
+
+<div class="play-explain">
+  <h2>Why the cascade looks like that</h2>
+  <p>The point of this toy is that the three edge types fail differently - which is why a dependency graph that only shows RPC calls will surprise you in production.</p>
+  <div class="cards">
+    <div><h3>sync - fails upstream</h3><p>When Auth goes down, the API Gateway that calls it fails next, then everything above it. The failure walks the request path in reverse, fast.</p></div>
+    <div><h3>shared store - fails sideways</h3><p>When the Config Store dies, four services degrade at the same instant with no caller-callee ordering. Kill the Cache and watch the read stampede take out the Orders DB.</p></div>
+    <div><h3>async - fails late</h3><p>Kill the Ledger Queue and nothing happens… for a while. The buffer absorbs the hit, then the Ledger Worker starves. Time-to-impact is the tell.</p></div>
+  </div>
+  <p class="foot-link">The real version of this idea is in <a class="u" href="../notes/service-graph-lying/">The Service Graph Is a Lower Bound</a> and the <a class="u" href="../work/fault-injection-loop.html">fault-injection case study</a> - where the "game" ran against production services and the score was nine figures of protected revenue.</p>
+</div>
+
+<footer style="margin-top:110px">
+  <div class="foot-inner">
+    <span>San Jose, CA · <span id="local-time"></span></span>
+    <div class="right">
+      <a href="https://github.com/nprabhav">GitHub</a>
+      <a href="https://linkedin.com/in/nprabhav">LinkedIn</a>
+      <a href="../resume.pdf">Résumé</a>
+      <span>© 2026 Prabhav Nalhe</span>
+    </div>
+  </div>
+</footer>
+
+<div id="palette-overlay" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div id="palette">
+    <div class="pal-input-row">
+      <span class="prompt-c">nprabhav:~$</span>
+      <input id="pal-input" placeholder="type a command or search…" autocomplete="off" spellcheck="false">
+    </div>
+    <div id="pal-list"></div>
+    <div class="pal-foot"><span>↑↓ navigate</span><span>↵ run</span><span>esc close</span></div>
+  </div>
+</div>
+
+<script src="../assets/js/notes-data.js" defer></script>
+<script src="../assets/js/site.js" defer></script>
+<script src="../assets/js/notes.js" defer></script>
+<script>
+/* ---- fault-injection sandbox ---- */
+(function () {
+'use strict';
+const canvas = document.getElementById('sim-canvas');
+if (!canvas) return;
+const ctx = canvas.getContext('2d');
+const tip = document.getElementById('sim-tip');
+const logEl = document.getElementById('sim-log');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const root = document.documentElement;
+const dpr = Math.min(devicePixelRatio || 1, 2);
+let W = 0, H = 0;
+
+const UP = 1, DEG = .5, DOWN = 0;
+const COL = { [UP]: '#6ee7a0', [DEG]: '#f0b429', [DOWN]: '#e5484d' };
+
+/* (id, label, x, y, role) - user-facing services drive the metrics */
+const NODES = [
+  ['web',      'Web App',       .10, .22, 'user-facing'],
+  ['mobile',   'Mobile App',    .10, .58, 'user-facing'],
+  ['gateway',  'API Gateway',   .28, .40, 'routes everything'],
+  ['auth',     'Auth',          .46, .16, 'sessions & tokens'],
+  ['catalog',  'Catalog',       .46, .52, 'product listings'],
+  ['payments', 'Payments',      .44, .82, 'checkout'],
+  ['search',   'Search',        .63, .38, 'query serving'],
+  ['usersdb',  'Users DB',      .66, .10, 'primary store'],
+  ['ordersdb', 'Orders DB',     .66, .86, 'primary store'],
+  ['cache',    'Cache',         .64, .62, 'soft optimization™'],
+  ['queue',    'Ledger Queue',  .80, .76, 'buffers writes'],
+  ['worker',   'Ledger Worker', .92, .58, 'drains the queue'],
+  ['config',   'Config Store',  .82, .24, 'everyone reads it'],
+].map(([id, label, x, y, role]) => ({ id, label, x, y, role, health: UP, forced: 0, asyncLag: 0, pulse: 0 }));
+const N = Object.fromEntries(NODES.map(n => [n.id, n]));
+
+/* a depends on b; type: sync | store | async; crit: down propagates as down */
+const EDGES = [
+  ['web', 'gateway', 'sync', true], ['mobile', 'gateway', 'sync', true],
+  ['gateway', 'auth', 'sync', true], ['gateway', 'catalog', 'sync', false], ['gateway', 'payments', 'sync', false],
+  ['auth', 'usersdb', 'sync', true],
+  ['catalog', 'search', 'sync', false], ['catalog', 'ordersdb', 'sync', true], ['catalog', 'cache', 'store', false],
+  ['search', 'cache', 'store', false],
+  ['payments', 'ordersdb', 'sync', true], ['payments', 'queue', 'async', false],
+  ['worker', 'queue', 'async', true],
+  ['gateway', 'config', 'store', false], ['auth', 'config', 'store', false],
+  ['payments', 'config', 'store', false], ['search', 'config', 'store', false],
+].map(([a, b, type, crit]) => ({ a, b, type, crit }));
+
+let packets = [], cost = 0, chaos = false, lastBlastAt = 0, hover = null;
+const t0 = performance.now();
+
+function stamp() {
+  const s = ((performance.now() - t0) / 1000) | 0;
+  return String((s / 60) | 0).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+}
+function log(msg, cls) {
+  const d = document.createElement('div');
+  d.innerHTML = `<span class="t">${stamp()}</span><span class="${cls || ''}">${msg}</span>`;
+  logEl.appendChild(d);
+  while (logEl.children.length > 60) logEl.removeChild(logEl.firstChild);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function resize() {
+  const r = canvas.parentElement.getBoundingClientRect();
+  W = r.width; H = r.height;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+const px = n => ({ x: 40 + n.x * (W - 80), y: 34 + n.y * (H - 78) });
+
+function inject(n, why) {
+  if (n.forced) return;
+  n.forced = performance.now() + 9000;
+  log(`${n.label}: <b>DOWN</b> - ${why}`, 'down');
+  lastBlastAt = performance.now() + 1600;
+}
+
+/* one propagation tick */
+function propagate() {
+  const now = performance.now();
+  NODES.forEach(n => { if (n.forced && now > n.forced) { n.forced = 0; log(`${n.label}: recovered`, 'ok'); } });
+  const prev = Object.fromEntries(NODES.map(n => [n.id, n.health]));
+  /* iterate to a fixpoint (graph is small) */
+  const next = {};
+  NODES.forEach(n => next[n.id] = n.forced ? DOWN : UP);
+  for (let pass = 0; pass < 6; pass++) {
+    EDGES.forEach(e => {
+      const a = e.a, bH = next[e.b];
+      if (bH === UP) return;
+      if (e.type === 'sync') next[a] = Math.min(next[a], e.crit && bH === DOWN ? DOWN : DEG);
+      else if (e.type === 'store') next[a] = Math.min(next[a], DEG);
+      else if (e.type === 'async') {
+        const nd = N[a];
+        nd.asyncLag = Math.min(nd.asyncLag + 1, 99);
+        if (nd.asyncLag > 8) next[a] = Math.min(next[a], e.crit && bH === DOWN ? DOWN : DEG);
+      }
+    });
+  }
+  NODES.forEach(n => { if (!EDGES.some(e => e.a === n.id && e.type === 'async' && next[e.b] < UP)) n.asyncLag = 0; });
+  /* cache stampede special: cold cache hammers the origin */
+  if (next.cache === DOWN || N.cache.forced) {
+    if (next.ordersdb === UP) { next.ordersdb = DEG; if (prev.ordersdb === UP) log('Orders DB: <b>degraded</b> - read stampede from cold cache', 'deg'); }
+  }
+  NODES.forEach(n => {
+    n.health = next[n.id];
+    if (n.health !== prev[n.id] && !n.forced) {
+      if (n.health === DEG) {
+        const causes = EDGES.filter(e => e.a === n.id && next[e.b] < UP).map(e => N[e.b].label + (e.type === 'store' ? ' (shared)' : e.type === 'async' ? ' (backlog)' : ''));
+        if (causes.length) log(`${n.label}: <b>degraded</b> - ${causes[0]}`, 'deg');
+      } else if (n.health === DOWN) {
+        const cause = EDGES.find(e => e.a === n.id && e.crit && next[e.b] === DOWN);
+        log(`${n.label}: <b>DOWN</b> - ${cause ? N[cause.b].label + ' unreachable (sync)' : 'cascade'}`, 'down');
+      } else if (prev[n.id] < UP) log(`${n.label}: recovered`, 'ok');
+    }
+  });
+  /* blast radius report ~1.6s after an injection */
+  if (lastBlastAt && now > lastBlastAt) {
+    lastBlastAt = 0;
+    const affected = NODES.filter(n => n.health < UP).length;
+    if (affected > 1) log(`blast radius: <b>${affected} services</b> affected`, 'deg');
+  }
+}
+
+/* metrics */
+function metrics(dt) {
+  const user = (N.web.health + N.mobile.health) / 2;
+  cost += (1 - user) * 940 * dt;
+  document.getElementById('st-uptime').textContent = Math.round(user * 100) + '%';
+  document.getElementById('st-uptime').className = user < 1 ? 'bad' : '';
+  document.getElementById('st-fail').textContent = user === 1 ? '0' : ((1 - user) * 12.4).toFixed(1) + 'k';
+  document.getElementById('st-fail').className = user < 1 ? 'bad' : '';
+  document.getElementById('st-cost').textContent = '$' + Math.round(cost).toLocaleString('en-US');
+  document.getElementById('st-cost').className = cost > 0 ? 'bad' : '';
+  document.getElementById('st-blast').textContent = NODES.filter(n => n.health < UP).length;
+}
+
+/* game logic runs on timers so throttled rendering never pauses the physics */
+setInterval(propagate, 380);
+setInterval(() => {
+  if (!chaos) return;
+  const pool = NODES.filter(n => !n.forced && !['web', 'mobile'].includes(n.id));
+  inject(pool[(Math.random() * pool.length) | 0], 'chaos monkey 🐒');
+}, 5200);
+let lastMetrics = performance.now();
+setInterval(() => {
+  const now = performance.now();
+  metrics(Math.min((now - lastMetrics) / 1000, .5));
+  lastMetrics = now;
+}, 250);
+
+/* render (cosmetic only) */
+let lastFrame = 0;
+function frame(t) {
+  requestAnimationFrame(frame);
+  if (t - lastFrame < 28) return;
+  const dt = Math.min((t - lastFrame) / 1000, .2); lastFrame = t;
+
+  ctx.clearRect(0, 0, W, H);
+  const light = root.getAttribute('data-theme') === 'light';
+
+  /* edges */
+  EDGES.forEach(e => {
+    const A = px(N[e.a]), B = px(N[e.b]);
+    const worst = Math.min(N[e.a].health, N[e.b].health);
+    ctx.strokeStyle = worst === UP ? (light ? 'rgba(20,20,24,.22)' : 'rgba(255,255,255,.16)') : COL[worst] + '88';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash(e.type === 'store' ? [6, 5] : e.type === 'async' ? [2, 4] : []);
+    ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+  });
+  ctx.setLineDash([]);
+
+  /* packets: green = traffic flowing down, red = failure flowing up */
+  if (!reduced) {
+    if (packets.length < 9 && Math.random() < .3) {
+      const e = EDGES[(Math.random() * EDGES.length) | 0];
+      const failing = N[e.b].health < UP;
+      packets.push({ e, t: failing ? 1 : 0, dir: failing ? -1 : 1, col: failing ? '#e5484d' : (light ? '#0f8a4d' : '#6ee7a0') });
+    }
+    packets = packets.filter(p => (p.t += p.dir * .022) >= 0 && p.t <= 1);
+    packets.forEach(p => {
+      const A = px(N[p.e.a]), B = px(N[p.e.b]);
+      const x = A.x + (B.x - A.x) * p.t, y = A.y + (B.y - A.y) * p.t;
+      ctx.fillStyle = p.col;
+      ctx.beginPath(); ctx.arc(x, y, 1.7, 0, Math.PI * 2); ctx.fill();
+    });
+  }
+
+  /* nodes */
+  NODES.forEach(n => {
+    const P = px(n);
+    const c = COL[n.health];
+    n.pulse += dt * 3;
+    const R = 8 + (n === hover ? 2.5 : 0) + (n.health === DOWN && !reduced ? Math.sin(n.pulse * 3) * 1.2 : 0);
+    ctx.fillStyle = c + '22';
+    ctx.beginPath(); ctx.arc(P.x, P.y, R * 2.1, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = c;
+    ctx.beginPath(); ctx.arc(P.x, P.y, R, 0, Math.PI * 2); ctx.fill();
+    if (n.health === DOWN) {
+      ctx.strokeStyle = light ? '#fff' : '#0a0a0a'; ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(P.x - 3.4, P.y - 3.4); ctx.lineTo(P.x + 3.4, P.y + 3.4);
+      ctx.moveTo(P.x + 3.4, P.y - 3.4); ctx.lineTo(P.x - 3.4, P.y + 3.4);
+      ctx.stroke();
+    }
+    ctx.font = (n === hover ? '500 ' : '') + '10.5px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = light ? 'rgba(60,60,65,.85)' : 'rgba(201,201,196,.8)';
+    ctx.fillText(n.label, P.x, P.y + R + 15);
+  });
+}
+
+/* interaction */
+function nodeAt(x, y) { return NODES.find(n => { const P = px(n); return Math.hypot(P.x - x, P.y - y) < 24; }); }
+canvas.addEventListener('pointermove', e => {
+  const r = canvas.getBoundingClientRect();
+  const h = nodeAt(e.clientX - r.left, e.clientY - r.top);
+  hover = h || null;
+  canvas.style.cursor = h ? 'pointer' : '';
+  tip.classList.toggle('show', !!h);
+  if (h) {
+    const P = px(h);
+    tip.innerHTML = `<b>${h.label}</b><span>${h.role} · ${h.health === UP ? 'click to fail' : h.health === DEG ? 'degraded' : 'down'}</span>`;
+    tip.style.left = Math.min(Math.max(P.x, 80), W - 80) + 'px';
+    tip.style.top = P.y + 'px';
+  }
+});
+canvas.addEventListener('pointerleave', () => { hover = null; tip.classList.remove('show'); });
+canvas.addEventListener('click', e => {
+  const r = canvas.getBoundingClientRect();
+  const n = nodeAt(e.clientX - r.left, e.clientY - r.top);
+  if (n) inject(n, 'fault injected by you');
+});
+document.getElementById('btn-heal').addEventListener('click', () => {
+  NODES.forEach(n => { n.forced = 0; n.asyncLag = 0; });
+  log('operator: heal-all issued', 'ok');
+});
+document.getElementById('btn-chaos').addEventListener('click', function () {
+  chaos = !chaos;
+  this.textContent = '🐒 chaos monkey: ' + (chaos ? 'ON' : 'off');
+  this.classList.toggle('armed', chaos);
+  log(chaos ? 'chaos monkey released 🐒' : 'chaos monkey caged', chaos ? 'deg' : 'ok');
+});
+
+resize();
+addEventListener('resize', resize);
+log('sandbox ready - click a service to take it down', 'ok');
+log('tip: try the Config Store, then the Cache', '');
+requestAnimationFrame(frame);
+})();
+</script>
+<script data-goatcounter="https://nprabhav.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fault-Injection Loop: chaos as a labeling machine — Prabhav Nalhe</title>
-<meta name="description" content="Controlled chaos experiments that produce ground-truth dependency labels — a self-improving loop that retired risky dependencies.">
+<title>Fault-Injection Loop: chaos as a labeling machine - Prabhav Nalhe</title>
+<meta name="description" content="Controlled chaos experiments that produce ground-truth dependency labels - a self-improving loop that retired risky dependencies.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="canonical" href="https://prabhavnalhe.com/work/fault-injection-loop.html">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Fault-Injection Loop: chaos as a labeling machine">
-<meta property="og:description" content="Controlled chaos experiments that produce ground-truth dependency labels — a self-improving loop that retired risky dependencies.">
+<meta property="og:description" content="Controlled chaos experiments that produce ground-truth dependency labels - a self-improving loop that retired risky dependencies.">
 <meta property="og:image" content="https://prabhavnalhe.com/og.png">
 <script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.setAttribute('data-theme','light')}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,14 +42,14 @@
   <article class="post-body">
     <p class="crumb"><a href="../index.html#work">← selected work</a> / case study</p>
     <h1 class="post-title">Fault-Injection Loop: chaos as a labeling machine</h1>
-    <div class="post-meta"><span>case study</span><span>·</span><span>2025 — present</span><span>·</span><span>8 min read</span></div>
+    <div class="post-meta"><span>case study</span><span>·</span><span>2025 - present</span><span>·</span><span>8 min read</span></div>
     <div class="post-tags"><span>chaos engineering</span><span>ml labels</span><span>reliability</span></div>
 
     <div class="prose">
-      <div class="callout"><span class="ic">$</span><span><strong>Summary</strong> — A chaos-engineering program that injects controlled faults to produce ground-truth dependency-criticality labels, which continuously sharpen the risk classifier. It retired risky dependencies and protected nine-figure revenue exposure. Details simplified for public sharing.</span></div>
+      <div class="callout"><span class="ic">$</span><span><strong>Summary</strong> - A chaos-engineering program that injects controlled faults to produce ground-truth dependency-criticality labels, which continuously sharpen the risk classifier. It retired risky dependencies and protected nine-figure revenue exposure. Details simplified for public sharing.</span></div>
 
       <h2 id="context">Context</h2>
-      <p>Dependency criticality labels — "if B goes down, does A survive?" — were heuristic guesses derived from traffic volume and config hints. Guesses are fine until an incident proves them wrong, which is the most expensive possible way to find out.</p>
+      <p>Dependency criticality labels - "if B goes down, does A survive?" - were heuristic guesses derived from traffic volume and config hints. Guesses are fine until an incident proves them wrong, which is the most expensive possible way to find out.</p>
 
       <h2 id="approach">Approach: break it on purpose</h2>
       <p>The only honest answer comes from the experiment itself: inject a fault into the dependency under controlled conditions and observe whether the dependent service actually degrades. Each experiment converts one guess into a <strong>ground-truth label</strong>.</p>
@@ -65,24 +65,33 @@
 
       <h2 id="safety">Safety design</h2>
       <ul>
-        <li><strong>Blast-radius caps</strong> — experiments scope to a slice of traffic, never whole services.</li>
-        <li><strong>Automated aborts</strong> — guardrail metrics trip rollback in seconds, no human in the loop required.</li>
-        <li><strong>Scheduling discipline</strong> — never during peak, never during incident response, never two experiments overlapping in one dependency chain.</li>
+        <li><strong>Blast-radius caps</strong> - experiments scope to a slice of traffic, never whole services.</li>
+        <li><strong>Automated aborts</strong> - guardrail metrics trip rollback in seconds, no human in the loop required.</li>
+        <li><strong>Scheduling discipline</strong> - never during peak, never during incident response, never two experiments overlapping in one dependency chain.</li>
       </ul>
       <p>The counterintuitive lesson: a well-guarded fault-injection program is <em>safer</em> than not running one, because the alternative is running the same experiment unplanned, at peak, with customers watching.</p>
 
       <h2 id="loop">The loop is the point</h2>
-      <p>One-off chaos experiments produce trivia. The value came from closing the loop: labels train the classifier, the classifier's uncertainty picks the next experiments, and confident "this dependency is critical and unprotected" predictions trigger remediation — add a fallback, cache, or remove the dependency entirely.</p>
+      <p>One-off chaos experiments produce trivia. The value came from closing the loop: labels train the classifier, the classifier's uncertainty picks the next experiments, and confident "this dependency is critical and unprotected" predictions trigger remediation - add a fallback, cache, or remove the dependency entirely.</p>
+
+      <h2 id="decisions">Decisions &amp; tradeoffs</h2>
+      <ul>
+        <li><strong>Uncertainty-driven selection over coverage sweeps.</strong> Letting the classifier pick the next experiments meant fewer, more informative runs - and accepting that well-understood edges never get "tested" at all.</li>
+        <li><strong>Auto-abort authority over human approval.</strong> Guardrail metrics could roll back an experiment with no human in the loop. Contentious to grant - but a program that needs an engineer watching every run can never scale past a demo.</li>
+        <li><strong>Traffic slices over full-service kills.</strong> Scoped experiments give a weaker signal per run and a bounded worst case. That bound is what turned "absolutely not" into "yes" in review.</li>
+        <li><strong>A slower loop over a busier one.</strong> No peak windows, no overlapping experiments in one dependency chain. The lost throughput bought the safety record the program's credibility lived on.</li>
+      </ul>
 
       <h2 id="impact">Impact</h2>
       <ul>
         <li>Eliminated a long tail of risky dependencies before they caused incidents.</li>
         <li>Protected <strong>nine-figure revenue exposure</strong> attributable to the retired dependency risks.</li>
-        <li>Criticality labels went from folklore to evidence — and the <a href="dependency-explanations.html">explanation agents</a> cite them.</li>
+        <li>Criticality labels went from folklore to evidence - and the <a href="dependency-explanations.html">explanation agents</a> cite them.</li>
       </ul>
 
       <h2 id="lessons">Lessons</h2>
       <p>Sell the program as label generation, not chaos. "We break things" gets you a meeting with legal; "we convert guesses into ground truth that makes every downstream system smarter" gets you adoption. The engineering was the easy half.</p>
+      <p><strong>What I'd do differently:</strong> close the classifier loop earlier - the first experiments were hand-picked and mostly confirmed what people already believed. And build experiment provenance (exact scope, guardrails, and timeline attached to every label) from the start, so a disputed label gets re-run instead of re-argued.</p>
     </div>
 
     <div class="post-footer">
@@ -90,7 +99,7 @@
         <div class="av">PN</div>
         <div>
           <h4>Prabhav Nalhe</h4>
-          <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../notes/index.html">the notes</a>.</p>
+          <p>Software engineer - distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../notes/index.html">the notes</a>.</p>
         </div>
       </div>
       <div class="next-prev">
@@ -102,7 +111,7 @@
 
   <aside class="toc-rail">
     <div class="toc">
-      <h4>On this page</h4><a href="#context">Context</a><a href="#approach">Break it on purpose</a><a href="#safety">Safety design</a><a href="#loop">The loop</a><a href="#impact">Impact</a><a href="#lessons">Lessons</a></div>
+      <h4>On this page</h4><a href="#context">Context</a><a href="#approach">Break it on purpose</a><a href="#safety">Safety design</a><a href="#loop">The loop</a><a href="#decisions">Decisions</a><a href="#impact">Impact</a><a href="#lessons">Lessons</a></div>
   </aside>
 </div>
 
@@ -132,5 +141,6 @@
 <script src="../assets/js/notes-data.js" defer></script>
 <script src="../assets/js/site.js" defer></script>
 <script src="../assets/js/notes.js" defer></script>
+<script data-goatcounter="https://nprabhav.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-  <title>Prabhav Nalhe — Notes</title>
+  <title>Prabhav Nalhe - Notes</title>
   <link>https://prabhavnalhe.com/notes/</link>
   <description>Notes on distributed systems, reliability engineering, and LLM agents for infrastructure.</description>
   <language>en-us</language>

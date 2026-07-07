@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Case Study: Dependency Service — Prabhav Nalhe</title>
-<meta name="description" content="How we built a canonical service-dependency graph in Rust — fusing six telemetry sources in real time at ~20 GB/s.">
+<title>Case Study: Dependency Service - Prabhav Nalhe</title>
+<meta name="description" content="How we built a canonical service-dependency graph in Rust - fusing six telemetry sources in real time at ~20 GB/s.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="canonical" href="https://prabhavnalhe.com/work/dependency-service.html">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -43,22 +43,22 @@
     <p class="crumb"><a href="../index.html#work">← selected work</a> / case study</p>
     <h1 class="post-title">Dependency Service: one graph to trust</h1>
     <div class="post-meta">
-      <span>case study</span><span>·</span><span>2024 — present</span><span>·</span><span>10 min read</span>
+      <span>case study</span><span>·</span><span>2024 - present</span><span>·</span><span>10 min read</span>
     </div>
     <div class="post-tags"><span>rust</span><span>streaming</span><span>graphs</span><span>reliability</span></div>
 
     <div class="prose">
-      <div class="callout"><span class="ic">$</span><span><strong>Summary</strong> — A Rust streaming system that fuses six telemetry sources (~20 GB/s) into one canonical service-dependency graph. It became the source of truth behind dependency notifications, a protection program adopted by 1,000+ services, and a fault-injection loop. Details below are simplified and shared at a level consistent with public engineering writing.</span></div>
+      <div class="callout"><span class="ic">$</span><span><strong>Summary</strong> - A Rust streaming system that fuses six telemetry sources (~20 GB/s) into one canonical service-dependency graph. It became the source of truth behind dependency notifications, a protection program adopted by 1,000+ services, and a fault-injection loop. Details below are simplified and shared at a level consistent with public engineering writing.</span></div>
 
       <h2 id="context">Context</h2>
-      <p>At hyperscale, "which services depend on which" sounds like a solved problem. It isn't. Six different telemetry systems each held a partial, mutually inconsistent picture: RPC traces, mesh flow logs, network connections, client-library declarations, configuration intent, and routing topology. During incidents — the only time anyone urgently needs this data — engineers got six different answers.</p>
+      <p>At hyperscale, "which services depend on which" sounds like a solved problem. It isn't. Six different telemetry systems each held a partial, mutually inconsistent picture: RPC traces, mesh flow logs, network connections, client-library declarations, configuration intent, and routing topology. During incidents - the only time anyone urgently needs this data - engineers got six different answers.</p>
 
       <h2 id="problem">The problem, precisely</h2>
       <ul>
         <li><strong>Coverage gaps:</strong> sampled tracing misses low-QPS but critical calls; the mesh can't see sidecar-bypassing traffic.</li>
-        <li><strong>Staleness:</strong> declared dependencies outlive real ones — nobody deletes old client configs.</li>
+        <li><strong>Staleness:</strong> declared dependencies outlive real ones - nobody deletes old client configs.</li>
         <li><strong>Identity mismatch:</strong> network-level data sees endpoints, not services.</li>
-        <li><strong>Trust:</strong> with six sources disagreeing, every consumer built their own ad-hoc reconciliation — badly.</li>
+        <li><strong>Trust:</strong> with six sources disagreeing, every consumer built their own ad-hoc reconciliation - badly.</li>
       </ul>
 
       <h2 id="architecture">Architecture</h2>
@@ -74,7 +74,7 @@
                         ▼
               canonical dependency graph
               (evidence + confidence per edge)</pre></div>
-        <figcaption>six sources in, one graph out — every edge carries its evidence</figcaption>
+        <figcaption>six sources in, one graph out - every edge carries its evidence</figcaption>
       </figure>
       <p>The pipeline is a Rust streaming service. Each telemetry source is normalized into <code>Observation</code> events; edges accumulate observations rather than verdicts:</p>
       <pre><code><span class="c">// simplified: edges carry evidence, not assertions</span>
@@ -87,8 +87,8 @@
 }</code></pre>
       <p>Three design decisions did most of the work:</p>
       <ol>
-        <li><strong>Model evidence, not facts.</strong> Consumers see <em>why</em> an edge exists and how confident the system is — an edge seen by tracing and mesh flows in the last hour is near-certain; one living only in a 90-day-stale client config is flagged "probably dead."</li>
-        <li><strong>Freshness beats completeness.</strong> Confidence decays continuously instead of being recomputed in nightly batches. A 95%-complete graph that's thirty seconds fresh beats a complete one that's six hours stale — incident responders live in the present.</li>
+        <li><strong>Model evidence, not facts.</strong> Consumers see <em>why</em> an edge exists and how confident the system is - an edge seen by tracing and mesh flows in the last hour is near-certain; one living only in a 90-day-stale client config is flagged "probably dead."</li>
+        <li><strong>Freshness beats completeness.</strong> Confidence decays continuously instead of being recomputed in nightly batches. A 95%-complete graph that's thirty seconds fresh beats a complete one that's six hours stale - incident responders live in the present.</li>
         <li><strong>Never silently delete.</strong> Edges are demoted and flagged, never dropped without human confirmation. Reliability tooling that silently removes data is how you cause the incident you were built to prevent.</li>
       </ol>
 
@@ -97,14 +97,14 @@
 
       <h2 id="impact">Impact</h2>
       <ul>
-        <li>Became the canonical dependency source — downstream teams deleted their ad-hoc reconciliation pipelines.</li>
+        <li>Became the canonical dependency source - downstream teams deleted their ad-hoc reconciliation pipelines.</li>
         <li>Powers dependency notifications and a protection program adopted by <strong>1,000+ services</strong>.</li>
         <li>Feeds the fault-injection loop that produces ground-truth criticality labels.</li>
-        <li>Foundation for LLM-agent dependency explanations (its own story — <a href="../notes/service-graph-lying/">start here</a>).</li>
+        <li>Foundation for LLM-agent dependency explanations (its own story - <a href="../notes/service-graph-lying/">start here</a>).</li>
       </ul>
 
       <h2 id="lessons">What I'd do differently</h2>
-      <p>Start the confidence model earlier. The first iteration ranked sources by priority order, and unwinding that into evidence-based scoring cost a quarter. And invest in the decay function sooner — it ended up being the most-tuned ten lines in the codebase.</p>
+      <p>Start the confidence model earlier. The first iteration ranked sources by priority order, and unwinding that into evidence-based scoring cost a quarter. And invest in the decay function sooner - it ended up being the most-tuned ten lines in the codebase.</p>
     </div>
 
     <div class="post-footer">
@@ -112,7 +112,7 @@
         <div class="av">PN</div>
         <div>
           <h4>Prabhav Nalhe</h4>
-          <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../notes/index.html">the notes</a>.</p>
+          <p>Software engineer - distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../notes/index.html">the notes</a>.</p>
         </div>
       </div>
       <div class="next-prev">
@@ -161,5 +161,6 @@
 <script src="../assets/js/notes-data.js" defer></script>
 <script src="../assets/js/site.js" defer></script>
 <script src="../assets/js/notes.js" defer></script>
+<script data-goatcounter="https://nprabhav.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-/* notes.js — constellation graph, index filters, and reading enhancements.
+/* notes.js - constellation graph, index filters, and reading enhancements.
    Pure progressive enhancement: every feature null-guards its mount point. */
 (function () {
 'use strict';
@@ -51,20 +51,20 @@ $$('[data-copy]').forEach(btn => btn.addEventListener('click', () => {
   const what = btn.dataset.copy;
   const text = what === 'profile' ? (window.PROFILE || '') : what;
   if (!text) return;
-  const ok = () => toast(what === 'profile' ? '$ profile copied — paste anywhere ✓' : '$ copied: ' + text + ' ✓');
+  const ok = () => toast(what === 'profile' ? '$ profile copied - paste anywhere ✓' : '$ copied: ' + text + ' ✓');
   if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok).catch(() => fallback());
   else fallback();
   function fallback() {
     const ta = document.createElement('textarea');
     ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
     document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); ok(); } catch (e) { toast('copy failed — ' + (what === 'profile' ? 'see résumé' : text)); }
+    try { document.execCommand('copy'); ok(); } catch (e) { toast('copy failed - ' + (what === 'profile' ? 'see résumé' : text)); }
     ta.remove();
   }
 }));
 
 /* ================================================================
-   CONSTELLATION — notes as nodes, ideas as edges, packets as reads
+   CONSTELLATION - notes as nodes, ideas as edges, packets as reads
    ================================================================ */
 (function () {
   const canvas = $('#constellation');
@@ -168,7 +168,7 @@ $$('[data-copy]').forEach(btn => btn.addEventListener('click', () => {
       ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
     });
 
-    /* packets — little telemetry pulses travelling the edges */
+    /* packets - little telemetry pulses travelling the edges */
     if (!reduced) {
       if (now - lastSpawn > (hover ? 420 : 1500) && packets.length < (hover ? 10 : 5)) {
         spawnPacket(hover && hover.slug); lastSpawn = now;
@@ -256,7 +256,7 @@ $$('[data-copy]').forEach(btn => btn.addEventListener('click', () => {
 })();
 
 /* ================================================================
-   FILTERS — series chips on the notes index
+   FILTERS - series chips on the notes index
    ================================================================ */
 (function () {
   const bar = $('#note-filters');
@@ -288,7 +288,7 @@ $$('[data-copy]').forEach(btn => btn.addEventListener('click', () => {
 })();
 
 /* ================================================================
-   NOTE PAGE — read chip, anchors, keyboard thread nav, reveals
+   NOTE PAGE - read chip, anchors, keyboard thread nav, reveals
    ================================================================ */
 (function () {
   const article = $('article.post-body');
@@ -345,6 +345,13 @@ $$('[data-copy]').forEach(btn => btn.addEventListener('click', () => {
     });
     h.appendChild(a);
   });
+
+  /* --- remember visits for the palette's `history` command --- */
+  if (note) try {
+    const v = JSON.parse(localStorage.getItem('visited-notes') || '[]').filter(s => s !== slug);
+    v.unshift(slug);
+    localStorage.setItem('visited-notes', JSON.stringify(v.slice(0, 12)));
+  } catch (e) {}
 
   /* --- ← / → move along the thread --- */
   if (note) document.addEventListener('keydown', e => {

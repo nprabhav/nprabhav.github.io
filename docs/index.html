@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prabhav Nalhe — Software Engineer, Distributed Systems & Reliability</title>
+<title>Prabhav Nalhe - Software Engineer, Distributed Systems & Reliability</title>
 <meta name="description" content="Software engineer building distributed systems and reliability infrastructure at hyperscale. Currently at Meta.">
 <meta name="author" content="Prabhav Nalhe">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="canonical" href="https://prabhavnalhe.com/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="alternate" type="application/rss+xml" title="Prabhav Nalhe — Notes" href="https://prabhavnalhe.com/feed.xml">
+<link rel="alternate" type="application/rss+xml" title="Prabhav Nalhe - Notes" href="https://prabhavnalhe.com/feed.xml">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://prabhavnalhe.com/">
-<meta property="og:title" content="Prabhav Nalhe — Software Engineer, Distributed Systems & Reliability">
+<meta property="og:title" content="Prabhav Nalhe - Software Engineer, Distributed Systems & Reliability">
 <meta property="og:description" content="Software engineer building distributed systems and reliability infrastructure at hyperscale.">
 <meta property="og:image" content="https://prabhavnalhe.com/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Prabhav Nalhe — Software Engineer">
+<meta name="twitter:title" content="Prabhav Nalhe - Software Engineer">
 <meta name="twitter:image" content="https://prabhavnalhe.com/og.png">
 
 <script type="application/ld+json">
@@ -65,6 +65,7 @@
       <a href="#experience" data-spy="experience">Experience</a>
       <a href="#work" data-spy="work">Work</a>
       <a href="#writing" data-spy="writing">Writing</a>
+      <a href="play/index.html">Play</a>
       <button class="kbd-hint" id="pal-open"><span>⌘</span><span>K</span></button>
       <button id="theme-toggle" aria-label="Toggle theme">◐</button>
       <a class="nav-resume magnetic" href="resume.pdf">Résumé</a>
@@ -81,7 +82,7 @@
       <span class="line-mask"><span><span class="grad">Building distributed systems</span></span></span>
       <span class="line-mask"><span>that <span class="serif-i">stay up.</span></span></span>
     </h1>
-    <p class="hero-sub reveal">I'm <strong>Prabhav Nalhe</strong> — six years across backend and infrastructure, currently building service-dependency reliability at Meta. Interested in large-scale streaming systems and applying LLM agents to infrastructure problems.</p>
+    <p class="hero-sub reveal">I'm <strong>Prabhav Nalhe</strong> - six years across backend and infrastructure, currently building service-dependency reliability at Meta. Interested in large-scale streaming systems and applying LLM agents to infrastructure problems.</p>
     <div class="hero-cta reveal">
       <a class="btn-main magnetic" href="mailto:nprabhav111@gmail.com">Get in touch
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9 3.5L13.5 8 9 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -113,7 +114,7 @@
     <div class="sec-head reveal"><h2>Experience</h2><span class="ghost">01</span></div>
 
     <div class="xp reveal">
-      <div class="when">2024 — now</div>
+      <div class="when">2024 - now</div>
       <div>
         <div class="xp-head">
           <span class="co-chip" aria-hidden="true"><img src="assets/img/meta.svg" alt=""></span>
@@ -122,9 +123,9 @@
             <p class="role">Software Engineer, Reliability Infra</p>
           </div>
         </div>
-        <p class="sum">Service-dependency reliability — a platform addressing <b>a double-digit share of the company's top-severity incidents</b>.</p>
+        <p class="sum">Service-dependency reliability - a platform addressing <b>a double-digit share of the company's top-severity incidents</b>.</p>
         <ul>
-          <li>Built the <b>canonical dependency graph</b> in Rust — stream-fusion over six telemetry sources at ~20 GB/s.</li>
+          <li>Built the <b>canonical dependency graph</b> in Rust - stream-fusion over six telemetry sources at ~20 GB/s.</li>
           <li>Designed dependency notifications and a <b>protection program adopted by 1,000+ services</b>.</li>
           <li>Led a <b>fault-injection program</b> that eliminated risky dependencies, protecting nine-figure revenue exposure.</li>
           <li>Brought <b>LLM agents</b> into the stack to explain and classify dependency risk at fleet scale.</li>
@@ -147,7 +148,7 @@
     </div>
 
     <div class="xp reveal">
-      <div class="when">2018 — 21</div>
+      <div class="when">2018 - 21</div>
       <div>
         <div class="xp-head">
           <span class="co-chip" aria-hidden="true"><img src="assets/img/quest.png" alt=""></span>
@@ -175,9 +176,9 @@
         </div>
         <div class="tags"><span>rust</span><span>streaming</span><span>graphs</span></div>
         <div class="case-cols">
-          <div><h4>Problem</h4><p>No single source of truth for how services depend on each other — six telemetry systems, each partial and inconsistent.</p></div>
+          <div><h4>Problem</h4><p>No single source of truth for how services depend on each other - six telemetry systems, each partial and inconsistent.</p></div>
           <div><h4>Approach</h4><p>Rust streaming graph fusing all six sources in real time, reconciling conflicts into one canonical graph.</p></div>
-          <div><h4>Result</h4><p>The platform's source of truth — powering notifications, protection, and risk classification fleet-wide.</p></div>
+          <div><h4>Result</h4><p>The platform's source of truth - powering notifications, protection, and risk classification fleet-wide.</p></div>
         </div>
       </a>
 
@@ -191,7 +192,7 @@
         <div class="case-cols">
           <div><h4>Problem</h4><p>Raw dependency edges don't tell engineers <b>why</b> a dependency exists or whether it's safe to remove.</p></div>
           <div><h4>Approach</h4><p>LLM agent harness over <b>16 purpose-built tools</b> that investigates each edge and writes a human-readable explanation.</p></div>
-          <div><h4>Result</h4><p>Near-100% coverage — explanation and classification at fleet scale.</p></div>
+          <div><h4>Result</h4><p>Near-100% coverage - explanation and classification at fleet scale.</p></div>
         </div>
       </a>
 
@@ -203,12 +204,18 @@
         </div>
         <div class="tags"><span>chaos eng</span><span>ml labels</span></div>
         <div class="case-cols">
-          <div><h4>Problem</h4><p>Dependency criticality labels were heuristic guesses — no ground truth about what actually breaks.</p></div>
+          <div><h4>Problem</h4><p>Dependency criticality labels were heuristic guesses - no ground truth about what actually breaks.</p></div>
           <div><h4>Approach</h4><p>Chaos experiments injecting faults under controlled conditions, producing <b>ground-truth labels</b> for the classifier.</p></div>
-          <div><h4>Result</h4><p>A self-improving loop — every experiment sharpens the classifier and retires risky dependencies.</p></div>
+          <div><h4>Result</h4><p>A self-improving loop - every experiment sharpens the classifier and retires risky dependencies.</p></div>
         </div>
       </a>
     </div>
+
+    <a class="play-strip reveal" href="play/index.html">
+      <span class="zap">⚡</span>
+      <div><b>Prefer to feel it instead?</b><span>Break my website - a fault-injection sandbox where you take services down and watch the cascade.</span></div>
+      <span class="arr">→</span>
+    </a>
   </div>
 </section>
 
@@ -263,10 +270,17 @@
       </div>
       <div>
         <h4>Education &amp; Publication</h4>
-        <div class="edu-line"><b>Stony Brook University</b><span>M.S. Computer Science · GPA 3.92 · 2021–22</span></div>
-        <div class="edu-line"><b>Pune Institute of Computer Technology</b><span>B.E. Computer Science · 2014–18</span></div>
+        <div class="edu-line"><b>Stony Brook University</b><span>M.S. Computer Science · GPA 3.92 · 2021-22</span></div>
+        <div class="edu-line"><b>Pune Institute of Computer Technology</b><span>B.E. Computer Science · 2014-18</span></div>
         <div class="edu-line"><b>IEEE TASLP · 2022</b><span>Co-author · <a href="https://doi.org/10.48550/arXiv.2208.04415">Deep Learning Driven NL Text to SQL Query Conversion</a></span></div>
       </div>
+    </div>
+    <div class="ask-me reveal">
+      <span class="ask-label">ask me about</span>
+      <a href="work/fault-injection-loop.html">breaking things on purpose, professionally</a>
+      <a href="notes/text-to-sql-then-and-now/">the 2018 RNN that answered questions in SQL</a>
+      <a href="notes/scaling-live-to-a-billion/">how a live stream reaches a billion people</a>
+      <!-- TODO(prabhav): add 1-2 personal hooks here (hobby, hometown, a hot take) - those are what make this row human -->
     </div>
   </div>
 </section>
@@ -277,9 +291,9 @@
     <div class="brief-card reveal">
       <div class="brief-head"><span class="prompt-c">nprabhav:~$</span>&nbsp;nprabhav --brief <span class="dim"># for recruiters &amp; hiring managers</span></div>
       <dl class="brief-grid">
-        <div><dt>role</dt><dd>Software Engineer — distributed systems &amp; reliability infrastructure</dd></div>
-        <div><dt>now</dt><dd>Meta · Reliability Infra · 2024–present</dd></div>
-        <div><dt>experience</dt><dd>~6 years — Meta · Fidelity Investments · Quest Global</dd></div>
+        <div><dt>role</dt><dd>Software Engineer - distributed systems &amp; reliability infrastructure</dd></div>
+        <div><dt>now</dt><dd>Meta · Reliability Infra · 2024-present</dd></div>
+        <div><dt>experience</dt><dd>~6 years - Meta · Fidelity Investments · Quest Global</dd></div>
         <div><dt>location</dt><dd>San Jose, CA</dd></div>
         <div><dt>core stack</dt><dd>Rust · Python · streaming systems · fault injection · LLM agents</dd></div>
         <div><dt>proof</dt><dd>~20 GB/s ingest · 1,000+ services protected · 9-figure exposure covered</dd></div>
@@ -293,7 +307,7 @@
         <a class="brief-btn" href="resume.pdf">↧ résumé pdf</a>
         <a class="brief-btn" href="https://linkedin.com/in/nprabhav">in&nbsp; linkedin</a>
       </div>
-      <div class="brief-foot"><span class="dim"># the copy button drops a clean plaintext summary — built for ATS fields &amp; intro emails</span><span class="cursor">▊</span></div>
+      <div class="brief-foot"><span class="dim"># the copy button drops a clean plaintext summary - built for ATS fields &amp; intro emails</span><span class="cursor">▊</span></div>
     </div>
   </div>
 </section>
@@ -301,7 +315,7 @@
 <div class="cta-big reveal">
   <p class="small">Have something reliable to build?</p>
   <a class="huge" id="cta-huge" href="mailto:nprabhav111@gmail.com">Let's talk.</a>
-  <p class="sub">Or just say hi — <a class="u" href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a></p>
+  <p class="sub">Or just say hi - <a class="u" href="mailto:nprabhav111@gmail.com">nprabhav111@gmail.com</a></p>
 </div>
 
 <div class="name-marquee" aria-hidden="true">
@@ -336,10 +350,5 @@
 <script src="assets/js/notes-data.js" defer></script>
 <script src="assets/js/site.js" defer></script>
 <script src="assets/js/notes.js" defer></script>
-<!-- Analytics (GoatCounter — free, cookieless). To enable:
-     1. create an account at goatcounter.com (pick a code, e.g. nprabhav)
-     2. uncomment and set data-goatcounter accordingly
-<script data-goatcounter="https://nprabhav.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
--->
 </body>
 </html>

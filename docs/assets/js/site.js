@@ -1,4 +1,4 @@
-/* Prabhav Nalhe — site.js (shared across pages; every feature null-guarded) */
+/* Prabhav Nalhe - site.js (shared across pages; every feature null-guarded) */
 (function () {
 'use strict';
 const $ = (s, c) => (c || document).querySelector(s);
@@ -57,7 +57,7 @@ if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 (function () {
   const el = $('#scramble');
   if (!el || reduced) return;
-  const target = el.textContent, chars = '!<>-_\\/[]{}—=+*^?#$';
+  const target = el.textContent, chars = '!<>-_\\/[]{}-=+*^?#$';
   let frame = 0; const total = 36;
   setTimeout(function tick() {
     let out = '';
@@ -310,12 +310,12 @@ $$('.reveal').forEach(el => io.observe(el));
     { ic: '⎇', label: 'Open GitHub', hint: 'github.com/nprabhav', run: () => open('https://github.com/nprabhav', '_blank') },
     { ic: 'in', label: 'Open LinkedIn', hint: 'linkedin', run: () => open('https://linkedin.com/in/nprabhav', '_blank') },
     { ic: '✍', label: 'Read all notes', hint: 'blog', run: () => location.href = home + '/notes/index.html' },
-    { ic: '$', label: 'whoami', hint: 'easter egg', run: () => alert('Prabhav Nalhe — software engineer, infrastructure & reliability.\nSix years across backend and infra, currently at Meta.') },
+    { ic: '$', label: 'whoami', hint: 'easter egg', run: () => alert('Prabhav Nalhe - software engineer, infrastructure & reliability.\nSix years across backend and infra, currently at Meta.') },
   ];
   if (window.PROFILE) {
     ACTIONS.splice(1, 0,
       { ic: '⧉', label: 'Copy profile summary', hint: 'for ATS / notes', run: () => {
-          const done = () => window.__toast && window.__toast('$ profile copied — paste anywhere ✓');
+          const done = () => window.__toast && window.__toast('$ profile copied - paste anywhere ✓');
           if (navigator.clipboard) navigator.clipboard.writeText(window.PROFILE).then(done).catch(() => {});
         } },
       { ic: '§', label: 'Jump to quick facts', hint: 'recruiter brief', run: () => jump('brief') });
@@ -331,20 +331,62 @@ $$('.reveal').forEach(el => io.observe(el));
       run: () => location.href = home + '/notes/' + n.slug + '/',
     }));
   }
+  /* --- terminal command grammar: the prompt is not just decoration --- */
+  const fill = v => ({ keep: true, run: () => { palInput.value = v; sel = 0; renderList(); palInput.focus(); } });
+  function cmdItems(q) {
+    const NOTES = Array.isArray(window.NOTES) ? window.NOTES : [];
+    const noteItem = n => ({ ic: '✍', label: n.t, hint: n.min + ' min', run: () => location.href = home + '/notes/' + n.slug + '/' });
+    const [cmd, ...rest] = q.split(/\s+/);
+    const arg = rest.join(' ');
+    if (cmd === 'help' || cmd === 'man') return [
+      { ic: '$', label: 'ls notes', hint: 'list all notes', ...fill('ls notes') },
+      { ic: '$', label: 'cat <note>', hint: 'open a note', ...fill('cat ') },
+      { ic: '$', label: 'grep <term>', hint: 'search notes', ...fill('grep ') },
+      { ic: '$', label: 'history', hint: 'recently read', ...fill('history') },
+      { ic: '$', label: 'play', hint: 'fault-injection sandbox', ...fill('play') },
+      { ic: '$', label: 'sudo hire nprabhav', hint: 'recruiter brief', ...fill('sudo hire nprabhav') },
+      { ic: '$', label: 'whoami', hint: 'about', ...fill('whoami') },
+    ];
+    if (cmd === 'ls' || cmd === 'll') return NOTES.map(noteItem);
+    if (cmd === 'cat') {
+      if (!arg) return [{ ic: '$', label: 'usage: cat <note-title>', hint: 'e.g. cat service graph', ...fill('cat ') }];
+      const hits = NOTES.filter(n => (n.t + ' ' + n.slug + ' ' + n.s).toLowerCase().includes(arg));
+      return hits.length ? hits.map(noteItem) : [{ ic: '$', label: `cat: ${arg}: no such note`, hint: 'try grep', ...fill('grep ' + arg) }];
+    }
+    if (cmd === 'grep') {
+      if (!arg) return [{ ic: '$', label: 'usage: grep <term>', hint: 'e.g. grep rust', ...fill('grep ') }];
+      const hits = NOTES.filter(n => (n.t + ' ' + n.dek + ' ' + n.tags.join(' ')).toLowerCase().includes(arg));
+      return hits.length ? hits.map(n => ({ ...noteItem(n), hint: (n.tags.find(t => t.includes(arg)) || 'match') + ' · ' + n.min + ' min' }))
+                         : [{ ic: '$', label: `grep: no matches for "${arg}"`, hint: '0 results', ...fill('grep ') }];
+    }
+    if (cmd === 'history') {
+      let v = []; try { v = JSON.parse(localStorage.getItem('visited-notes') || '[]'); } catch (e) {}
+      const hits = v.map(s => NOTES.find(n => n.slug === s)).filter(Boolean);
+      return hits.length ? hits.map(noteItem) : [{ ic: '$', label: 'history: empty', hint: 'read something', ...fill('ls notes') }];
+    }
+    if (cmd === 'play') return [{ ic: '▸', label: 'Open the fault-injection sandbox', hint: 'break my website', run: () => location.href = home + '/play/index.html' }];
+    if (cmd === 'sudo') return [q.includes('hire')
+      ? { ic: '✓', label: 'permission granted - opening the recruiter brief', hint: 'sudo hire', run: () => location.href = home + '/index.html#brief' }
+      : { ic: '✗', label: palInput.value.trim() + ': this incident will be reported', hint: 'email instead?', run: () => location.href = 'mailto:nprabhav111@gmail.com' }];
+    if (cmd === 'rm') return [{ ic: '✗', label: 'nice try.', hint: 'permission denied', ...fill('') }];
+    if (cmd === 'clear') return [{ ic: '$', label: 'clear', hint: 'reset prompt', ...fill('') }];
+    if (cmd === 'exit') return [{ ic: '$', label: 'exit', hint: 'close palette', run: () => {} }];
+    return null;
+  }
   function renderList() {
     const q = palInput.value.trim().toLowerCase();
-    filtered = ACTIONS.filter(a => !q || a.label.toLowerCase().includes(q) || a.hint.toLowerCase().includes(q));
+    filtered = cmdItems(q) || ACTIONS.filter(a => !q || a.label.toLowerCase().includes(q) || a.hint.toLowerCase().includes(q));
     sel = Math.min(sel, Math.max(filtered.length - 1, 0));
     palList.innerHTML = filtered.length
       ? filtered.map((a, i) => `<div class="pal-item ${i === sel ? 'sel' : ''}" data-i="${i}"><span class="ic">${a.ic}</span><span>${a.label}</span><span class="kbd">${a.hint}</span></div>`).join('')
-      : `<div class="pal-empty">zsh: command not found — try "resume" or "email"</div>`;
+      : `<div class="pal-empty">zsh: command not found - try "help", "grep rust", or "sudo hire nprabhav"</div>`;
     $$('.pal-item', palList).forEach(el => {
       el.addEventListener('click', () => runAction(+el.dataset.i));
       el.addEventListener('pointermove', () => { sel = +el.dataset.i; paint(); });
     });
   }
   const paint = () => $$('.pal-item', palList).forEach((el, i) => el.classList.toggle('sel', i === sel));
-  function runAction(i) { const a = filtered[i]; if (!a) return; closePal(); a.run(); }
+  function runAction(i) { const a = filtered[i]; if (!a) return; if (!a.keep) closePal(); a.run(); }
   function openPal() { overlay.classList.add('open'); palInput.value = ''; sel = 0; renderList(); setTimeout(() => palInput.focus(), 10); }
   function closePal() { overlay.classList.remove('open'); }
   const opener = $('#pal-open');

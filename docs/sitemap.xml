@@ -3,6 +3,7 @@
   <url><loc>https://prabhavnalhe.com/</loc><priority>1.0</priority></url>
   <url><loc>https://prabhavnalhe.com/resume.html</loc><priority>0.7</priority></url>
   <url><loc>https://prabhavnalhe.com/notes/</loc><priority>0.7</priority></url>
+  <url><loc>https://prabhavnalhe.com/play/</loc><priority>0.7</priority></url>
   <url><loc>https://prabhavnalhe.com/work/dependency-service.html</loc><priority>0.8</priority></url>
   <url><loc>https://prabhavnalhe.com/work/dependency-explanations.html</loc><priority>0.8</priority></url>
   <url><loc>https://prabhavnalhe.com/work/fault-injection-loop.html</loc><priority>0.8</priority></url>

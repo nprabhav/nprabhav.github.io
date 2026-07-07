@@ -1,20 +1,20 @@
-/* notes-data.js — the notes graph. Array order = curated reading thread.
+/* notes-data.js - the notes graph. Array order = curated reading thread.
    links[] are directed "feeds into" edges; the constellation and
    "adjacent in the graph" blocks are derived from them. */
 /* plaintext profile for one-click copy into ATS / recruiter notes */
 window.PROFILE = [
-  'Prabhav Nalhe — Software Engineer (Distributed Systems & Reliability)',
-  'Currently: Meta, Reliability Infrastructure (2024–present) · San Jose, CA',
-  'Experience: ~6 years — Meta, Fidelity Investments, Quest Global',
+  'Prabhav Nalhe - Software Engineer (Distributed Systems & Reliability)',
+  'Currently: Meta, Reliability Infrastructure (2024-present) · San Jose, CA',
+  'Experience: ~6 years - Meta, Fidelity Investments, Quest Global',
   '',
   'Highlights:',
-  '- Canonical service-dependency graph in Rust — ~20 GB/s stream fusion across six telemetry sources',
+  '- Canonical service-dependency graph in Rust - ~20 GB/s stream fusion across six telemetry sources',
   '- Dependency protection program adopted by 1,000+ services',
   '- Fault-injection program protecting nine-figure revenue exposure',
   '- LLM agents explaining and classifying dependency risk at fleet scale',
   '',
   'Education: M.S. Computer Science, Stony Brook University (GPA 3.92) · B.E. CS, PICT Pune',
-  'Publication: IEEE TASLP 2022 — Deep Learning Driven NL Text to SQL (arXiv:2208.04415)',
+  'Publication: IEEE TASLP 2022 - Deep Learning Driven NL Text to SQL (arXiv:2208.04415)',
   '',
   'Web: https://prabhavnalhe.com · https://github.com/nprabhav · https://linkedin.com/in/nprabhav',
   'Email: nprabhav111@gmail.com · Résumé: https://prabhavnalhe.com/resume.pdf',
@@ -32,7 +32,7 @@ window.NOTES = [
     links: ['streaming-ingest-rust', 'slo-driven-risk', 'self-improving-platform'] },
 
   { slug: 'streaming-ingest-rust', t: 'Streaming Ingest in Rust', s: 'streaming ingest',
-    dek: 'When you fuse many noisy event streams into one model, the hard problems are not throughput — they are identity and time.',
+    dek: 'When you fuse many noisy event streams into one model, the hard problems are not throughput - they are identity and time.',
     tags: ['rust', 'streaming', 'distributed systems'], min: 7, series: 'systems',
     links: ['self-improving-platform', 'scaling-live-to-a-billion'] },
 
@@ -57,12 +57,12 @@ window.NOTES = [
     links: ['llm-as-a-judge', 'evals-before-features'] },
 
   { slug: 'evals-before-features', t: 'Evals Before Features', s: 'evals first',
-    dek: 'Before you wire an LLM into a real workflow, decide how you will know it is good enough — because the eval is the product spec.',
+    dek: 'Before you wire an LLM into a real workflow, decide how you will know it is good enough - because the eval is the product spec.',
     tags: ['evals', 'llm'], min: 5, series: 'llm',
     links: ['llm-as-a-judge', 'text-to-sql-then-and-now'] },
 
   { slug: 'llm-as-a-judge', t: 'LLM as a Judge', s: 'llm judge',
-    dek: 'A separate model can score outputs you cannot label by hand — but only if you treat it like a measuring instrument.',
+    dek: 'A separate model can score outputs you cannot label by hand - but only if you treat it like a measuring instrument.',
     tags: ['evals', 'llm', 'quality gates'], min: 6, series: 'llm',
     links: ['cost-aware-llm-pipelines'] },
 

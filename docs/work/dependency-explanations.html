@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dependency Explanations: LLM agents that earn trust — Prabhav Nalhe</title>
-<meta name="description" content="An LLM agent harness over 16 purpose-built tools — near-100% coverage of dependency explanations at ~$0.15 a pair.">
+<title>Dependency Explanations: LLM agents that earn trust - Prabhav Nalhe</title>
+<meta name="description" content="An LLM agent harness over 16 purpose-built tools - near-100% coverage of dependency explanations at ~$0.15 a pair.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="canonical" href="https://prabhavnalhe.com/work/dependency-explanations.html">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dependency Explanations: LLM agents that earn trust">
-<meta property="og:description" content="An LLM agent harness over 16 purpose-built tools — near-100% coverage of dependency explanations at ~$0.15 a pair.">
+<meta property="og:description" content="An LLM agent harness over 16 purpose-built tools - near-100% coverage of dependency explanations at ~$0.15 a pair.">
 <meta property="og:image" content="https://prabhavnalhe.com/og.png">
 <script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.setAttribute('data-theme','light')}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,21 +42,21 @@
   <article class="post-body">
     <p class="crumb"><a href="../index.html#work">← selected work</a> / case study</p>
     <h1 class="post-title">Dependency Explanations: LLM agents that earn trust</h1>
-    <div class="post-meta"><span>case study</span><span>·</span><span>2025 — present</span><span>·</span><span>9 min read</span></div>
+    <div class="post-meta"><span>case study</span><span>·</span><span>2025 - present</span><span>·</span><span>9 min read</span></div>
     <div class="post-tags"><span>llm agents</span><span>evals</span><span>mcp</span><span>reliability</span></div>
 
     <div class="prose">
-      <div class="callout"><span class="ic">$</span><span><strong>Summary</strong> — An LLM agent harness over 16 purpose-built tools that investigates every service-dependency edge and writes a human-readable explanation with a risk classification. Near-100% coverage at ~$0.15 per pair. Details simplified for public sharing.</span></div>
+      <div class="callout"><span class="ic">$</span><span><strong>Summary</strong> - An LLM agent harness over 16 purpose-built tools that investigates every service-dependency edge and writes a human-readable explanation with a risk classification. Near-100% coverage at ~$0.15 per pair. Details simplified for public sharing.</span></div>
 
       <h2 id="context">Context</h2>
-      <p>The <a href="dependency-service.html">canonical dependency graph</a> answers <em>what</em> depends on <em>what</em>. It can't answer the question engineers actually ask during reviews and incidents: <strong>why does this dependency exist, and is it safe to remove?</strong> Answering that manually means reading code, configs, and traffic samples — twenty minutes per edge, across hundreds of thousands of edges. It never happened.</p>
+      <p>The <a href="dependency-service.html">canonical dependency graph</a> answers <em>what</em> depends on <em>what</em>. It can't answer the question engineers actually ask during reviews and incidents: <strong>why does this dependency exist, and is it safe to remove?</strong> Answering that manually means reading code, configs, and traffic samples - twenty minutes per edge, across hundreds of thousands of edges. It never happened.</p>
 
       <h2 id="approach">Approach: tools over prompts</h2>
-      <p>The naive version — stuff context into a prompt, ask a model to guess — produced fluent nonsense. What worked was inverting the design: a constrained agent loop where the model's job is to <em>investigate</em>, not recall.</p>
+      <p>The naive version - stuff context into a prompt, ask a model to guess - produced fluent nonsense. What worked was inverting the design: a constrained agent loop where the model's job is to <em>investigate</em>, not recall.</p>
       <ul>
         <li><strong>16 purpose-built tools</strong>, each answering one narrow question well: who owns this service, what does the client config declare, what does sampled traffic show, where in code is the call site, what changed recently.</li>
-        <li><strong>Structured output</strong> — every run ends in an explanation plus a typed risk classification, not free text.</li>
-        <li><strong>Budgeted loops</strong> — the agent gets a bounded number of tool calls; ambiguity is surfaced as "low confidence," never papered over.</li>
+        <li><strong>Structured output</strong> - every run ends in an explanation plus a typed risk classification, not free text.</li>
+        <li><strong>Budgeted loops</strong> - the agent gets a bounded number of tool calls; ambiguity is surfaced as "low confidence," never papered over.</li>
       </ul>
       <pre><code><span class="c"># the contract, simplified</span>
 explain(edge) -> {
@@ -72,8 +72,16 @@ explain(edge) -> {
       <h2 id="cost">Getting to ~$0.15 a pair</h2>
       <ul>
         <li><strong>Prompt caching</strong> for the static harness preamble and tool schemas.</li>
-        <li><strong>Model routing</strong> — a small model handles easy edges; escalation to a larger model only on low confidence.</li>
-        <li><strong>Evidence reuse</strong> — tool results are cached across edges that share a service.</li>
+        <li><strong>Model routing</strong> - a small model handles easy edges; escalation to a larger model only on low confidence.</li>
+        <li><strong>Evidence reuse</strong> - tool results are cached across edges that share a service.</li>
+      </ul>
+
+      <h2 id="decisions">Decisions &amp; tradeoffs</h2>
+      <ul>
+        <li><strong>Tools over context-stuffing.</strong> Sixteen narrow tools were slower to build than one retrieval index, but every sentence in an explanation traces to a tool result. When the answer has to be auditable, evidence beats similarity (<a href="../notes/agent-harness-vs-rag/">longer version</a>).</li>
+        <li><strong>Structured output over fluent prose.</strong> Typed risk tiers and citation fields cost the model expressiveness - and made the output consumable by the protection program and debuggable by humans. Prose would have been prettier, and useless.</li>
+        <li><strong>Bounded loops over "let it think."</strong> A capped tool budget with an explicit low-confidence exit made cost predictable and uncertainty honest. Unbounded agent loops fail expensively and confidently.</li>
+        <li><strong>Small model by default, escalate on doubt.</strong> Routing risks worse answers on edges that only look easy - the golden-set evals are what made that risk measurable instead of scary.</li>
       </ul>
 
       <h2 id="impact">Impact</h2>
@@ -84,7 +92,8 @@ explain(edge) -> {
       </ul>
 
       <h2 id="lessons">Lessons</h2>
-      <p>Agents earn trust through tools and evals, not model choice. Every hour spent making a tool's output cleaner beat an hour of prompt engineering. And structured output with an auditable evidence trail is what let humans trust — and debug — the system.</p>
+      <p>Agents earn trust through tools and evals, not model choice. Every hour spent making a tool's output cleaner beat an hour of prompt engineering. And structured output with an auditable evidence trail is what let humans trust - and debug - the system.</p>
+      <p><strong>What I'd do differently:</strong> build the golden set first. The earliest weeks tuned the harness against vibes, and every one of those "improvements" had to be re-litigated once real evals existed. I'd also record full tool-call traces from day one - debugging early runs without them was archaeology.</p>
     </div>
 
     <div class="post-footer">
@@ -92,7 +101,7 @@ explain(edge) -> {
         <div class="av">PN</div>
         <div>
           <h4>Prabhav Nalhe</h4>
-          <p>Software engineer — distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../notes/index.html">the notes</a>.</p>
+          <p>Software engineer - distributed systems &amp; reliability at Meta. <a href="mailto:nprabhav111@gmail.com">Get in touch</a> or read <a href="../notes/index.html">the notes</a>.</p>
         </div>
       </div>
       <div class="next-prev">
@@ -104,7 +113,7 @@ explain(edge) -> {
 
   <aside class="toc-rail">
     <div class="toc">
-      <h4>On this page</h4><a href="#context">Context</a><a href="#approach">Tools over prompts</a><a href="#evals">Evals</a><a href="#cost">Cost</a><a href="#impact">Impact</a><a href="#lessons">Lessons</a></div>
+      <h4>On this page</h4><a href="#context">Context</a><a href="#approach">Tools over prompts</a><a href="#evals">Evals</a><a href="#cost">Cost</a><a href="#decisions">Decisions</a><a href="#impact">Impact</a><a href="#lessons">Lessons</a></div>
   </aside>
 </div>
 
@@ -134,5 +143,6 @@ explain(edge) -> {
 <script src="../assets/js/notes-data.js" defer></script>
 <script src="../assets/js/site.js" defer></script>
 <script src="../assets/js/notes.js" defer></script>
+<script data-goatcounter="https://nprabhav.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
